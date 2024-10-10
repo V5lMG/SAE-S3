@@ -13,8 +13,8 @@ L'application Java à développer permettra d'importer des fichiers CSV exporté
 **Membres de l'équipe et répartition des rôles**
 
 **CAMBON Mathias**
-  Rôle : Scrum Master
-  Email : mathias.cambon@iut-rodez.fr
+  Rôle : Scrum Master \r
+  Email : mathias.cambon@iut-rodez.fr \r
   GitHub : [MathiasCambon-1](https://github.com/MathiasCambon-1)
 
 **MONTES Robin**
