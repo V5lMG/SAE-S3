@@ -38,7 +38,6 @@ L'application Java à développer permettra d'importer des fichiers CSV exporté
   GitHub : [XTRodrigo](https://github.com/XTRodrigo)
 
 **Lien vers les ressources**
-
     Board GitHub : [Lien vers le board](https://github.com/V5lMG/SAE-S3/projects?query=is%3Aopen)
     Dossier Google Drive : [SAE_1 - Développement d'une application - S3](https://drive.google.com/drive/folders/18EmHSbxA3pV8aimM4_LwFA-TiKOJh7ZL?usp=sharing)
     
