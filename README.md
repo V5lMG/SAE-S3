@@ -1,20 +1,17 @@
 **Projet SAE - Application Java pour des statistiques**
+_09/2024 - 01/2025_
 
 **Description**
-L'application Java à développer permettra d'importer des fichiers CSV exportés depuis un site internet existant. Plusieurs utilisateurs auront accès à cette application afin de générer des statistiques basées sur les données.
+L’application Java à développer devra permettre d’importer les fichiers CSV exportés du site Internet existant. Plusieurs utilisateurs auront accès à cette application pour générer des statistiques à partir des données. 
+Un premier utilisateur importera manuellement les fichiers CSV, tandis que les autres utilisateurs pourront les récupérer via une communication réseau interne. 
+Par sécurité, les fichiers échangés sur le réseau seront cryptés pour garantir la confidentialité des données.
 
-  Importation des fichiers CSV :
-    Un utilisateur pourra importer manuellement les fichiers CSV dans l'application.
-    Les autres utilisateurs pourront récupérer ces fichiers via une communication réseau interne.
-
-  Sécurité :
-    Les fichiers échangés sur le réseau seront cryptés pour garantir la confidentialité des données.
 
 **Membres de l'équipe et répartition des rôles**
 
 **CAMBON Mathias**
-  Rôle : Scrum Master \r
-  Email : mathias.cambon@iut-rodez.fr \r
+  Rôle : Scrum Master
+  Email : mathias.cambon@iut-rodez.fr
   GitHub : [MathiasCambon-1](https://github.com/MathiasCambon-1)
 
 **MONTES Robin**
@@ -40,9 +37,3 @@ L'application Java à développer permettra d'importer des fichiers CSV exporté
 **Lien vers les ressources**
     Board GitHub : [Lien vers le board](https://github.com/V5lMG/SAE-S3/projects?query=is%3Aopen)
     Dossier Google Drive : [SAE_1 - Développement d'une application - S3](https://drive.google.com/drive/folders/18EmHSbxA3pV8aimM4_LwFA-TiKOJh7ZL?usp=sharing)
-    
-**Fonctionnalités**
-    Importation de fichiers CSV : Les utilisateurs peuvent importer manuellement ou via réseau interne des fichiers CSV contenant des données à analyser.
-    Analyse des données : L'application permettra de traiter les données et de générer des statistiques sous forme de graphiques et de rapports.
-    Sécurité : Les échanges de fichiers via réseau seront cryptés pour assurer la confidentialité des informations.
-    Multi-utilisateurs : Plusieurs utilisateurs peuvent accéder simultanément à l'application avec des rôles et niveaux d'accès distincts.
