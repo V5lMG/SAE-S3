@@ -1,11 +1,48 @@
-Application Java pour des statistiques
-09/2024 - 01/2025
-Description :
-Líapplication Java ‡ dÈvelopper devra permettre díimporter les fichiers CSV exportÈs du site Internet existant. Plusieurs utilisateurs auront accËs ‡ cette application pour gÈnÈrer des statistiques ‡ partir des donnÈes. Un premier utilisateur importera manuellement les fichiers CSV, tandis que les autres utilisateurs pourront les rÈcupÈrer via une communication rÈseau interne. Par sÈcuritÈ, les fichiers ÈchangÈs sur le rÈseau seront cryptÈs pour garantir la confidentialitÈ des donnÈes.
-Membres de l'Èquipe et rÈpartition des rÙles
-CAMBON MathiasScrum Mastermathias.cambon@iut-rodez.frhttps://github.com/MathiasCambon-1MONTES RobinProduct Ownerrobin.montes@iut-rodez.frhttps://github.com/STONNEEEEMUNIER-GENIE ValentinResponsable DÈveloppementvalentin.munie-genie@iut-rodez.frhttps://github.com/V5lMGTHIERRY ErwanResponsable DÈveloppementerwan.thierry@iut-rodez.frhttps://github.com/thierry-erwanXAVIER TABORDA RodrigoArchitecte logicielrodrigo.xaviertaborda@iut-rodez.frhttps://github.com/XTRodrigoLien vers le board
-https://github.com/V5lMG/SAE-S3/projects?query=is%3Aopen
-Lien vers le dossier Google Drive
-SAE_1 - DÈveloppement d'une application - S3
- 
+**Projet SAE - Application Java pour des statistiques**
 
+**Description**
+L'application Java √† d√©velopper permettra d'importer des fichiers CSV export√©s depuis un site internet existant. Plusieurs utilisateurs auront acc√®s √† cette application afin de g√©n√©rer des statistiques bas√©es sur les donn√©es.
+
+  Importation des fichiers CSV :
+    Un utilisateur pourra importer manuellement les fichiers CSV dans l'application.
+    Les autres utilisateurs pourront r√©cup√©rer ces fichiers via une communication r√©seau interne.
+
+  S√©curit√© :
+    Les fichiers √©chang√©s sur le r√©seau seront crypt√©s pour garantir la confidentialit√© des donn√©es.
+
+**Membres de l'√©quipe et r√©partition des r√¥les**
+
+**CAMBON Mathias**
+  R√¥le : Scrum Master
+  Email : mathias.cambon@iut-rodez.fr
+  GitHub : [MathiasCambon-1](https://github.com/MathiasCambon-1)
+
+**MONTES Robin**
+  R√¥le : Product Owner
+  Email : robin.montes@iut-rodez.fr
+  GitHub : [STONNEEEE](https://github.com/STONNEEEE)
+
+**MUNIER-GENIE Valentin**
+  R√¥le : Responsable D√©veloppement
+  Email : valentin.munie-genie@iut-rodez.fr
+  GitHub : [V5lMG](https://github.com/V5lMG)
+
+**THIERRY Erwan**
+  R√¥le : Responsable D√©veloppement
+  Email : erwan.thierry@iut-rodez.fr
+  GitHub : [thierry-erwan](https://github.com/thierry-erwan)
+
+**XAVIER TABORDA Rodrigo**
+  R√¥le : Architecte logiciel
+  Email : rodrigo.xaviertaborda@iut-rodez.fr
+  GitHub : [XTRodrigo](https://github.com/XTRodrigo)
+
+**Lien vers les ressources**
+    Board GitHub : [Lien vers le board](https://github.com/V5lMG/SAE-S3/projects?query=is%3Aopen)
+    Dossier Google Drive : [SAE_1 - D√©veloppement d'une application - S3](https://drive.google.com/drive/folders/18EmHSbxA3pV8aimM4_LwFA-TiKOJh7ZL?usp=sharing)
+    
+**Fonctionnalit√©s**
+    Importation de fichiers CSV : Les utilisateurs peuvent importer manuellement ou via r√©seau interne des fichiers CSV contenant des donn√©es √† analyser.
+    Analyse des donn√©es : L'application permettra de traiter les donn√©es et de g√©n√©rer des statistiques sous forme de graphiques et de rapports.
+    S√©curit√© : Les √©changes de fichiers via r√©seau seront crypt√©s pour assurer la confidentialit√© des informations.
+    Multi-utilisateurs : Plusieurs utilisateurs peuvent acc√©der simultan√©ment √† l'application avec des r√¥les et niveaux d'acc√®s distincts.
