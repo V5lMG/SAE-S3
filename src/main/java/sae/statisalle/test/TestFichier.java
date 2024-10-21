@@ -1,11 +1,10 @@
 package sae.statisalle.test;
 
-public class TestGestionFichier {
+public class TestFichier {
 
     /**
      * Test des 3 méthodes de parcours
      */
-
     public static void testImportation() {
         System.out.println("\nTest de la méthode Importation :\n"
                 + "-------------------------------------\n");
@@ -14,3 +13,6 @@ public class TestGestionFichier {
 
     }
 }
+
+
+
