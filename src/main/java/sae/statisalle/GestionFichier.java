@@ -1,19 +1,78 @@
+/**
+ * GestionFichier.java          21/10/2024
+ * IUT DE RODEZ            Pas de copyright
+ */
 package sae.statisalle;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
-/*
- *
+/**
+ * La classe GestionFichier gère les opérations de lecture sur des fichiers CSV. Elle permet de lire le contenu
+ * d'un fichier ligne par ligne afin de récupérer les données
+ * <br>
+ * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
+ * La classe gère également les erreurs courantes liées à l'ouverture,
+ * la lecture et la fermeture des fichiers.
+ * @author CAMBON Mathias
+ * @author THIERRY Erwan
  */
 public class GestionFichier {
 
-    /*
-     * Elle permet de récupérer 1 seul fichier CSV en réseau local
+    private File fichierExploite;
+    private FileReader lecteurFichier;
+    private BufferedReader tamponFichier;
+
+    /** impossible de fermer le fichier renseigné */
+    private static final String ERREUR_FERMETURE_FICHIER =
+            "erreur : Impossible de fermer le fichier.";
+
+    /** impossible d'acceder au contenu du fichier */
+    private static final String ERREUR_CONTENU_FICHIER =
+            "erreur : Impossible d'accéder au contenu du fichier.";
+
+    /** le format du fichier n'est pas .csv ou .CSV */
+    private static final String ERREUR_EXTENSION_FICHIER =
+            "erreur : Le format du fichier doit être .csv ou .CSV";
+
+    /** suffixe des fichiers pris en charge **/
+    private static final String SUFFIXE_FICHIER = ".csv";
+
+    public GestionFichier(String cheminFichier) {
+        if (!cheminFichier.isEmpty()) {
+            try {
+                fichierExploite = new File(cheminFichier);
+
+                if (!fichierExploite.getName()
+                        .toLowerCase()
+                        .endsWith(SUFFIXE_FICHIER)){
+
+                    // TODO Changer ça en une constante
+                    System.out.print("Erreur sur l'extension du fichier");
+                }
+
+                lecteurFichier = new FileReader(cheminFichier);
+                tamponFichier = new BufferedReader(lecteurFichier);
+
+            } catch (IOException pbOuverture) {
+                // TODO Renvoyer un message
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Elle permet de récupérer 1 seul fichier CSV en réseau local à partir de l'interface graphique qui lui
+     * récupère le chemin d'accès au dossier
      * @return
      * @throws
      */
-    public void importerFichierCsv() {
-        // TODO: Implémenter le code pour importer un fichier CSV
+    public void importerFichierCsv(String chemin)  {
+
+
     }
 
     // Méthode pour exporter un fichier CSV
