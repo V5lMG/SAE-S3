@@ -22,9 +22,15 @@ class TestFichier {
     @BeforeEach
     void setUp() throws IOException {
         // Création d'un fichier temporaire pour les tests
-        File tempFile = File.createTempFile("testFichier", ".csv");
+        File tempFile = File.createTempFile("activites 26_08_24 13_40",".csv");
         try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write("Nom,Prenom,Telephone\nJohn,Doe,0123456789\n");
+            writer.write("Ident;Activité\n" +
+                    "A0000001;réunion\n" +
+                    "A0000002;formation\n" +
+                    "A0000003;entretien de la salle\n" +
+                    "A0000004;prêt\n" +
+                    "A0000005;location\n" +
+                    "A0000006;autre ");
         }
         fichier = new Fichier(tempFile.getAbsolutePath());
     }
@@ -51,14 +57,14 @@ class TestFichier {
     void contenuFichier() {
         List<String> contenu = fichier.contenuFichier();
         assertNotNull(contenu, "Le contenu du fichier ne doit pas être null.");
-        assertEquals(2, contenu.length, "Le fichier devrait contenir deux lignes.");
-        assertEquals("Nom,Prenom,Telephone", contenu[0], "La première ligne doit correspondre à l'en-tête attendu.");
+        assertEquals(7, contenu.size(), "Le fichier devrait contenir sept lignes.");
+        assertEquals("Ident;Activité", contenu.get(0), "La première ligne doit correspondre à l'en-tête attendu.");
     }
 
     @Test
     void nomFichier() {
         String nomFichier = fichier.nomFichier();
-        assertTrue(nomFichier.startsWith("testFichier"), "Le nom du fichier devrait correspondre à 'testFichier'.");
+        assertTrue(nomFichier.startsWith("activites 26_08_24 13_40"), "Le nom du fichier devrait correspondre à 'activites 26_08_24 13_40'.");
     }
 
     @Test
@@ -71,12 +77,12 @@ class TestFichier {
     @Test
     void getTypeFichier() {
         String type = fichier.getTypeFichier();
-        assertEquals("Employe", type, "Le type de fichier devrait être 'Employe' d'après le contenu.");
+        assertEquals("Activite", type, "Le type de fichier devrait être 'Employe' d'après le contenu.");
 
         // Tester un autre fichier
-        File tempFileSalle = new File(fichier.getFichierExploite().getParent(), "testSalle.csv");
+        File tempFileSalle = new File(fichier.getFichierExploite().getParent(), "salles 26_08_24 13_40.csv");
         try (FileWriter writer = new FileWriter(tempFileSalle)) {
-            writer.write("Nom,Capacite\n");
+            writer.write("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
