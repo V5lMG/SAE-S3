@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.System.err;
 
@@ -23,13 +25,14 @@ import static java.lang.System.err;
  */
 public class Fichier {
 
-    /** fichier courant de l'instance */
+
+    /* fichier courant de l'instance */
     private File fichierExploite;
 
-    /** lecteur du fichier courant de l'instance */
+    /* lecteur du fichier courant de l'instance */
     private FileReader lecteurFichier;
 
-    /** tampon du fichier courant de l'instance */
+    /* */
     private BufferedReader tamponFichier;
 
     /** impossible d'ouvrir le fichier renseigné */
@@ -78,9 +81,6 @@ public class Fichier {
                 if (!extensionValide()){
                     err.println(ERREUR_EXTENSION_FICHIER);
                 }
-                if (!this.fichierExploite.exists() && this.fichierExploite.createNewFile()) {
-                    System.out.println("Fichier créé " + this.fichierExploite.getName());
-                }
 
                 if (!this.fichierExploite.canWrite()){
                     err.println(ERREUR_CREATION_FICHIER +cheminFichier);
@@ -97,7 +97,6 @@ public class Fichier {
         }
     }
 
-
     /**
      * Vérifie si le fichier a une extension valide.
      *
@@ -106,61 +105,32 @@ public class Fichier {
      */
     public boolean extensionValide(){
 
-        if (this.fichierExploite.getName()
-                .toLowerCase()
-                .endsWith(SUFFIXE_FICHIER)) {
-            return true;
-        }
-        return false;
+        return this.fichierExploite.getName()
+                   .toLowerCase()
+                   .endsWith(SUFFIXE_FICHIER);
     }
 
     /**
-     * Lit le contenu d'un fichier texte ligne par ligne et retourne un tableau
+     * Lit le contenu d'un fichier texte ligne par ligne et retourne une liste
      * de chaînes de caractères contenant chaque ligne du fichier.
      * <br>
-     * La méthode commence par compter le nombre de lignes dans le fichier
-     * afin de créer un tableau de la taille appropriée.
-     * Ensuite, elle relit le fichier pour remplir ce tableau avec les lignes lues.
-     * <br>
      * Si une erreur survient pendant la lecture du fichier,
-     * un message d'erreur est affiché et la méthode retourne null.
+     * un message d'erreur est affiché et la méthode retourne une liste vide.
      *
-     * @return Un tableau de chaînes de caractères contenant les lignes du fichier,
-     *         ou null si une erreur survient.
+     * @return Une liste de chaînes de caractères contenant les lignes du fichier,
+     *         ou Une liste vide si une erreur survient.
      */
-    public String[] contenuFichier() {
-        int nbLignes = 0;
+    public List<String> contenuFichier() {
+        List<String> contenu = new ArrayList<>();
 
-        String ligneAct;
-
-        String[] contenu = null;
-
-        try {
-            while ((ligneAct = this.tamponFichier.readLine()) != null) {
-                nbLignes++;
+        try (BufferedReader br = new BufferedReader(new FileReader(this.fichierExploite))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                contenu.add(line);
             }
 
-            try {
-                this.tamponFichier.close();
-            } catch (IOException pbFermeture) {
-                err.println(ERREUR_FERMETURE_FICHIER);
-            }
-
-            /* Réinitialiser le BufferedReader pour relire le fichier */
-            this.lecteurFichier = new FileReader(this.fichierExploite);
-            this.tamponFichier  = new BufferedReader(this.lecteurFichier);
-
-            contenu = new String[nbLignes];
-            int index = 0;
-
-            while ((ligneAct = this.tamponFichier.readLine()) != null) {
-                contenu[index] = ligneAct;
-                index++;
-            }
-
-        } catch (IOException pbContenu) {
+        } catch (IOException e) {
             err.println(ERREUR_CONTENU_FICHIER);
-            contenu = null;
         }
         return contenu;
     }
@@ -195,18 +165,19 @@ public class Fichier {
     public String getTypeFichier() {
 
         String typeFichier;
-        String[] contenu;
+        List<String> contenu;
 
         typeFichier = null;
         contenu = this.fichierExploite.contenuFichier();
 
+        // TODO à refaire
         if (contenu[0].contains("Nom") && contenu[0].contains("Capacite")){
             typeFichier = "Salle";
         }
         if (contenu[0].contains("Nom") && contenu[0].contains("Prenom") && contenu[0].contains("Telephone")){
             typeFichier = "Employe";
         }
-        if (contenu[0].contains("Activité")){
+        if (contenu[0].contains("Activite")){
             typeFichier = "Activite";
         }
         if (contenu[0].contains("salle") && contenu[0].contains("employe") && contenu[0].contains("activite") && contenu[0].contains("date")) {
