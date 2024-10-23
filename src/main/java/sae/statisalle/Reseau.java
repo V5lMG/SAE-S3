@@ -4,7 +4,10 @@
  */
 package sae.statisalle;
 
-import java.net.InetAddress;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -28,7 +31,30 @@ public class Reseau {
      */
     public void envoyerDonnees(Salle salle, Employe employe,
                                Reservation reservation, Activite activite) {
-        // TODO
+
+        try (Socket socket = new Socket("localhost", 12345)) {
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            String userInput;
+
+            System.out.println("Entrez des messages (tapez 'exit' pour quitter) :");
+
+            while ((userInput = stdIn.readLine()) != null) {
+                out.println(userInput);
+                System.out.println("Serveur : " + in.readLine());
+
+                if ("exit".equalsIgnoreCase(userInput)) {
+                    break;
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la création du socket : "
+                    + e.getMessage());
+        }
     }
 
     /**
@@ -43,23 +69,13 @@ public class Reseau {
      */
     public void preparerServeur() {
         // TODO
-        Socket socket = new Socket();
-        socket.bind();
-
-    }
-
-    public static void main(String[] args) throws UnknownHostException {
-        preparerClient();
     }
 
     /**
      * Prépare un client pour la communication.
      */
-    public static void preparerClient() throws UnknownHostException {
-
-        /* On récupère l'InetAddress du serveur grâce à son IP */
-        InetAddress address2 = InetAddress.getByName("8.8.8.8"); // TODO STUB
-        System.out.println(address2.getHostName());
+    public static void preparerClient() {
+        // TODO
     }
 
     /**
@@ -111,13 +127,5 @@ public class Reseau {
         // TODO
     }
 
-    /**
-     * Traite la réponse reçue par un client.
-     *
-     * @param client Le socket du client.
-     */
-    public void traiterReponse(Socket client) {
-        // TODO
-    }
 }
 
