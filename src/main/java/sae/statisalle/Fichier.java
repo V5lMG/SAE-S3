@@ -168,19 +168,18 @@ public class Fichier {
         List<String> contenu;
 
         typeFichier = null;
-        contenu = this.fichierExploite.contenuFichier();
+        contenu = contenuFichier();
 
-        // TODO à refaire
-        if (contenu[0].contains("Nom") && contenu[0].contains("Capacite")){
+        if (contenu.get(0).contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante")){
             typeFichier = "Salle";
         }
-        if (contenu[0].contains("Nom") && contenu[0].contains("Prenom") && contenu[0].contains("Telephone")){
+        if (contenu.get(0).contains("Ident;Nom;Prenom;Telephone")){
             typeFichier = "Employe";
         }
-        if (contenu[0].contains("Activite")){
+        if (contenu.get(0).contains("Ident;Activité")){
             typeFichier = "Activite";
         }
-        if (contenu[0].contains("salle") && contenu[0].contains("employe") && contenu[0].contains("activite") && contenu[0].contains("date")) {
+        if (contenu.get(0).contains("Ident;salle;employe;activite;date;heuredebut;heurefin")) {
             typeFichier = "Reservation";
         } // else
 
