@@ -16,10 +16,16 @@ package sae.statisalle;
  * @author robin.montes
  */
 public class Activite {
+    /*Identifiant de l'activité*/
+    String idActivite;
+
     /*Les différents types d'activité*/
     String type;
 
-    public Activite(String type) {
+    public Activite(String type,  String idActivite) {
+        this.idActivite = idActivite;
         this.type = type;
+
     }
+
 }
