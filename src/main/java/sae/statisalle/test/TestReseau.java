@@ -3,8 +3,8 @@ import sae.statisalle.Reseau;
 
 public class TestReseau {
 
-    public static void main(String[] args){
-        envoyerDonnees();
+    public static void main(String[] args) {
+
     }
 
     private static void envoyerDonnees() {
