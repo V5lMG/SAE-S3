@@ -7,6 +7,8 @@ package sae.statisalle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ import static java.lang.System.err;
  */
 public class Fichier {
 
+
+    private static final String ERREUR_ECRITURE_FICHIER =
+            "Erreur : impossible d'écrire dans le fichier";
 
     /* fichier courant de l'instance */
     private File fichierExploite;
@@ -133,6 +138,29 @@ public class Fichier {
             err.println(ERREUR_CONTENU_FICHIER);
         }
         return contenu;
+    }
+
+    /**
+     * Réécrit le contenu du fichier avec une nouvelle liste de chaînes de caractères.
+     * <br>
+     * Chaque chaîne dans la liste représente une ligne qui sera écrite dans le fichier.
+     * Si une erreur survient lors de l'écriture, un message d'erreur est affiché.
+     * <br>
+     * Le fichier d'origine est écrasé et remplacé par les nouvelles lignes.
+     *
+     * @param ContenuFichier : La liste de chaînes de caractères à écrire dans le fichier.
+     */
+    public void reecritureFichier(List<String> ContenuFichier) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fichierExploite))) {
+            for (String ligne : ContenuFichier) {
+                writer.write(ligne);
+                writer.newLine();
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            err.println(ERREUR_ECRITURE_FICHIER);
+        }
     }
 
     /**
