@@ -39,22 +39,21 @@ public class Salle {
     /*Nombre de machine présente dans la salle*/
     int nbMachine;
 
-    /*Description de la salle */
-    String description;
-
     /*Liste des logiciels utilisable dans la salle*/
     ArrayList<String> logiciel;
 
     /*Indique la présence d'imprimante dans la salle*/
     boolean imprimante;
 
-    public Salle(String indentifiant, int capacite, boolean videoProj, boolean ecranXXL, int nbMachine, ArrayList<String> logiciel, boolean imprimante) {
-        this.identifiant = indentifiant;
+    public Salle(String identifiant, int capacite, boolean videoProj, boolean ecranXXL, int nbMachine, ArrayList<String> logiciel, boolean imprimante) {
+        this.identifiant = identifiant;
         this.capacite = capacite;
-        this.videoProj = videoProj;
+        this.videoProj = videoProj; //à Vérifier
         this.ecranXXL = ecranXXL;
         this.nbMachine = nbMachine;
-        this.logiciel = new ArrayList<String>();
+        this.logiciel = logiciel;
         this.imprimante = imprimante;
     }
+
+
 }
