@@ -14,8 +14,8 @@ import java.util.List;
 import static java.lang.System.err;
 
 /**
- * La classe Fichier gère les opérations de lecture
- * sur des fichiers Comma Separated Values (csv). Elle permet de lire le contenu
+ * La classe Fichier gère les opérations de lecture sur des fichiers
+ * Comma Separated Values (csv). Elle permet de lire le contenu
  * d'un fichier ligne par ligne
  * <br>
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
@@ -24,7 +24,6 @@ import static java.lang.System.err;
  * @author erwan.thierry
  */
 public class Fichier {
-
 
     /* fichier courant de l'instance */
     private File fichierExploite;
