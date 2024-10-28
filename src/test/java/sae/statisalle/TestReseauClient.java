@@ -1,8 +1,7 @@
-package sae.statisalle.test;
+package sae.statisalle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sae.statisalle.Reseau;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -14,12 +13,29 @@ public class TestReseauClient {
     private static final String HOST = "127.0.0.1";
 
     public static void main(String[] args) {
-        Reseau client = new Reseau();
-        int port = 55555; // FIXME
-        String host = "127.0.0.1";
+        Reseau serveur = new Reseau();
+        Thread serveurThread = new Thread(() -> {
+            serveur.preparerServeur(PORT);
+            serveur.attendreConnexionClient();
+            String requete = serveur.recevoirDonnees();
+            if (requete != null) {
+                String reponse = serveur.traiterRequete(requete);
+                serveur.envoyerReponse(reponse);
+            }
+            serveur.fermerServeur();
+        });
+        serveurThread.start();
 
-        // préparer le client, envoyer une requete et attendre une réponse du serveur
-        client.preparerClient(host, port);
+        // Attendre que le serveur démarre
+        try {
+            Thread.sleep(1000);  // Ajustez la durée selon les besoins
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Créer et démarrer le client
+        Reseau client = new Reseau();
+        client.preparerClient(HOST, PORT);
         client.envoyer("envoie toi stp batard");
         String reponseServeur = client.recevoirReponse();
 

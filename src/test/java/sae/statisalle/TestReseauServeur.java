@@ -1,6 +1,4 @@
-package sae.statisalle.test;
-
-import sae.statisalle.Reseau;
+package sae.statisalle;
 
 public class TestReseauServeur {
 
