@@ -9,21 +9,35 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 
 /**
  * Classe responsable de la gestion des communications réseau.
  * Elle permet l'envoi et la réception de données entre les
- * différentes utilisations de l'application via des sockets.
+ * différentes utilisa  tions de l'application via des sockets.
+ *
+ * <p>
+ * La classe fournit des méthodes pour initialiser un serveur,
+ * accepter des connexions de clients, envoyer et recevoir des données,
+ * ainsi que pour gérer la fermeture des connexions.
+ * </p>
  *
  * @author valentin.munier-genie
  * @author rodrigo.xavier-taborda
  */
 public class Reseau {
 
+    /** Socket serveur pour écouter les connexions clients. */
     private ServerSocket serverSocket;
+
+    /** Socket pour la connexion avec un client. */
     private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
+
+    /** Flux de sortie pour envoyer des données au client. */
+    protected PrintWriter fluxSortie;
+
+    /** Flux d'entrée pour recevoir des données du client. */
+    protected BufferedReader fluxEntree;
 
     // --------- PARTIE SERVEUR -----------
 
@@ -31,12 +45,15 @@ public class Reseau {
      * Initialise le serveur en créant un ServerSocket sur le port spécifié.
      * @param port Le numéro de port sur lequel le serveur doit écouter.
      */
-    public void preparerServeur(int port) {
+    public void preparerServeur(int port) throws IOException {
+        if (port < 0 || port > 65535) {
+            throw new IllegalArgumentException("Le port doit être compris entre 0 et 65535.");
+        }
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Serveur démarré sur le port : " + port);
         } catch (IOException e) {
-            System.out.println("Erreur lors de la création du serveur : " + e.getMessage());
+            throw new IOException("Erreur lors de la création du serveur : " + e.getMessage());
         }
     }
 
@@ -49,8 +66,8 @@ public class Reseau {
     public void attendreConnexionClient() {
         try {
             clientSocket = serverSocket.accept();
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
+            fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Client connecté.");
         } catch (IOException e) {
             System.out.println("Erreur lors de l'attente d'un client : " + e.getMessage());
@@ -64,7 +81,7 @@ public class Reseau {
      */
     public String recevoirDonnees() {
         try {
-            return in.readLine();
+            return fluxEntree.readLine();
         } catch (IOException e) {
             System.out.println("Erreur lors de la réception des données : " + e.getMessage());
         }
@@ -90,7 +107,7 @@ public class Reseau {
      * @param reponse La réponse à envoyer au client sous forme de chaîne de caractères.
      */
     public void envoyerReponse(String reponse) {
-        out.println(reponse);
+        fluxSortie.println(reponse);
     }
 
     /**
@@ -101,8 +118,8 @@ public class Reseau {
      */
     public void fermerServeur() {
         try {
-            if (in != null) in.close();
-            if (out != null) out.close();
+            if (fluxEntree != null) fluxEntree.close();
+            if (fluxSortie != null) fluxSortie.close();
             if (clientSocket != null) clientSocket.close();
             if (serverSocket != null) serverSocket.close();
         } catch (IOException e) {
@@ -120,8 +137,8 @@ public class Reseau {
     public void preparerClient(String adresse, int port) {
         try {
             clientSocket = new Socket(adresse, port);
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
+            fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Connexion au serveur " + adresse + " sur le port " + port + " réussie.");
         } catch (IOException e) {
             System.out.println("Erreur lors de la connexion au serveur : " + e.getMessage());
@@ -129,29 +146,35 @@ public class Reseau {
     }
 
     /**
-     * Construction de la requête grâce à l'entrée de l'utilisateur
-     * @param entreeUtilisateur chaîne qu'entre l'utilisateur
-     * @return de la chaîne
+     * Envoie le contenu d'un fichier au serveur.
+     * @param cheminFichier Le chemin du fichier à envoyer.
+     * @throws IllegalArgumentException si le fichier n'existe pas ou n'est pas un fichier valide.
      */
-    public String construireRequete(String entreeUtilisateur) {
-        return entreeUtilisateur;
-    }
+    public void envoyer(String cheminFichier) {
 
-    /**
-     * Envoie de la requête au serveur
-     * @param requete requête à envoyer
-     */
-    public void envoyer(String requete) {
-        out.println(requete);
+        File fichier = new File(cheminFichier);
+        if (!fichier.exists() || !fichier.isFile()) {
+            System.out.println("Le fichier spécifié n'existe pas.");
+            throw new IllegalArgumentException("Le fichier spécifié n'existe pas.");
+        }
+
+        try {
+            String contenu = Files.readString(fichier.toPath());
+            fluxSortie.println(contenu);
+
+            System.out.println("Fichier envoyé avec succès.");
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture ou de l'envoi du fichier : " + e.getMessage());
+        }
     }
 
     /**
      * Réception de la réponse du serveur
-     * @return
+     * @return null
      */
     public String recevoirReponse() {
         try {
-            return in.readLine(); // FIXME
+            return fluxEntree.readLine();
         } catch (IOException e) {
             System.out.println("Erreur lors de la réception de la réponse : " + e.getMessage());
         }
@@ -172,8 +195,8 @@ public class Reseau {
      */
     public void fermerClient() {
         try {
-            if (in != null) in.close();
-            if (out != null) out.close();
+            if (fluxEntree != null) fluxEntree.close();
+            if (fluxSortie != null) fluxSortie.close();
             if (clientSocket != null) clientSocket.close();
         } catch (IOException e) {
             System.out.println("Erreur lors de la fermeture du client : " + e.getMessage());
@@ -181,11 +204,13 @@ public class Reseau {
     }
 
     /**
-     * Affichage de l'IP de l'appareil
+     * Affiche l'adresse IP de la machine locale.
+     * @return L'adresse IP de la machine sous forme de chaîne.
+     * @throws UnknownHostException si l'adresse IP ne peut pas être déterminée.
      */
-    public String afficherIP() throws UnknownHostException {
+    public static InetAddress afficherIP() throws UnknownHostException {
         InetAddress ip = InetAddress.getLocalHost();
-        System.out.print("IP du serveur : " + ip);
-        return ip.toString();
+        System.out.println("IP de la machine : " + ip);
+        return ip;
     }
 }
