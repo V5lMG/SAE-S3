@@ -255,9 +255,9 @@ class TestUnitaireReseau {
     }
 
     @Test
-    void afficherIP() {
+    void renvoyerIP() {
         try {
-            InetAddress ip = Reseau.afficherIP();
+            InetAddress ip = Reseau.renvoyerIP();
 
             assertNotNull(ip, "L'adresse IP ne doit pas être nulle.");
 

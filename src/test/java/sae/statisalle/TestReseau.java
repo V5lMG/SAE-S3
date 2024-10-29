@@ -18,7 +18,6 @@ import java.nio.file.Path;
  * Le serveur écoute sur un port spécifique et le client se connecte à ce port
  * pour envoyer et recevoir des messages.
  * </p>
- *
  * @author valentin.munier-genie
  * @author rodrigo.xavier-taborda
  */
@@ -48,7 +47,7 @@ public class TestReseau {
 
             // Appel des méthodes de test
             envoieEtReceptionDunFichier();
-            Reseau.afficherIP();
+            Reseau.renvoyerIP();
 
         } catch (IOException e) {
             System.err.println("Erreur lors de la création ou de l'écriture du fichier de test : " + e.getMessage());
