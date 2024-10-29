@@ -39,9 +39,11 @@ class TestUnitaireReseau {
         reseauServeur = new Reseau();
         reseauClient = new Reseau();
         try {
-            Files.writeString(Paths.get(TEST_FILE_PATH), "Contenu du fichier de test");
+            Files.writeString(Paths.get(TEST_FILE_PATH),
+                          "Contenu du fichier de test");
         } catch (IOException e) {
-            fail("Échec lors de la création du fichier de test : " + e.getMessage());
+            fail("Échec lors de la création du fichier de test : "
+                 + e.getMessage());
         }
     }
 
@@ -54,7 +56,8 @@ class TestUnitaireReseau {
         try {
             Files.deleteIfExists(Paths.get(TEST_FILE_PATH));
         } catch (IOException e) {
-            fail("Échec lors de la supprésion du fichier de test : " + e.getMessage());
+            fail("Échec lors de la supprésion du fichier de test : "
+                 + e.getMessage());
         }
     }
 
@@ -63,9 +66,8 @@ class TestUnitaireReseau {
      */
     @Test
     void testPreparerServeurSuccess() {
-        assertDoesNotThrow(() -> {
-            reseauServeur.preparerServeur(12345);
-        }, "Le serveur n'a pas pu démarrer sur un port valide.");
+        assertDoesNotThrow(() -> reseauServeur.preparerServeur(12345),
+                "Le serveur n'a pas pu démarrer sur un port valide.");
     }
 
     /**
@@ -75,20 +77,17 @@ class TestUnitaireReseau {
     void testPreparerServeurPortDejaUtiliseEtInvalide() throws IOException {
 
         // port déjà utilisé
-        ServerSocket serverSocket = new ServerSocket(12345);
-        assertThrows(IOException.class, () -> {
-            reseauServeur.preparerServeur(12345);
-        });
+        ServerSocket serverSocket = new ServerSocket(12344);
+        assertThrows(IOException.class,
+                     () -> reseauServeur.preparerServeur(12344));
 
         // port invalid
-        assertThrows(IllegalArgumentException.class, () -> {
-            reseauServeur.preparerServeur(-1);
-        });
+        assertThrows(IllegalArgumentException.class,
+                     () -> reseauServeur.preparerServeur(70000));
 
         // port invalid
-        assertThrows(IllegalArgumentException.class, () -> {
-            reseauServeur.preparerServeur(-1);
-        });
+        assertThrows(IllegalArgumentException.class,
+                     () -> reseauServeur.preparerServeur(-1));
 
         serverSocket.close();
     }
@@ -144,7 +143,9 @@ class TestUnitaireReseau {
         String requete = "test requetes valide";
         String reponse = reseauServeur.traiterRequete(requete);
 
-        assertEquals("Message reçu : test requetes valide", reponse, "La réponse ne correspond pas à celle attendue.");
+        assertEquals("Message reçu : test requetes valide",
+                     reponse,
+                     "La réponse ne correspond pas à celle attendue.");
     }
 
     @Test
@@ -160,7 +161,8 @@ class TestUnitaireReseau {
         reseau.envoyerReponse(reponse);
 
         // verifier que la réponse envoyée est bien capturée dans StringWriter
-        assertEquals("test réponse valide\n", stringWriter.toString(), "La réponse envoyée ne correspond pas.");
+        assertEquals("test réponse valide\n", stringWriter.toString(),
+                     "La réponse envoyée ne correspond pas.");
     }
 
     @Test
@@ -175,38 +177,50 @@ class TestUnitaireReseau {
             new Thread(reseauServeur::attendreConnexionClient).start();
 
             // Préparation du client
-            assertDoesNotThrow(() -> reseauClient.preparerClient("localhost", 12345),
+            assertDoesNotThrow(() -> reseauClient.
+                            preparerClient("localhost", 12345),
                     "Le client doit pouvoir se connecter au serveur.");
 
-            assertNotNull(reseauClient.fluxSortie, "Le flux de sortie du client ne doit pas être nul.");
-            assertNotNull(reseauClient.fluxEntree, "Le flux d'entrée du client ne doit pas être nul.");
+            assertNotNull(reseauClient.fluxSortie,
+                    "Le flux de sortie du client ne doit pas être nul.");
+            assertNotNull(reseauClient.fluxEntree,
+                    "Le flux d'entrée du client ne doit pas être nul.");
 
         } catch (IOException e) {
-            fail("Erreur lors de la préparation du serveur ou du client : " + e.getMessage());
+            fail("Erreur lors de la préparation du serveur ou du client : "
+                 + e.getMessage());
         }
         reseauServeur.fermerServeur();
         reseauClient.fermerClient();
     }
 
     @Test
-    void envoyer() throws IOException {
+    void envoyer() throws IOException, InterruptedException {
         Reseau serveur = new Reseau();
         Reseau client = new Reseau();
 
-        serveur.preparerServeur(12345);
+        // Génère un port disponible pour éviter les conflits
+        int port;
+        try (ServerSocket socket = new ServerSocket(0)) {
+            port = socket.getLocalPort();
+        }
+
+        // Préparer et démarrer le serveur
+        serveur.preparerServeur(port);
         new Thread(serveur::attendreConnexionClient).start();
 
-        client.preparerClient("localhost", 12345);
+        Thread.sleep(200);
 
-        // Envoie d'un fichier
+        client.preparerClient("localhost", port);
         client.envoyer(TEST_FILE_PATH);
 
-        // Vérification côté serveur
-        assertEquals("Contenu du fichier de test", serveur.recevoirDonnees(),
+        assertEquals("Contenu du fichier de test",
+                     serveur.recevoirDonnees(),
                 "Le contenu reçu doit correspondre au contenu envoyé.");
 
-        reseauServeur.fermerServeur();
-        reseauClient.fermerClient();
+
+        serveur.fermerServeur();
+        client.fermerClient();
     }
 
     @Test
@@ -233,20 +247,20 @@ class TestUnitaireReseau {
     void utiliserReponse() {
         Reseau client = new Reseau();
 
-        // Capturer la sortie standard pour vérifier l'affichage
-        PrintStream originalOut = System.out;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        // modifier la sortie standard pour vérifier l'affichage
+        ByteArrayOutputStream contenuDeSorti = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(contenuDeSorti));
 
         String reponseTest = "Réponse de test";
         client.utiliserReponse(reponseTest);
 
-        // Vérification que la réponse a été affichée correctement
-        assertEquals("Réponse du serveur : Réponse de test\n", outContent.toString(),
+        // vérification que la réponse a été affichée correctement
+        assertEquals("Réponse du serveur : Réponse de test\n",
+                contenuDeSorti.toString(),
                 "La réponse affichée doit correspondre à celle attendue.");
 
-        // Restaurer la sortie standard
-        System.setOut(originalOut);
+        // remettre la sortie par défaut
+        System.setOut(System.out);
     }
 
     @Test
@@ -261,9 +275,11 @@ class TestUnitaireReseau {
 
             assertNotNull(ip, "L'adresse IP ne doit pas être nulle.");
 
-            System.out.println("Test afficherIP : Adresse IP locale trouvée -> " + ip.getHostAddress());
+            System.out.println("Test afficherIP : Adresse IP locale trouvée -> "
+                               + ip.getHostAddress());
         } catch (UnknownHostException e) {
-            fail("Échec du test afficherIP en raison d'une erreur : " + e.getMessage());
+            fail("Échec du test afficherIP en raison d'une erreur : "
+                 + e.getMessage());
         }
     }
 }

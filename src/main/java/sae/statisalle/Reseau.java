@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 /**
  * Classe responsable de la gestion des communications réseau.
@@ -232,7 +233,8 @@ public class Reseau {
      */
     public static InetAddress renvoyerIP() throws UnknownHostException {
         InetAddress ip = InetAddress.getLocalHost();
-        System.out.println("IP de la machine : " + ip);
+        System.out.println("Nom de la machine : " + ip.getHostName());
+        System.out.println("IP de la machine : " + ip.getHostAddress());
         return ip;
     }
 }
