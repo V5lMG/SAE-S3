@@ -1,9 +1,8 @@
-package sae.statisalle.test;
+package sae.statisalle;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sae.statisalle.Fichier;
 
 import java.io.File;
 import java.io.FileWriter;
