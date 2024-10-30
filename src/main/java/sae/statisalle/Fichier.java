@@ -23,7 +23,8 @@ import static java.lang.System.err;
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
- * @author erwan.thierry
+ * @author erwan.thierry, MathiasCambon
+ * @author MathiasCambon
  */
 public class Fichier {
 
