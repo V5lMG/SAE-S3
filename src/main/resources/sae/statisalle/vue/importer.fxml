@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Importer">
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Text layoutX="44.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selectionnez le/les fichier(s) .csv à importer : " />
+                  <Button fx:id="btnFichier" layoutX="323.0" layoutY="40.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le fichier " />
+                  <Text fill="#9a9999" layoutX="44.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi : ..." />
+                  <Text fill="#9a9999" layoutX="44.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier : ..." />
+               </children>
+                </AnchorPane>
+            </children></VBox>
+    </center>
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Text fill="#26a4f8" layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalles">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Text>
+                        <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../img/LogoStatisalle.jpg" />
+                            </image></ImageView>
+                          <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                    </children></AnchorPane>
+                <AnchorPane prefHeight="100.0" prefWidth="400.0">
+               <children>
+                  <Text layoutX="155.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Importer - Fichier">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Text>
+               </children></AnchorPane>
+            </children>
+        </HBox>
+    </top>
+    <bottom>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                              <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" />
+                     </children>
+                        </AnchorPane>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0" />
+                <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                              <Button fx:id="btnImporter" layoutX="54.0" layoutY="42.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Importer" textFill="#9a9999" />
+                              <ImageView fitHeight="29.0" fitWidth="32.0" layoutX="63.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+                                  <image>
+                                      <Image url="@../img/télécharger-removebg-preview.png" />
+                                  </image>
+                              </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children></HBox>
+            </children></HBox>
+    </bottom>
+</BorderPane>

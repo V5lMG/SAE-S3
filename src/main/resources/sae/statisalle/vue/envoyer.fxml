@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Envoyer">
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Text layoutX="44.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selectionnez le/les fichier(s) à envoyer : " />
+                        <Button fx:id="btnFichier" layoutX="325.0" layoutY="45.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le fichier " />
+                        <Text fill="#9a9999" layoutX="44.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi : ..." />
+                        <Text fill="#9a9999" layoutX="44.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier : ..." />
+                  <Text fill="#9a9999" layoutX="42.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse IP du destinataire : " />
+                    </children>
+                </AnchorPane>
+            </children></VBox>
+    </center>
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Text fill="#26a4f8" layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalles">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Text>
+                        <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../img/LogoStatisalle.jpg" />
+                            </image></ImageView>
+                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                    </children></AnchorPane>
+                <AnchorPane prefHeight="100.0" prefWidth="419.0">
+                    <children>
+                        <Text layoutX="169.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Envoyer - Fichier">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Text>
+                    </children></AnchorPane>
+            </children>
+        </HBox>
+    </top>
+    <bottom>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" />
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0" />
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <Button fx:id="btnExporter" layoutX="59.0" layoutY="46.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="127.0" style="-fx-background-color: #D3D3D3;" text="Envoyer" textFill="#9a9999" />
+                            </children>
+                        </AnchorPane>
+                    </children></HBox>
+            </children></HBox>
+    </bottom>
+</BorderPane>

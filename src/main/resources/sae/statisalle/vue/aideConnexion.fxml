@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Aide">
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Text fill="#26a4f8" layoutX="14.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalles">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Text>
+                        <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../img/LogoStatisalle.jpg" />
+                            </image></ImageView>
+                    </children></AnchorPane>
+                <AnchorPane prefHeight="100.0" prefWidth="401.0">
+                    <children>
+                        <Text layoutX="157.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Aide - Connexion">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Text>
+                    </children>
+                </AnchorPane>
+            </children>
+        </HBox>
+    </top>
+    <bottom>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                            <children>
+                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" style="-fx-background-color: #CD4043;" text="Retour" />
+                            </children></AnchorPane>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                    </children></HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0" />
+            </children></HBox>
+    </bottom>
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Text layoutX="107.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="L'adresse ip du destinataire est une manière de distinguer les machines entre elles, pour l'obtenir vous pouvez regarder cette video : mettre le lien cliquable." textAlignment="JUSTIFY" wrappingWidth="441.1054382324219" />
+                        <Text layoutX="108.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le port est le point d’entrée et de sortie pour les données entre votre appareil et un service spécifique sur un serveur. Il permet d’identifier l'application ou le service (par exemple, le port 80 pour le web, le port 25 pour les e-mails). pareil lien pour l'avoir." wrappingWidth="439.1366958618164" />
+                        <Button layoutX="33.0" layoutY="132.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" style="-fx-background-color: #D3D3D3;" />
+                        <Text layoutX="108.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton est grisé lorsque aucune valeur n'est entrée dans les champs de texte une fois les données entrées dans les ces derniers le bouton deviendra vert et la connexion sera possible." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
+                        <Button layoutX="30.0" layoutY="174.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Retour" />
+                        <Text layoutX="107.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton retour permet de revenir à la fenêtre précédante." textAlignment="JUSTIFY" wrappingWidth="445.13671875" />
+                  <TextField layoutX="35.0" layoutY="14.0" prefHeight="5.0" prefWidth="48.0" promptText="   IP" />
+                  <TextField layoutX="35.0" layoutY="73.0" prefHeight="5.0" prefWidth="48.0" promptText="PORT" />
+                    </children>
+                </AnchorPane>
+            </children></VBox>
+    </center>
+</BorderPane>
