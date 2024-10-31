@@ -6,13 +6,17 @@ package sae.statisalle.controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import java.io.File;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
  * @author rodrigo.xavier-taborda
+ * @author MathiasCambon
  */
 public class MainControleur extends Application {
 
@@ -100,6 +104,11 @@ public class MainControleur extends Application {
     public static void activerImporter() {
         fenetrePrincipale.setScene(Importer);
     }
+
+    public static Stage getFenetrePrincipale() {
+        return fenetrePrincipale;
+    }
+
 
     /**
      * Méthode principale pour liée les interfaces.
