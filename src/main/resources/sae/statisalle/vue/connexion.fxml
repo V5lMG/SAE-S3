@@ -33,7 +33,7 @@
                             <image>
                                 <Image url="@../img/LogoStatisalle.jpg" />
                             </image></ImageView>
-                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
                     </children></AnchorPane>
                 <AnchorPane prefHeight="200.0" prefWidth="399.0">
                <children>
@@ -53,7 +53,7 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>
-                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" />
+                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" />
                             </children>
                         </AnchorPane>
                     </children>
@@ -63,7 +63,7 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>
-                                <Button fx:id="btnConnexion" layoutX="54.0" layoutY="44.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Connexion" textFill="#9a9999" />
+                                <Button fx:id="btnConnexion" layoutX="54.0" layoutY="44.0" mnemonicParsing="false" onAction="#actionConnexion" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Connexion" textFill="#9a9999" />
                             </children>
                         </AnchorPane>
                     </children></HBox>

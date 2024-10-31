@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Aide">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.AideAccueil">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
@@ -41,7 +41,7 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" style="-fx-background-color: #CD4043;" text="Retour" />
+                        <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" style="-fx-background-color: #CD4043;" text="Retour" />
                      </children></AnchorPane>
                     </children>
                 </HBox>

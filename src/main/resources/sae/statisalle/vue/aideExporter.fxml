@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Aide">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.AideExporter">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
@@ -40,7 +40,7 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>
-                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" style="-fx-background-color: #CD4043;" text="Retour" />
+                                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" style="-fx-background-color: #CD4043;" text="Retour" />
                             </children></AnchorPane>
                     </children>
                 </HBox>
@@ -61,7 +61,7 @@
                         <Text layoutX="108.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton exporter est grisé tant qu'aucun fichier n'est choisis une fois celui-ci choisis des informations d'afficheront concernant ce fichier, comme par exemple : le qu'aura le fichier une fois exporter." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
                         <Button layoutX="30.0" layoutY="137.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Retour" />
                         <Text layoutX="107.0" layoutY="154.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton retour permet de revenir à la fenêtre précédante." textAlignment="JUSTIFY" wrappingWidth="445.13671875" />
-                        <Button layoutX="11.0" layoutY="11.0" mnemonicParsing="false" style="-fx-background-color: #60BCFB;" text="Choix données" />
+                        <Button layoutX="9.0" layoutY="11.0" mnemonicParsing="false" style="-fx-background-color: #60BCFB;" text="Choix données" />
                     </children>
                 </AnchorPane>
             </children></VBox>

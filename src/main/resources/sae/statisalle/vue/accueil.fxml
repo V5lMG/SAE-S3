@@ -11,9 +11,9 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="164.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" />
-                  <Button fx:id="btnImporter" layoutY="56.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Importer" />
-                  <Button fx:id="btnExporter" layoutX="190.0" layoutY="56.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Exporter" />
+                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="164.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" />
+                  <Button fx:id="btnImporter" layoutY="56.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Importer" />
+                  <Button fx:id="btnExporter" layoutX="190.0" layoutY="56.0" mnemonicParsing="false" onAction="#actionExporter" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Exporter" />
                   <ImageView fitHeight="33.0" fitWidth="31.0" layoutX="197.0" layoutY="61.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/OIP-removebg-preview.png" />
@@ -23,7 +23,7 @@
                         <Image url="@../img/télécharger-removebg-preview.png" />
                      </image>
                   </ImageView>
-                  <Button layoutX="95.0" layoutY="109.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #50DF80;" text="Envoyer" />
+                  <Button layoutX="95.0" layoutY="109.0" mnemonicParsing="false" onAction="#actionEnvoyer" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #50DF80;" text="Envoyer" />
                </children>
             </AnchorPane>
          </children></VBox>
@@ -42,7 +42,7 @@
                      <image>
                         <Image url="@../img/LogoStatisalle.jpg" />
                      </image></ImageView>
-                  <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                  <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
                </children></AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -64,7 +64,7 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btnInfo" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="126.0" style="-fx-background-color: #9a9999;" text="Qui sommes-nous ?" />
+                        <Button fx:id="btnInfo" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" onAction="#actionQuiSommesNous" prefHeight="37.0" prefWidth="126.0" style="-fx-background-color: #9a9999;" text="Qui sommes-nous ?" />
                      </children></AnchorPane>
                </children>
             </HBox>
