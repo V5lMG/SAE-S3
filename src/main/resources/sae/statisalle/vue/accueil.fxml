@@ -64,7 +64,7 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btnInfo" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" onAction="#actionQuiSommesNous" prefHeight="37.0" prefWidth="126.0" style="-fx-background-color: #9a9999;" text="Qui sommes-nous ?" />
+                        <Button fx:id="btnInfo" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="126.0" style="-fx-background-color: #9a9999;" text="Qui sommes-nous ?" />
                      </children></AnchorPane>
                </children>
             </HBox>

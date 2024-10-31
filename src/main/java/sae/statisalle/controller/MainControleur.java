@@ -110,55 +110,54 @@ public class MainControleur extends Application {
     public void start(Stage primaryStage) {
         try {
             FXMLLoader chargeurFXMLAccueil= new FXMLLoader();
-            chargeurFXMLAccueil.setLocation(getClass().getResource("sae.statisalle/vue/accueil.fxml"));
+            chargeurFXMLAccueil.setLocation(getClass().getResource("/sae/statisalle/vue/accueil.fxml"));
             Parent conteneur = chargeurFXMLAccueil.load();
             Accueil = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideAccueil = new FXMLLoader();
-            chargeurFXMLAideAccueil.setLocation(getClass().getResource("sae.statisalle/vue/aideAccueil.fxml"));
+            chargeurFXMLAideAccueil.setLocation(getClass().getResource("/sae/statisalle/vue/aideAccueil.fxml"));
             conteneur = chargeurFXMLAideAccueil.load();
             AideAccueil = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideConnexion = new FXMLLoader();
-            chargeurFXMLAideConnexion.setLocation(getClass().getResource("sae.statisalle/vue/aideConnexion.fxml"));
+            chargeurFXMLAideConnexion.setLocation(getClass().getResource("/sae/statisalle/vue/aideConnexion.fxml"));
             conteneur = chargeurFXMLAideConnexion.load();
             AideConnexion = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideEnvoyer = new FXMLLoader();
-            chargeurFXMLAideEnvoyer.setLocation(getClass().getResource("sae.statisalle/vue/aideEnvoyer.fxml"));
+            chargeurFXMLAideEnvoyer.setLocation(getClass().getResource("/sae/statisalle/vue/aideEnvoyer.fxml"));
             conteneur = chargeurFXMLAideEnvoyer.load();
             AideEnvoyer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideExporter = new FXMLLoader();
-            chargeurFXMLAideExporter.setLocation(getClass().getResource("sae.statisalle/vue/aideExporter.fxml"));
+            chargeurFXMLAideExporter.setLocation(getClass().getResource("/sae/statisalle/vue/aideExporter.fxml"));
             conteneur = chargeurFXMLAideExporter.load();
             AideExporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideImporter = new FXMLLoader();
-            chargeurFXMLAideImporter.setLocation(getClass().getResource("sae.statisalle/vue/aideImporter.fxml"));
+            chargeurFXMLAideImporter.setLocation(getClass().getResource("/sae/statisalle/vue/aideImporter.fxml"));
             conteneur = chargeurFXMLAideImporter.load();
             AideImporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLConnexion = new FXMLLoader();
-            chargeurFXMLConnexion.setLocation(getClass().getResource("sae.statisalle/vue/connexion.fxml"));
+            chargeurFXMLConnexion.setLocation(getClass().getResource("/sae/statisalle/vue/connexion.fxml"));
             conteneur = chargeurFXMLConnexion.load();
             Connexion = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLEnvoyer = new FXMLLoader();
-            chargeurFXMLEnvoyer.setLocation(getClass().getResource("sae.statisalle/vue/envoyer.fxml"));
+            chargeurFXMLEnvoyer.setLocation(getClass().getResource("/sae/statisalle/vue/envoyer.fxml"));
             conteneur = chargeurFXMLEnvoyer.load();
             Envoyer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLExporter = new FXMLLoader();
-            chargeurFXMLExporter.setLocation(getClass().getResource("sae.statisalle/vue/exporter.fxml"));
+            chargeurFXMLExporter.setLocation(getClass().getResource("/sae/statisalle/vue/exporter.fxml"));
             conteneur = chargeurFXMLExporter.load();
             Exporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLImporter = new FXMLLoader();
-            chargeurFXMLImporter.setLocation(getClass().getResource("sae.statisalle/vue/importer.fxml"));
+            chargeurFXMLImporter.setLocation(getClass().getResource("/sae/statisalle/vue/importer.fxml"));
             conteneur = chargeurFXMLImporter.load();
             Importer = new Scene(conteneur);
-
 
             // Définir le titre, la hauteur et la largeur de la fenêtre principale
             //primaryStage.setTitle("Jeu de dames");
