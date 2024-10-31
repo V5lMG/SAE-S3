@@ -7,6 +7,8 @@ package sae.statisalle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +16,21 @@ import java.util.List;
 import static java.lang.System.err;
 
 /**
- * La classe Fichier gère les opérations de lecture sur des fichiers
- * Comma Separated Values (csv). Elle permet de lire le contenu
+ * La classe Fichier gère les opérations de lecture
+ * sur des fichiers Comma Separated Values (csv). Elle permet de lire le contenu
  * d'un fichier ligne par ligne
  * <br>
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
- * @author erwan.thierry
+ * @author erwan.thierry, MathiasCambon
+ * @author MathiasCambon
  */
 public class Fichier {
+
+
+    private static final String ERREUR_ECRITURE_FICHIER =
+            "Erreur : impossible d'écrire dans le fichier";
 
     /* fichier courant de l'instance */
     private File fichierExploite;
@@ -132,6 +139,29 @@ public class Fichier {
             err.println(ERREUR_CONTENU_FICHIER);
         }
         return contenu;
+    }
+
+    /**
+     * Réécrit le contenu du fichier avec une nouvelle liste de chaînes de caractères.
+     * <br>
+     * Chaque chaîne dans la liste représente une ligne qui sera écrite dans le fichier.
+     * Si une erreur survient lors de l'écriture, un message d'erreur est affiché.
+     * <br>
+     * Le fichier d'origine est écrasé et remplacé par les nouvelles lignes.
+     *
+     * @param ContenuFichier : La liste de chaînes de caractères à écrire dans le fichier.
+     */
+    public void reecritureFichier(List<String> ContenuFichier) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fichierExploite))) {
+            for (String ligne : ContenuFichier) {
+                writer.write(ligne);
+                writer.newLine();
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            err.println(ERREUR_ECRITURE_FICHIER);
+        }
     }
 
     /**
