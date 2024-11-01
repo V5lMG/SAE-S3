@@ -64,8 +64,9 @@ public class Reseau {
     }
 
     /**
-     * Attendre une connexion d'un client et
-     * renvoyer un objet Reseau configuré pour ce client.
+     * Attendre une connexion d'un client et renvoyer un objet Reseau
+     * configuré pour ce client.
+     *
      * @return Reseau un objet représentant la connexion du client,
      *                ou null en cas d'erreur.
      */
@@ -75,9 +76,16 @@ public class Reseau {
             Reseau clientReseau = new Reseau();
             clientReseau.clientSocket = clientSocket;
 
-            // Initialiser les flux pour le client
-            clientReseau.fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            clientReseau.fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            // initialiser les flux pour le client
+            clientReseau.fluxSortie =
+                    new PrintWriter(clientSocket.getOutputStream(),
+                                    true);
+            clientReseau.fluxEntree =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    clientSocket.getInputStream()
+                            )
+                    );
 
             System.out.println("Client connecté.");
             return clientReseau;

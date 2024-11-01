@@ -1,3 +1,7 @@
+/*
+ * Envoyer.java                 30/10/2024
+ * IUT DE RODEZ                 Pas de copyrights
+ */
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
@@ -14,14 +18,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO javadoc
+ * Contrôleur pour gérer l'envoi de fichiers dans l'application StatiSalle.
+ * Permet de sélectionner des fichiers à envoyer et de gérer l'interface.
  *
  * @author valentin.munier-genie
  */
 public class Envoyer {
 
+    /**
+     * Instance de la classe Reseau utilisée pour gérer la connexion
+     * et les communications avec le serveur.
+     */
     private Reseau reseau;
 
+    /**
+     * Liste contenant les chemins des fichiers sélectionnés pour l'envoi.
+     * Chaque chemin représente un fichier que l'utilisateur souhaite
+     * envoyer au serveur.
+     */
     private List<String> cheminsDesFichiers;
 
     @FXML
@@ -36,21 +50,36 @@ public class Envoyer {
     @FXML
     private Text ipFx;
 
+    /**
+     * Gère l'action de retour à l'écran d'accueil de l'application.
+     */
     @FXML
     void actionRetour() {
         MainControleur.activerAccueil();
     }
 
+    /**
+     * Gère l'action d'affichage de l'aide relative à l'envoi de fichiers.
+     */
     @FXML
     void actionAide() {
         MainControleur.activerAideEnvoyer();
     }
 
+    /**
+     * Initialise l'état de l'interface, désactivant le bouton d'envoi.
+     */
     @FXML
     void initialize() {
         btnEnvoyer.setDisable(true);
     }
 
+    /**
+     * Ouvre un sélecteur de fichiers pour
+     * choisir des fichiers à envoyer.
+     * Met à jour l'interface avec les chemins
+     * et noms des fichiers sélectionnés.
+     */
     @FXML
     private void actionChoixFichier() {
         ipFx.setText(Session.getAdresseIp());
@@ -83,44 +112,53 @@ public class Envoyer {
             btnEnvoyer.setStyle("-fx-background-color: #4CAF50;");
             btnEnvoyer.setDisable(false);
         } else if (fichiers != null) {
-            System.out.println("Vous devez sélectionner au maximum 4 fichiers.");
-            showAlert(Alert.AlertType.ERROR, "Trop de fichier", "Vous devez sélectionner au maximum 4 fichiers.");
+            System.out.println("Vous devez sélectionner "
+                               + "au maximum 4 fichiers.");
+            showAlert("Trop de fichier",
+                    "Vous devez sélectionner au maximum 4 fichiers.");
         } else {
             System.out.println("Aucun fichier sélectionné.");
-            showAlert(Alert.AlertType.ERROR, "Pas de fichier", "Aucun fichier sélectionné.");
+            showAlert("Pas de fichier",
+                    "Aucun fichier sélectionné.");
         }
     }
 
     /**
-     * Affiche une alerte pour informer l'utilisateur d'une situation spécifique.
-     * @param alertType le type de l'alerte.
-     * @param title le titre de l'alerte.
+     * Affiche une alerte pour informer
+     * l'utilisateur d'une situation spécifique.
+     *
+     * @param title   le titre de l'alerte.
      * @param message le message de l'alerte.
      */
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
+    private void showAlert(String title,
+                           String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
+    /**
+     * Gère l'envoi des fichiers sélectionnés au serveur.
+     * Tente d'envoyer chaque fichier et de traiter la réponse du serveur.
+     */
     @FXML
     void actionEnvoyer() {
         try {
             reseau = Session.getReseau();
             List<File> fichiers = new ArrayList<>();
 
-            // Ajouter les chemins des fichiers sélectionnés
+            // ajouter les chemins des fichiers sélectionnés
             for (String cheminFichier : cheminsDesFichiers) {
                 fichiers.add(new File(cheminFichier));
             }
 
-            // Envoyer les fichiers
+            // envoyer les fichiers
             for (File fichier : fichiers) {
                 reseau.envoyer(fichier.getPath());
 
-                // Recevoir une réponse du serveur
+                // recevoir une réponse du serveur
                 String reponse = reseau.recevoirReponse();
                 reseau.utiliserReponse(reponse);
             }
@@ -129,16 +167,12 @@ public class Envoyer {
 
         } catch (IllegalArgumentException e) {
             System.err.println("Erreur d'envoi : " + e.getMessage());
-            e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Erreur inattendue : " + e.getMessage());
-            e.printStackTrace();
 
         } finally {
-            if (reseau != null) {
-                reseau.fermerClient();
-            }
+            reseau.fermerClient();
         }
     }
 }

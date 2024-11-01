@@ -1,3 +1,7 @@
+/*
+ * Connexion.java              31/10/2024
+ * Pas de droits d'auteur ni de copyright
+ */
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
@@ -9,15 +13,20 @@ import sae.statisalle.Reseau;
 import sae.statisalle.Session;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * Contrôleur de la connexion pour l'application StatiSalle.
- * Gère les actions liées à la connexion réseau entre le client et le serveur.
- * Vérifie la validité de l'adresse IP et tente d'établir la connexion.
+ * Gère les actions liées à la connexion réseau entre le client
+ * et le serveur. Vérifie la validité de l'adresse IP et tente
+ * d'établir la connexion.
  *
  * @author valentin.munier-genie
  */
 public class Connexion {
 
+    /** Instance de la classe Reseau. */
     private Reseau reseau = new Reseau();
 
     @FXML
@@ -30,36 +39,53 @@ public class Connexion {
     private Button btnConnexion;
 
     @FXML
+    private Button btnAfficherIp;
+
+    /**
+     * Initialise l'état de la scène de connexion et
+     * désactive le bouton de connexion par défaut.
+     * Suivre les modifications des champs de texte
+     * pour activer ou désactiver le bouton.
+     */
+    @FXML
     void initialize() {
         btnConnexion.setDisable(true);
-
-        // Suivre les modifications des champs de texte
         textIp.textProperty().addListener((observable, oldValue, newValue) ->
                 verifierLesChamps());
         textPort.textProperty().addListener((observable, oldValue, newValue) ->
                 verifierLesChamps());
     }
 
+    /**
+     * Vérifie si les champs d'adresse IP et de port sont remplis
+     * et active ou désactive le bouton de connexion en conséquence.
+     */
     private void verifierLesChamps() {
-        // Vérifier si tous les champs sont remplis
         boolean isFilled = !textIp.getText().isEmpty()
-                           && !textPort.getText().isEmpty();
+                && !textPort.getText().isEmpty();
 
-        // Activer et désactiver le bouton en fonction de la vérification
         if (isFilled) {
             btnConnexion.setStyle("-fx-background-color: #4CAF50;"); // vert
             btnConnexion.setDisable(false);
         } else {
-            btnConnexion.setStyle("-fx-background-color: #D3D3D3;"); // couleur par défaut
+            btnConnexion.setStyle("-fx-background-color: #D3D3D3;"); // défaut
             btnConnexion.setDisable(true);
         }
     }
 
+    /**
+     * Retourne à l'écran d'accueil de l'application.
+     */
     @FXML
     void actionRetour() {
         MainControleur.activerAccueil();
     }
 
+    /**
+     * Tente d'établir une connexion avec le serveur en utilisant
+     * l'adresse IP et le port fournis par l'utilisateur.
+     * Affiche une alerte en cas d'erreur de connexion.
+     */
     @FXML
     void actionConnexion() {
         String ip = textIp.getText();
@@ -91,43 +117,63 @@ public class Connexion {
         // Tentative de connexion
         try {
             reseau.preparerClient(ip, port);
-            // Si la connexion est réussie, enregistrer l'adresse IP
-            // dans la session au format requis et l'objet reseau.
             Session.setAdresseIp(ip + ":" + portText);
             Session.setReseau(reseau);
 
-
             showAlert(AlertType.INFORMATION, "Connexion réussie",
                     "Connexion établie avec l'adresse IP : "
-                             + ip + " : " + portText);
+                            + ip + " : " + portText);
             MainControleur.activerEnvoyer();
         } catch (MauvaiseConnexionServeur e) {
-            // Affiche une alerte d'erreur sans changer de page
             showAlert(AlertType.ERROR, "Erreur de connexion",
                     "Impossible de se connecter au serveur : "
-                     + e.getMessage());
+                            + e.getMessage());
         }
     }
 
+    /**
+     * Affiche l'écran d'aide pour la connexion.
+     */
     @FXML
     void actionAide() {
         MainControleur.activerAideConnexion();
     }
 
     /**
+     * Affiche l'adresse IP de la machine locale dans le bouton
+     * btnAfficherIp.
+     */
+    @FXML
+    void actionAfficherIp() {
+        try {
+            InetAddress ip = Reseau.renvoyerIP();
+            String ipAddress = ip.getHostAddress();
+            btnAfficherIp.setText(ipAddress);
+        } catch (UnknownHostException e) {
+            btnAfficherIp.setText("Erreur de récupération de l'IP");
+            System.err.println("Erreur lors de la récupération de l'adresse IP : "
+                    + e.getMessage());
+        }
+    }
+
+    /**
      * Vérifie si une adresse IP est au format IPv4.
+     *
      * @param ip l'adresse IP à vérifier.
      * @return true si l'adresse IP est valide, false sinon.
      */
     private boolean isValidIPv4(String ip) {
-        // Règle regex générée sur un site web
-        String ipv4Pattern = "^(localhost|((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})\\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))$";
+        // Règle regex pour valider les adresses IPv4
+        String ipv4Pattern = "^(localhost|((25[0-5]|2[0-4][0-9]|" +
+                "[0-1]?[0-9]{1,2})\\.){3}(25[0-5]|2[0-4][0-9]|" +
+                "[0-1]?[0-9]{1,2}))$";
         return ip.matches(ipv4Pattern);
     }
 
     /**
      * Affiche une alerte pour informer l'utilisateur
      * d'une situation spécifique.
+     *
      * @param alertType le type de l'alerte.
      * @param title le titre de l'alerte.
      * @param message le message de l'alerte.

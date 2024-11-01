@@ -10,6 +10,9 @@ import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ import static java.lang.System.err;
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
- * @author erwan.thierry, MathiasCambon
+ * @author erwan.thierry
  * @author MathiasCambon
  */
 public class Fichier {
@@ -158,6 +161,35 @@ public class Fichier {
                 writer.newLine();
             }
 
+            // FIXME jamais appelé
+            writer.close();
+        } catch (IOException e) {
+            err.println(ERREUR_ECRITURE_FICHIER);
+        }
+    }
+
+    /**
+     * Ecrit le contenu du fichier.
+     * <br>
+     * Chaque chaîne dans la liste représente une ligne qui sera écrite dans le
+     * fichier.
+     * Si une erreur survient lors de l'écriture, un message d'erreur est
+     * affiché.
+     * <br>
+     * Création d'un nouveau fichier.
+     *
+     * @param contenuFichier : La liste de chaînes de caractères à écrire dans
+     * le fichier.
+     * @param cheminFichier le chemin du fichier dans lequel il faut écrire.
+     */
+    public static void ecritureFichier(List<String> contenuFichier, String cheminFichier) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
+            for (String ligne : contenuFichier) {
+                writer.write(ligne);
+                writer.newLine();
+            }
+
+            // FIXME jamais appelé
             writer.close();
         } catch (IOException e) {
             err.println(ERREUR_ECRITURE_FICHIER);
@@ -176,6 +208,11 @@ public class Fichier {
             return nomFichier;
         }
         return nomFichier.substring(0, pointIndex);
+    }
+
+    public static boolean fichierExiste(String fichier) {
+        Path path = Paths.get(fichier);
+        return Files.exists(path) && !Files.isDirectory(path);
     }
 
     /**

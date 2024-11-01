@@ -58,10 +58,17 @@
                         </AnchorPane>
                     </children>
                 </HBox>
-                <HBox prefHeight="100.0" prefWidth="200.0" />
+                <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="btnAfficherIp" layoutX="27.0" layoutY="45.0" mnemonicParsing="false" onAction="#actionAfficherIp" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #60BCFB;" text="Afficher l'IP" />
+                     </children>
+                  </AnchorPane>
+               </children></HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane prefHeight="200.0" prefWidth="162.0">
                             <children>
                                 <Button fx:id="btnConnexion" layoutX="54.0" layoutY="44.0" mnemonicParsing="false" onAction="#actionConnexion" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Connexion" />
                             </children>

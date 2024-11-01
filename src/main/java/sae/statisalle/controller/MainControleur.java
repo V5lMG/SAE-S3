@@ -1,5 +1,5 @@
 /*
- * MainControleur.java           30/10/2024
+ * MainControleur.java         30/10/2024
  * Pas de droits d'auteur ni de copyright
  */
 package sae.statisalle.controller;
@@ -12,12 +12,12 @@ import javafx.stage.Stage;
 import sae.statisalle.Reseau;
 
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
  * @author rodrigo.xavier-taborda
  * @author MathiasCambon
+ * @author valentin.munier-genie
  */
 public class MainControleur extends Application {
 
@@ -37,79 +37,83 @@ public class MainControleur extends Application {
     private static Stage fenetrePrincipale;
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène de l'application principale
+     * pour afficher l'écran d'accueil.
      */
     public static void activerAccueil() {
         fenetrePrincipale.setScene(Accueil);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'aide de l'écran d'accueil.
      */
     public static void activerAideAccueil() {
         fenetrePrincipale.setScene(AideAccueil);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'aide de connexion.
      */
     public static void activerAideConnexion() {
         fenetrePrincipale.setScene(AideConnexion);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'aide pour l'envoi de données.
      */
     public static void activerAideEnvoyer() {
         fenetrePrincipale.setScene(AideEnvoyer);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'aide pour l'exportation de données.
      */
     public static void activerAideExporter() {
         fenetrePrincipale.setScene(AideExporter);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'aide pour l'importation de données.
      */
     public static void activerAideImporter() {
         fenetrePrincipale.setScene(AideImporter);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'écran de connexion.
      */
     public static void activerConnexion() {
         fenetrePrincipale.setScene(Connexion);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'écran d'envoi de données.
      */
     public static void activerEnvoyer() {
         fenetrePrincipale.setScene(Envoyer);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'écran d'exportation de données.
      */
     public static void activerExporter() {
         fenetrePrincipale.setScene(Exporter);
     }
 
     /**
-     * TODO commenter le rôle de cette méthode
+     * Change la scène pour afficher l'écran d'importation de données.
      */
     public static void activerImporter() {
         fenetrePrincipale.setScene(Importer);
     }
 
+    /**
+     * Renvoie la fenêtre principale de l'application.
+     * @return l'objet Stage de la fenêtre principale.
+     */
     public static Stage getFenetrePrincipale() {
         return fenetrePrincipale;
     }
-
 
     /**
      * Méthode principale pour liée les interfaces.
@@ -120,61 +124,64 @@ public class MainControleur extends Application {
     public void start(Stage primaryStage) {
         try {
             FXMLLoader chargeurFXMLAccueil= new FXMLLoader();
-            chargeurFXMLAccueil.setLocation(getClass().getResource("/sae/statisalle/vue/accueil.fxml"));
+            chargeurFXMLAccueil.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/accueil.fxml"));
             Parent conteneur = chargeurFXMLAccueil.load();
             Accueil = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideAccueil = new FXMLLoader();
-            chargeurFXMLAideAccueil.setLocation(getClass().getResource("/sae/statisalle/vue/aideAccueil.fxml"));
+            chargeurFXMLAideAccueil.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideAccueil.fxml"));
             conteneur = chargeurFXMLAideAccueil.load();
             AideAccueil = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideConnexion = new FXMLLoader();
-            chargeurFXMLAideConnexion.setLocation(getClass().getResource("/sae/statisalle/vue/aideConnexion.fxml"));
+            chargeurFXMLAideConnexion.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideConnexion.fxml"));
             conteneur = chargeurFXMLAideConnexion.load();
             AideConnexion = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideEnvoyer = new FXMLLoader();
-            chargeurFXMLAideEnvoyer.setLocation(getClass().getResource("/sae/statisalle/vue/aideEnvoyer.fxml"));
+            chargeurFXMLAideEnvoyer.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideEnvoyer.fxml"));
             conteneur = chargeurFXMLAideEnvoyer.load();
             AideEnvoyer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideExporter = new FXMLLoader();
-            chargeurFXMLAideExporter.setLocation(getClass().getResource("/sae/statisalle/vue/aideExporter.fxml"));
+            chargeurFXMLAideExporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideExporter.fxml"));
             conteneur = chargeurFXMLAideExporter.load();
             AideExporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideImporter = new FXMLLoader();
-            chargeurFXMLAideImporter.setLocation(getClass().getResource("/sae/statisalle/vue/aideImporter.fxml"));
+            chargeurFXMLAideImporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideImporter.fxml"));
             conteneur = chargeurFXMLAideImporter.load();
             AideImporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLConnexion = new FXMLLoader();
-            chargeurFXMLConnexion.setLocation(getClass().getResource("/sae/statisalle/vue/connexion.fxml"));
+            chargeurFXMLConnexion.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/connexion.fxml"));
             conteneur = chargeurFXMLConnexion.load();
             Connexion = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLEnvoyer = new FXMLLoader();
-            chargeurFXMLEnvoyer.setLocation(getClass().getResource("/sae/statisalle/vue/envoyer.fxml"));
+            chargeurFXMLEnvoyer.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/envoyer.fxml"));
             conteneur = chargeurFXMLEnvoyer.load();
             Envoyer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLExporter = new FXMLLoader();
-            chargeurFXMLExporter.setLocation(getClass().getResource("/sae/statisalle/vue/exporter.fxml"));
+            chargeurFXMLExporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/exporter.fxml"));
             conteneur = chargeurFXMLExporter.load();
             Exporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLImporter = new FXMLLoader();
-            chargeurFXMLImporter.setLocation(getClass().getResource("/sae/statisalle/vue/importer.fxml"));
+            chargeurFXMLImporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/importer.fxml"));
             conteneur = chargeurFXMLImporter.load();
             Importer = new Scene(conteneur);
-
-            // Définir le titre, la hauteur et la largeur de la fenêtre principale
-            //primaryStage.setTitle("Jeu de dames");
-
-            // Définir explicitement la taille de la fenêtre principale
-            //primaryStage.setWidth(745);
-            //primaryStage.setHeight(572);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
@@ -187,8 +194,9 @@ public class MainControleur extends Application {
 
     /**
      * Lance un serveur au démarrage de l'application.
-     * Le serveur est exécuté dans un thread séparé pour ne pas bloquer l'interface utilisateur
-     * et peut accepter plusieurs connexions successives.
+     * Le serveur est exécuté dans un thread séparé pour ne pas
+     * bloquer l'interface utilisateur et peut accepter plusieurs
+     * connexions successives.
      * @author valenton.munier-genie
      * FIXME ip et port différent sur chaque machine
      */
@@ -198,11 +206,12 @@ public class MainControleur extends Application {
         Thread serveurThread = new Thread(() -> {
             try {
                 serveur.preparerServeur(12345);
-                System.out.println("Serveur démarré et en attente de connexions...");
+                System.out.println("Serveur démarré et en attente "
+                                   + "de connexions...");
 
                 // boucle pour accepter plusieurs connexions
                 while (true) {
-                    // Attendre une nouvelle connexion client
+                    // attendre une nouvelle connexion client
                     Reseau clientReseau = serveur.attendreConnexionClient();
 
                     // chaque client est géré dans un thread séparé
@@ -210,7 +219,10 @@ public class MainControleur extends Application {
                         try {
                             String requete = clientReseau.recevoirDonnees();
                             if (requete != null) {
-                                String reponse = clientReseau.traiterRequete(requete);
+
+                                String reponse =
+                                        clientReseau.traiterRequete(requete);
+
                                 clientReseau.envoyerReponse(reponse);
                             }
                         } finally {
@@ -221,12 +233,14 @@ public class MainControleur extends Application {
                     clientHandler.start();
                 }
             } catch (IOException e) {
-                System.err.println("Erreur lors de l'initialisation du serveur : " + e.getMessage());
+                System.err.println("Erreur lors de l'initialisation "
+                                   + "du serveur : " + e.getMessage());
             }
         });
 
         serveurThread.start();
-        System.out.println("Serveur en cours d'exécution : " + serveurThread.isAlive());
+        System.out.println("Serveur en cours d'exécution : "
+                           + serveurThread.isAlive());
     }
 
     /**
