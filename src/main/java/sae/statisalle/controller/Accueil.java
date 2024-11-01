@@ -17,7 +17,7 @@ public class Accueil {
 
     @FXML
     void actionEnvoyer(){
-        MainControleur.activerEnvoyer();
+        MainControleur.activerConnexion();
     }
 
     @FXML

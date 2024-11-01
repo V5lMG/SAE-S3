@@ -7,6 +7,7 @@ package sae.statisalle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -211,7 +212,11 @@ class TestUnitaireReseau {
 
         Thread.sleep(200);
 
-        client.preparerClient("localhost", port);
+        try {
+            client.preparerClient("localhost", port);
+        } catch (MauvaiseConnexionServeur e) {
+            throw new RuntimeException(e);
+        }
         client.envoyer(TEST_FILE_PATH);
 
         assertEquals("Contenu du fichier de test",
@@ -229,7 +234,11 @@ class TestUnitaireReseau {
         reseauServeur.preparerServeur(12345);
         new Thread(reseauServeur::attendreConnexionClient).start();
 
-        reseauClient.preparerClient("localhost", 12345);
+        try {
+            reseauClient.preparerClient("localhost", 12345);
+        } catch (MauvaiseConnexionServeur e) {
+            throw new RuntimeException(e);
+        }
 
         // envoi d'une réponse de test
         String reponseTest = "Réponse de test";

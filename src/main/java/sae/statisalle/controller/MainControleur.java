@@ -6,12 +6,13 @@ package sae.statisalle.controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser;
-import java.io.File;
+import sae.statisalle.Reseau;
+
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
@@ -185,10 +186,55 @@ public class MainControleur extends Application {
     }
 
     /**
+     * Lance un serveur au démarrage de l'application.
+     * Le serveur est exécuté dans un thread séparé pour ne pas bloquer l'interface utilisateur
+     * et peut accepter plusieurs connexions successives.
+     * @author valenton.munier-genie
+     * FIXME ip et port différent sur chaque machine
+     */
+    private static void initServeur() {
+        Reseau serveur = new Reseau();
+
+        Thread serveurThread = new Thread(() -> {
+            try {
+                serveur.preparerServeur(12345);
+                System.out.println("Serveur démarré et en attente de connexions...");
+
+                // boucle pour accepter plusieurs connexions
+                while (true) {
+                    // Attendre une nouvelle connexion client
+                    Reseau clientReseau = serveur.attendreConnexionClient();
+
+                    // chaque client est géré dans un thread séparé
+                    Thread clientHandler = new Thread(() -> {
+                        try {
+                            String requete = clientReseau.recevoirDonnees();
+                            if (requete != null) {
+                                String reponse = clientReseau.traiterRequete(requete);
+                                clientReseau.envoyerReponse(reponse);
+                            }
+                        } finally {
+                            clientReseau.fermerClient();
+                        }
+                    });
+
+                    clientHandler.start();
+                }
+            } catch (IOException e) {
+                System.err.println("Erreur lors de l'initialisation du serveur : " + e.getMessage());
+            }
+        });
+
+        serveurThread.start();
+        System.out.println("Serveur en cours d'exécution : " + serveurThread.isAlive());
+    }
+
+    /**
      * Méthode principale pour lancer l'application.
      * @param args Les arguments de la ligne de commande.
      */
     public static void main(String[] args) {
+        initServeur();
         launch(args);
     }
 }

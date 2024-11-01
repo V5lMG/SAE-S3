@@ -4,6 +4,8 @@
  */
 package sae.statisalle;
 
+import sae.statisalle.exception.MauvaiseConnexionServeur;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -95,7 +97,11 @@ public class TestReseau {
 
         // Créer et démarrer le client
         Reseau client = new Reseau();
-        client.preparerClient(HOST, PORT);
+        try {
+            client.preparerClient(HOST, PORT);
+        } catch (MauvaiseConnexionServeur e) {
+            throw new RuntimeException(e);
+        }
 
         // Envoyer un fichier de test
         client.envoyer(TEST_FILE_PATH);

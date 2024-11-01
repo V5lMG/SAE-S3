@@ -40,9 +40,8 @@ public class Importer {
         fileChooser.setTitle("Choisir un fichier");
 
         // Ajouter des filtres d'extension si nécessaire
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"),
-                new FileChooser.ExtensionFilter("Tous les fichiers", "*.*")
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv")
         );
 
         // Obtenir le stage principal à partir de MainControleur

@@ -4,7 +4,7 @@
  */
 package sae.statisalle;
 
-import sae.statisalle.exception.PortException;
+import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 /**
  * Classe responsable de la gestion des communications réseau.
@@ -65,26 +64,26 @@ public class Reseau {
     }
 
     /**
-     * Attend la connexion d'un client et initialise les flux de communication:
-     * - Cette méthode bloque l'exécution jusqu'à ce qu'un client se connecte.
-     * - Une fois le client connecté, elle initialise les flux d'entrée et de
-     * sortie pour la communication avec le client.
+     * Attendre une connexion d'un client et
+     * renvoyer un objet Reseau configuré pour ce client.
+     * @return Reseau un objet représentant la connexion du client,
+     *                ou null en cas d'erreur.
      */
-    public void attendreConnexionClient() {
+    public Reseau attendreConnexionClient() {
         try {
             clientSocket = serverSocket.accept();
-            /*
-             * autoFlush signifie que chaque appel à une méthode d’écriture :
-             * - videra automatiquement le tampon (buffer)
-             * - enverra les données immédiatement.
-             */
-            fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            fluxEntree = new BufferedReader(new InputStreamReader
-                    (clientSocket.getInputStream()));
+            Reseau clientReseau = new Reseau();
+            clientReseau.clientSocket = clientSocket;
+
+            // Initialiser les flux pour le client
+            clientReseau.fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
+            clientReseau.fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
             System.out.println("Client connecté.");
+            return clientReseau;
         } catch (IOException e) {
-            System.out.println("Erreur lors de l'attente d'un client : "
-                    + e.getMessage());
+            System.out.println("Erreur lors de l'attente d'un client : " + e.getMessage());
+            return null;
         }
     }
 
@@ -105,9 +104,10 @@ public class Reseau {
 
     /**
      * Traite la requête reçue du client et retourne une réponse.
-     * Cette méthode affiche la requête reçue dans la console et construit une réponse
-     * basée sur le contenu de la requête.
-     * @param requete La requête reçue du client sous forme de chaîne de caractères.
+     * Cette méthode affiche la requête reçue dans la console et
+     * construit une réponse basée sur le contenu de la requête.
+     * @param requete La requête reçue du client sous forme de
+     *                chaîne de caractères.
      * @return une chaîne de caractères confirmant la réception du message.
      */
     public String traiterRequete(String requete) {
@@ -118,7 +118,8 @@ public class Reseau {
     /**
      * Envoie une réponse au client.
      * Cette méthode envoie la réponse fournie au client via le flux de sortie.
-     * @param reponse la réponse à envoyer au client sous forme de chaîne de caractères.
+     * @param reponse la réponse à envoyer au client sous forme
+     *                de chaîne de caractères.
      */
     public void envoyerReponse(String reponse) {
         fluxSortie.println(reponse);
@@ -126,8 +127,9 @@ public class Reseau {
 
     /**
      * Ferme toutes les connexions et libère les ressources du serveur.
-     * Cette méthode ferme les flux de communication et les sockets du client et du serveur,
-     * s'ils sont ouverts, pour garantir une libération propre des ressources.
+     * Cette méthode ferme les flux de communication et les sockets
+     * du client et du serveur, s'ils sont ouverts,
+     * pour garantir une libération propre des ressources.
      * En cas d'erreur, un message est affiché dans la console.
      */
     public void fermerServeur() {
@@ -145,21 +147,34 @@ public class Reseau {
     // --------- PARTIE CLIENT -----------
 
     /**
-     * Préparation du client en établissant la connection au serveur
-     * @param adresse adresse du serveur
-     * @param port port du serveur
+     * Préparation du client en établissant la connexion au serveur.
+     * Cette méthode tente de créer une socket pour se connecter à un serveur
+     * spécifié par son adresse IP et son port.
+     * Si la connexion échoue, une exception {@link MauvaiseConnexionServeur}
+     * est levée avec un message d'erreur approprié.
+     *
+     * @param adresse L'adresse du serveur, qui peut être une adresse IP ou
+     *                un nom d'hôte.
+     * @param port Le numéro de port sur lequel le serveur écoute.
+     * @throws MauvaiseConnexionServeur si la connexion au serveur échoue
+     *         (par exemple, si le serveur n'est pas disponible).
      */
-    public void preparerClient(String adresse, int port) {
+    public void preparerClient(String adresse, int port)
+            throws MauvaiseConnexionServeur {
+
         try {
             clientSocket = new Socket(adresse, port);
             fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            fluxEntree = new BufferedReader(new InputStreamReader
-                    (clientSocket.getInputStream()));
-            System.out.println("Connexion au serveur " + adresse + " sur le port "
-                    + port + " réussie.");
+            fluxEntree = new BufferedReader(new InputStreamReader(
+                    clientSocket.getInputStream()
+            ));
+            System.out.println("Connexion au serveur " + adresse
+                               + " sur le port " + port + " réussie.");
         } catch (IOException e) {
             System.out.println("Erreur lors de la connexion au serveur : "
-                    + e.getMessage());
+                               + e.getMessage());
+            throw new MauvaiseConnexionServeur(
+                    "Aucun serveur sur cette IP et/ou sur ce port");
         }
     }
 
