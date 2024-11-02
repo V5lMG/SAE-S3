@@ -197,7 +197,7 @@ public class Fichier {
     }
 
     /**
-     * Recupère le nom du fichier sans sont extention
+     * Recupère le nom du fichier sans son extention
      * @return nom du fichier
      */
     public String nomFichier(){
