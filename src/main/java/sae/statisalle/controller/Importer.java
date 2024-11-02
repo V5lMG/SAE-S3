@@ -6,7 +6,9 @@ package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sae.statisalle.Fichier;
@@ -26,7 +28,24 @@ import java.util.Optional;
 
 public class Importer {
 
+    public Button btnFichier;
+
+    public Button btnImporter;
+
+    public Text textCheminFichier;
+
+    public Text textNomFichier;
+
+    private File fichier;
+
     Fichier fichierImporter;
+
+    @FXML
+    private void initialize() {
+
+        fichier = null;
+        actualisationValiditeFichier();
+    }
 
     @FXML
     void actionRetour() {
@@ -73,11 +92,9 @@ public class Importer {
 
     @FXML
     private void actionChoixFichier() {
-        // Création d'une instance de FileChooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir un fichier");
 
-        // Ajouter des filtres d'extension si nécessaire
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv")
         );
@@ -86,15 +103,45 @@ public class Importer {
         Stage stage = MainControleur.getFenetrePrincipale();
 
         // Afficher la boîte de dialogue de sélection de fichier
-        File fichier = fileChooser.showOpenDialog(stage);
+        fichier = fileChooser.showOpenDialog(stage);
 
+        actualisationValiditeFichier();
+    }
+
+    /**
+     * Actualise la validité du fichier sélectionné et met à jour les éléments
+     * de l'interface utilisateur en conséquence.
+     * <p>
+     * Cette méthode vérifie si un fichier a été sélectionné et :
+     * <ul>
+     *     <li>Active ou désactive le bouton d'importation en fonction de la validité du fichier.</li>
+     *     <li>Affiche les informations sur le fichier sélectionné, notamment le chemin et le nom du fichier,
+     *         dans les éléments `Text` appropriés.</li>
+     *     <li>Modifie le style des textes pour
+     *         leur appliquer une couleur noire quand le fichier est sélectionné.</li>
+     * </ul>
+     * Si aucun fichier n'a été sélectionné, le bouton d'importation est désactivé
+     */
+    private void actualisationValiditeFichier() {
+        btnImporter.setDisable(true);
         // Vérifier si un fichier a été sélectionné
         if (fichier != null) {
+            /* Affichage dans la console */
             fichierImporter = new Fichier(fichier.getAbsolutePath());
             System.out.println("Fichier sélectionné : " + fichier.getAbsolutePath());
+
+            textCheminFichier.setText("Chemin du fichier choisi : " + fichier.getAbsolutePath());
+            textNomFichier.setText("Nom du fichier : " + fichier.getName());
+
+            textCheminFichier.setStyle("-fx-fill: #000000;");
+            textNomFichier.setStyle("-fx-fill: #000000;");
+            btnImporter.setStyle("-fx-background-color: #4CAF50;");
+
+            btnImporter.setDisable(false);
             // Traiter le fichier comme vous le souhaitez (par exemple, l'envoyer au modèle pour traitement)
         } else {
             System.out.println("Aucun fichier sélectionné.");
+            btnImporter.setDisable(true);
         }
     }
 }
