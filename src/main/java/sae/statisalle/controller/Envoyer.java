@@ -126,7 +126,6 @@ public class Envoyer {
     /**
      * Affiche une alerte pour informer
      * l'utilisateur d'une situation spécifique.
-     *
      * @param title   le titre de l'alerte.
      * @param message le message de l'alerte.
      */
