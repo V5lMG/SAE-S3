@@ -14,9 +14,9 @@
                   <Text layoutX="44.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selectionnez le/les fichier(s) .csv à importer : " />
                   <Button fx:id="btnFichier" layoutX="323.0" layoutY="40.0" mnemonicParsing="false" onAction="#actionChoixFichier" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le fichier " />
                   <Text fx:id="cheminFichier" fill="#9a9999" layoutX="44.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi :" />
-                  <Text fx:id="nomFichier" fill="#9a9999" layoutX="44.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier :" />
+                  <Text fx:id="nomFichier" fill="#9a9999" layoutX="44.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier :" />
                   <Text fx:id="texteCheminFichier" fill="#9a9999" layoutX="187.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
-                  <Text fx:id="texteNomFichier" fill="#9a9999" layoutX="140.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
+                  <Text fx:id="texteNomFichier" fill="#9a9999" layoutX="140.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
                </children>
                 </AnchorPane>
             </children></VBox>

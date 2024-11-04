@@ -82,19 +82,22 @@ public class Importer {
             String dateDuJour = new SimpleDateFormat("ddMMyyyy")
                                     .format(new Date());
 
-            // TODO Faire en sorte que ça prenne plusieurs fichier en compte
-            String nomFichier = fichierImporter.getTypeFichier() + "_"
-                                + dateDuJour + ".csv";
+            for (String chemin : cheminsDesFichiers) {
 
-            if (!Fichier.fichierExiste(nomFichier)) {
-                Fichier.ecritureFichier(fichierImporter.contenuFichier(),
-                        fichierImporter.getTypeFichier()
-                                + "_" + dateDuJour);
-            } else {
-                Fichier fichierExistant = new Fichier(nomFichier);
-                fichierExistant.reecritureFichier(fichierImporter.contenuFichier());
+                fichierImporter = new Fichier(chemin);
+
+                String nomFichier = fichierImporter.getTypeFichier() + "_"
+                                    + dateDuJour + ".csv";
+
+                if (!Fichier.fichierExiste(nomFichier)) {
+                    Fichier.ecritureFichier(fichierImporter.contenuFichier(),
+                            fichierImporter.getTypeFichier()
+                                    + "_" + dateDuJour);
+                } else {
+                    Fichier fichierExistant = new Fichier(nomFichier);
+                    fichierExistant.reecritureFichier(fichierImporter.contenuFichier());
+                }
             }
-
             System.out.println("Le fichier ou les fichiers ont bien été importé(s)");
         } else if (result.get() == ButtonType.CANCEL){
             envoyer.close();

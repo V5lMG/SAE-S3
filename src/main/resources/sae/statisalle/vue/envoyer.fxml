@@ -13,11 +13,11 @@
                     <children>
                         <Text layoutX="41.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selectionnez le/les fichier(s) à envoyer : " />
                         <Button fx:id="btnFichier" layoutX="330.0" layoutY="31.0" mnemonicParsing="false" onAction="#actionChoixFichier" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le(s) fichier(s)" />
-                        <Text fill="#9a9999" layoutX="41.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi : " />
+                        <Text fx:id="cheminFichier" fill="#9a9999" layoutX="41.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi : " />
                   <Text fx:id="cheminFx" fill="#9a9999" layoutX="184.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
-                        <Text fill="#9a9999" layoutX="41.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier : " />
+                        <Text fx:id="nomFichier" fill="#9a9999" layoutX="41.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier : " />
                   <Text fx:id="ipFx" fill="#9a9999" layoutX="188.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
-                  <Text fill="#9a9999" layoutX="41.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse IP du destinataire : " />
+                  <Text fx:id="adresseIP" fill="#9a9999" layoutX="41.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse IP du destinataire : " />
                   <Text fx:id="nomFx" fill="#9a9999" layoutX="138.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
                     </children>
                 </AnchorPane>

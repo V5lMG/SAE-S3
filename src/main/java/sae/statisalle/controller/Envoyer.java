@@ -45,10 +45,19 @@ public class Envoyer {
     private Text nomFx;
 
     @FXML
-    private Button btnEnvoyer;
+    private Text cheminFichier;
+
+    @FXML
+    private Text nomFichier;
+
+    @FXML
+    private Text adresseIP;
 
     @FXML
     private Text ipFx;
+
+    @FXML
+    private Button btnEnvoyer;
 
     /**
      * Gère l'action de retour à l'écran d'accueil de l'application.
@@ -110,6 +119,10 @@ public class Envoyer {
 
             cheminFx.setStyle("-fx-fill: #000000;");
             nomFx.setStyle("-fx-fill: #000000;");
+            cheminFichier.setStyle("-fx-fill: #000000;");
+            nomFichier.setStyle("-fx-fill: #000000;");
+            ipFx.setStyle("-fx-fill: #000000;");
+            adresseIP.setStyle("-fx-fill: #000000;");
             btnEnvoyer.setStyle("-fx-background-color: #4CAF50;");
             btnEnvoyer.setDisable(false);
 
