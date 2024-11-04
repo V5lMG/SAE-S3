@@ -158,23 +158,6 @@ public class Reseau {
         }
     }
 
-    public void recevoirFichierCSV() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("fichier_reconstruit.csv", true))) {
-            String ligne;
-
-            // Boucle pour recevoir chaque ligne jusqu'à ce que le client ait terminé l'envoi
-            while ((ligne = recevoirDonnees()) != null) {
-                writer.println(ligne);  // Écrire la ligne dans le fichier CSV
-                envoyerReponse("Ligne reçue : " + ligne);  // Confirmer la réception de la ligne au client
-            }
-
-            System.out.println("Fichier CSV reconstruit avec succès.");
-
-        } catch (IOException e) {
-            System.err.println("Erreur lors de l'écriture du fichier CSV : " + e.getMessage());
-        }
-    }
-
     // --------- PARTIE CLIENT -----------
 
     /**
@@ -210,7 +193,7 @@ public class Reseau {
     }
 
     /**
-     * Envoie le contenu d'un fichier au serveur ligne par ligne.
+     * Envoie le contenu d'un fichier au serveur.
      * @param cheminFichier le chemin du fichier à envoyer.
      * @throws IllegalArgumentException si le fichier n'existe pas
      * ou n'est pas valide.
@@ -224,13 +207,11 @@ public class Reseau {
                     + "n'existe pas.");
         }
 
-        try (BufferedReader lecteur = new BufferedReader(new FileReader(fichier))) {
-            String ligne;
-            while ((ligne = lecteur.readLine()) != null) {
-                fluxSortie.println(ligne);  // envoi de chaque ligne
-            }
+        try {
+            String contenu = Files.readString(fichier.toPath());
+            fluxSortie.println(contenu);
 
-            System.out.println("Fichier envoyé avec succès, ligne par ligne.");
+            System.out.println("Fichier envoyé avec succès.");
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture ou de "
                     + "l'envoi du fichier : " + e.getMessage());
