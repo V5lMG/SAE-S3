@@ -85,6 +85,7 @@ public class Importer {
         } else if (result.get() == ButtonType.CANCEL){
             envoyer.close();
         } else {
+            System.out.println("Aucun fichier sélectionné.");
             System.out.print("Erreur : le ou les fichiers n'ont pas pu être importé(s)");
         }
         // TODO affichage d'un message de confirmation, et importation des fichiers
@@ -104,7 +105,7 @@ public class Importer {
 
         // Afficher la boîte de dialogue de sélection de fichier
         fichier = fileChooser.showOpenDialog(stage);
-
+        fichierImporter = new Fichier(fichier.getAbsolutePath());
         actualisationValiditeFichier();
     }
 
@@ -127,7 +128,6 @@ public class Importer {
         // Vérifier si un fichier a été sélectionné
         if (fichier != null) {
             /* Affichage dans la console */
-            fichierImporter = new Fichier(fichier.getAbsolutePath());
             System.out.println("Fichier sélectionné : " + fichier.getAbsolutePath());
 
             textCheminFichier.setText("Chemin du fichier choisi : " + fichier.getAbsolutePath());
@@ -140,7 +140,6 @@ public class Importer {
             btnImporter.setDisable(false);
             // Traiter le fichier comme vous le souhaitez (par exemple, l'envoyer au modèle pour traitement)
         } else {
-            System.out.println("Aucun fichier sélectionné.");
             btnImporter.setDisable(true);
         }
     }

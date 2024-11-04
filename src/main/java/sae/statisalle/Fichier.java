@@ -113,10 +113,7 @@ public class Fichier {
      * 	       false si l'extension du fichier n'est pas valide.
      */
     public boolean extensionValide(){
-
-        return this.fichierExploite.getName()
-                   .toLowerCase()
-                   .endsWith(SUFFIXE_FICHIER);
+        return this.fichierExploite.getName().endsWith(SUFFIXE_FICHIER);
     }
 
     /**
