@@ -247,4 +247,51 @@ public class Fichier {
 
         return typeFichier;
     }
+
+    /**
+     * Enregistre le contenu dans un fichier et envoie la réponse au client.
+     *
+     * @param clientReseau L'objet réseau du client.
+     * @param contenuRequete Le contenu à enregistrer.
+     * @param fichier Le fichier dans lequel enregistrer le contenu.
+     */
+    public static void ecrireFichier(Reseau clientReseau,
+                                     String contenuRequete,
+                                     File fichier) {
+
+        try (FileWriter writer = new FileWriter(fichier)) {
+            writer.write(contenuRequete);
+
+            // envoi de la réponse
+            clientReseau.envoyerReponse("Données enregistrées dans : "
+                                        + fichier.getAbsolutePath());
+            System.out.println("Fichier enregistré avec succès : "
+                               + fichier.getAbsolutePath());
+
+            // ouvrir le dossier contenant le fichier
+            ouvrirDossier(fichier.getParentFile());
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'enregistrement du fichier : "
+                               + e.getMessage());
+        }
+    }
+
+    /**
+     * Ouvre un dossier dans l'explorateur de fichiers.
+     * @param dossier Le dossier à ouvrir.
+     */
+    public static void ouvrirDossier(File dossier) {
+        try {
+            if (dossier.exists()) {
+                // permet d'ouvrir le dossier séléctionné par l'utilisateur
+                new ProcessBuilder("explorer.exe",
+                        dossier.getAbsolutePath()).start();
+            }
+        } catch (IOException e) {
+            System.err.println("Impossible d'ouvrir le dossier : "
+                    + e.getMessage());
+        }
+    }
+
+
 }

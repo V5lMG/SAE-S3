@@ -140,21 +140,6 @@ public class Envoyer {
     }
 
     /**
-     * Affiche une alerte pour informer
-     * l'utilisateur d'une situation spécifique.
-     * @param title   le titre de l'alerte.
-     * @param message le message de l'alerte.
-     */
-    private void showAlert(String title,
-                           String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /**
      * Gère l'envoi des fichiers sélectionnés au serveur.
      * Tente d'envoyer chaque fichier et de traiter la réponse du serveur.
      */
@@ -179,15 +164,50 @@ public class Envoyer {
             }
 
             System.out.println("Tous les fichiers ont été envoyés !");
+            afficherConfirmationEtRetour();
 
         } catch (IllegalArgumentException e) {
             System.err.println("Erreur d'envoi : " + e.getMessage());
+            showAlert("Erreur d'envoi",
+                   "Une erreur est survenue lors de l'envoi : "
+                           + e.getMessage());
 
         } catch (Exception e) {
             System.err.println("Erreur inattendue : " + e.getMessage());
+            showAlert("Erreur inattendue",
+                  "Une erreur inattendue est survenue : "
+                           + e.getMessage());
 
         } finally {
             reseau.fermerClient();
         }
+    }
+
+    /**
+     * Affiche une alerte pour informer
+     * l'utilisateur d'une situation spécifique.
+     * @param title   le titre de l'alerte.
+     * @param message le message de l'alerte.
+     */
+    private void showAlert(String title,
+                           String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
+     * Affiche une alerte de confirmation et redirige vers l'écran de connexion.
+     */
+    private void afficherConfirmationEtRetour() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Envoi réussi");
+        alert.setHeaderText(null);
+        alert.setContentText("Les fichiers ont été envoyés avec succès.");
+
+        alert.setOnHidden(evt -> MainControleur.activerConnexion());
+        alert.showAndWait();
     }
 }

@@ -5,13 +5,22 @@
 package sae.statisalle.controller;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
@@ -188,7 +197,8 @@ public class MainControleur extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Erreur lors du chargement des vues"
+                               + e.getMessage());
         }
     }
 
@@ -197,15 +207,13 @@ public class MainControleur extends Application {
      * Le serveur est exécuté dans un thread séparé pour ne pas
      * bloquer l'interface utilisateur et peut accepter plusieurs
      * connexions successives.
-     * @author valenton.munier-genie
-     * FIXME ip et port différent sur chaque machine
      */
     private static void initServeur() {
         Reseau serveur = new Reseau();
 
         Thread serveurThread = new Thread(() -> {
             try {
-                serveur.preparerServeur(12345);
+                serveur.preparerServeur(54321);
                 System.out.println("Serveur démarré et en attente "
                                    + "de connexions...");
 
@@ -218,13 +226,14 @@ public class MainControleur extends Application {
                     Thread clientHandler = new Thread(() -> {
                         try {
                             String requete = clientReseau.recevoirDonnees();
-                            if (requete != null) {
+                            String contenuRequete = clientReseau
+                                                       .traiterRequete(requete);
 
-                                String reponse =
-                                        clientReseau.traiterRequete(requete);
+                            // thread javaFx pour dossier et nom
+                            Platform.runLater(() ->
+                                    afficherPopupSauvegarde(clientReseau,
+                                                            contenuRequete));
 
-                                clientReseau.envoyerReponse(reponse);
-                            }
                         } finally {
                             clientReseau.fermerClient();
                         }
@@ -241,6 +250,53 @@ public class MainControleur extends Application {
         serveurThread.start();
         System.out.println("Serveur en cours d'exécution : "
                            + serveurThread.isAlive());
+    }
+
+    /**
+     * Affiche un popup pour choisir le dossier de sauvegarde
+     * et le nom du fichier CSV. Enregistre le fichier, ouvre
+     * le dossier sélectionné, et ferme le popup.
+     *
+     * @param clientReseau L'objet réseau du client pour envoyer la réponse.
+     * @param contenuRequete Le contenu de la requête prêt à être sauvegardé.
+     */
+    public static void afficherPopupSauvegarde(Reseau clientReseau,
+                                               String contenuRequete) {
+
+        // popup pour le dossier et le nom du fichier
+        // FIXME remplacer par une vue
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Enregistrement des données");
+        alert.setHeaderText("Réception de données");
+        alert.setContentText("Sélectionnez un dossier et un nom de fichier "
+                             + "pour enregistrer les données reçues.");
+
+        // attendre la confirmation
+        if (alert.showAndWait().filter(result -> result == ButtonType.OK).isPresent()) {
+
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Choisir le dossier de téléchargement");
+            File dossier = directoryChooser.showDialog(new Stage());
+
+            if (dossier != null) {
+                FileChooser fileChooser = new FileChooser();
+
+                fileChooser.setInitialDirectory(dossier);
+                fileChooser.setInitialFileName("resultat_requete.csv");
+
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("CSV Files",
+                                                        "*.csv"));
+
+                File fichier = fileChooser.showSaveDialog(new Stage());
+
+                if (fichier != null) {
+                    Fichier.ecrireFichier(clientReseau,
+                                          contenuRequete,
+                                          fichier);
+                }
+            }
+        }
     }
 
     /**

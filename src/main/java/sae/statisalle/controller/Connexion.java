@@ -145,15 +145,14 @@ public class Connexion {
      */
     @FXML
     void actionAfficherIp() {
-        //try {
-            InetAddress ip = Reseau.renvoyerIP();
+        InetAddress ip = Reseau.renvoyerIP();
+        if (ip != null) {
             String ipAddress = ip.getHostAddress();
             btnAfficherIp.setText(ipAddress);
-//        } catch (UnknownHostException e) {
-//            btnAfficherIp.setText("Erreur de récupération de l'IP");
-//            System.err.println("Erreur lors de la récupération de l'adresse IP : "
-//                    + e.getMessage());
-//        }
+        } else {
+            btnAfficherIp.setText("Erreur de récupération de l'IP");
+            System.err.println("Erreur lors de la récupération de l'adresse IP.");
+        }
     }
 
     /**
