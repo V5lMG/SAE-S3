@@ -13,9 +13,7 @@ import javafx.stage.Stage;
 import sae.statisalle.Reseau;
 import sae.statisalle.Session;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,27 +153,13 @@ public class Envoyer {
                 fichiers.add(new File(cheminFichier));
             }
 
-            // envoyer chaque fichier ligne par ligne
+            // envoyer les fichiers
             for (File fichier : fichiers) {
-                if (fichier.exists() && fichier.canRead()) {
-                    System.out.println("Envoi du fichier : " + fichier.getPath());
+                reseau.envoyer(fichier.getPath());
 
-                    try (BufferedReader lecteur = new BufferedReader(new FileReader(fichier))) {
-                        String ligne;
-                        while ((ligne = lecteur.readLine()) != null) {
-                            reseau.envoyer(ligne);
-
-                            // recevoir une réponse du serveur
-                            String reponse = reseau.recevoirReponse();
-                            reseau.utiliserReponse(reponse);
-                        }
-                    }
-
-                } else {
-                    System.err.println("Erreur : Le fichier "
-                                       + fichier.getPath()
-                                       + " n'existe pas ou n'est pas lisible.");
-                }
+                // recevoir une réponse du serveur
+                String reponse = reseau.recevoirReponse();
+                reseau.utiliserReponse(reponse);
             }
 
             System.out.println("Tous les fichiers ont été envoyés !");
@@ -187,9 +171,7 @@ public class Envoyer {
             System.err.println("Erreur inattendue : " + e.getMessage());
 
         } finally {
-            if (reseau != null) {
-                reseau.fermerClient();
-            }
+            reseau.fermerClient();
         }
     }
 }
