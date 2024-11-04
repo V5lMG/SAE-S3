@@ -89,7 +89,8 @@ public class Reseau {
 
             String clientIP = clientSocket.getInetAddress().getHostAddress();
             String clientNomMachine = clientSocket.getInetAddress().getHostName();
-            System.out.println("Client connecté : " + clientNomMachine + " (" + clientIP + ").");
+            System.out.println("Client connecté : " + clientNomMachine
+                               + " (" + clientIP + ")");
 
             return clientReseau;
         } catch (IOException e) {
