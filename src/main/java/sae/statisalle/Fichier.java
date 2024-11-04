@@ -250,6 +250,7 @@ public class Fichier {
 
     /**
      * Enregistre le contenu dans un fichier et envoie la réponse au client.
+     * @author valentin.munier-genie
      *
      * @param clientReseau L'objet réseau du client.
      * @param contenuRequete Le contenu à enregistrer.
@@ -278,6 +279,8 @@ public class Fichier {
 
     /**
      * Ouvre un dossier dans l'explorateur de fichiers.
+     * @author valentin.munier-genie
+     *
      * @param dossier Le dossier à ouvrir.
      */
     public static void ouvrirDossier(File dossier) {

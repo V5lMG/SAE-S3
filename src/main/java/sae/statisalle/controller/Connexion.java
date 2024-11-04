@@ -14,7 +14,6 @@ import sae.statisalle.Session;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Contrôleur de la connexion pour l'application StatiSalle.

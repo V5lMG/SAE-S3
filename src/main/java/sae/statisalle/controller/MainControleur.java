@@ -18,9 +18,7 @@ import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
