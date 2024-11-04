@@ -87,10 +87,14 @@ public class Reseau {
                             )
                     );
 
-            System.out.println("Client connecté.");
+            String clientIP = clientSocket.getInetAddress().getHostAddress();
+            String clientNomMachine = clientSocket.getInetAddress().getHostName();
+            System.out.println("Client connecté : " + clientNomMachine + " (" + clientIP + ").");
+
             return clientReseau;
         } catch (IOException e) {
-            System.out.println("Erreur lors de l'attente d'un client : " + e.getMessage());
+            System.out.println("Erreur lors de l'attente d'un client : "
+                               + e.getMessage());
             return null;
         }
     }
