@@ -7,11 +7,9 @@ package sae.statisalle;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.file.Files;
+import java.io.IOException;
 
 /**
  * Classe responsable de la gestion des communications réseau.
@@ -193,7 +191,7 @@ public class Reseau {
     }
 
     /**
-     * Envoie le contenu d'un fichier au serveur.
+     * Envoie le contenu d'un fichier au serveur en une seule ligne.
      * @param cheminFichier le chemin du fichier à envoyer.
      * @throws IllegalArgumentException si le fichier n'existe pas
      * ou n'est pas valide.
@@ -208,7 +206,12 @@ public class Reseau {
         }
 
         try {
-            String contenu = Files.readString(fichier.toPath());
+            // remplacer les fins de lignes par des espaces :
+            String contenu = Files.readString(fichier.toPath())
+                                  .replace("\n", "/N")
+                                  .replace("\r", "/R");
+
+            // envoyer tous le contenue
             fluxSortie.println(contenu);
 
             System.out.println("Fichier envoyé avec succès.");
@@ -229,7 +232,7 @@ public class Reseau {
             System.out.println("Erreur lors de la réception de la réponse : "
                     + e.getMessage());
         }
-        return null;
+        return "Erreur lors de la réception de la réponse.";
     }
 
     /**
@@ -238,6 +241,7 @@ public class Reseau {
      * @param reponse réponse du serveur
      */
     public void utiliserReponse(String reponse) {
+        // todo méthode ici pour traiter la réponse du serveur
         System.out.println("Réponse du serveur : " + reponse);
     }
 
@@ -256,14 +260,33 @@ public class Reseau {
     }
 
     /**
-     * Renvoie l'adresse IP de la machine locale et son nom.
+     * Renvoie l'adresse IP de la machine locale utilisée pour se connecter
+     * à un serveur externe et son nom de machine.
      * @return l'adresse IP de la machine sous forme d'objet InetAddress.
-     * @throws UnknownHostException si l'adresse IP ne peut pas être déterminée.
      */
-    public static InetAddress renvoyerIP() throws UnknownHostException {
+    public static InetAddress renvoyerIP() {
+        try (Socket socket = new Socket("8.8.8.8", 53)) {
+            InetAddress ipLocale = socket.getLocalAddress();
+            System.out.println("Nom de la machine : " + ipLocale.getHostName());
+            System.out.println("Adresse IP locale utilisée : " + ipLocale.getHostAddress());
+            return ipLocale;
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la récupération de l'IP locale : " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     public static InetAddress renvoyerIP() throws UnknownHostException {
         InetAddress ip = InetAddress.getLocalHost();
         System.out.println("Nom de la machine : " + ip.getHostName());
         System.out.println("IP de la machine : " + ip.getHostAddress());
         return ip;
-    }
+     }
+    */
 }
+
+
+
+
+
