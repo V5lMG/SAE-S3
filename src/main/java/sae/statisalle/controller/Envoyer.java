@@ -107,10 +107,13 @@ public class Envoyer {
 
             cheminFx.setText(chemins.toString());
             nomFx.setText(noms.toString());
-            System.out.println("Fichiers sélectionnés : \n" + chemins);
 
+            cheminFx.setStyle("-fx-fill: #000000;");
+            nomFx.setStyle("-fx-fill: #000000;");
             btnEnvoyer.setStyle("-fx-background-color: #4CAF50;");
             btnEnvoyer.setDisable(false);
+
+            System.out.println("Fichiers sélectionnés : \n" + chemins);
         } else if (fichiers != null) {
             System.out.println("Vous devez sélectionner "
                                + "au maximum 4 fichiers.");

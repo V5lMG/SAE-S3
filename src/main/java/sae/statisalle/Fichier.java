@@ -31,9 +31,8 @@ import static java.lang.System.err;
  */
 public class Fichier {
 
-
     private static final String ERREUR_ECRITURE_FICHIER =
-            "Erreur : impossible d'écrire dans le fichier";
+            "erreur : impossible d'écrire dans le fichier";
 
     /* fichier courant de l'instance */
     private File fichierExploite;

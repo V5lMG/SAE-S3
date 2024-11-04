@@ -15,7 +15,9 @@ import sae.statisalle.Fichier;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,9 +34,20 @@ public class Importer {
 
     public Button btnImporter;
 
-    public Text textCheminFichier;
+    public Text cheminFichier;
 
-    public Text textNomFichier;
+    public Text nomFichier;
+
+    public Text texteCheminFichier;
+
+    public Text texteNomFichier;
+
+    /**
+     * Liste contenant les chemins des fichiers sélectionnés pour l'envoi.
+     * Chaque chemin représente un fichier que l'utilisateur souhaite
+     * envoyer au serveur.
+     */
+    private List<String> cheminsDesFichiers;
 
     private File fichier;
 
@@ -42,9 +55,7 @@ public class Importer {
 
     @FXML
     private void initialize() {
-
         fichier = null;
-        actualisationValiditeFichier();
     }
 
     @FXML
@@ -67,14 +78,17 @@ public class Importer {
 
         if (result.get() == ButtonType.OK){
 
+
             String dateDuJour = new SimpleDateFormat("ddMMyyyy")
                                     .format(new Date());
-            String nomFichier = fichierImporter.getTypeFichier() + "_"
-                                + dateDuJour;
 
-            if (Fichier.fichierExiste(nomFichier)) {
+            // TODO Faire en sorte que ça prenne plusieurs fichier en compte
+            String nomFichier = fichierImporter.getTypeFichier() + "_"
+                                + dateDuJour + ".csv";
+
+            if (!Fichier.fichierExiste(nomFichier)) {
                 Fichier.ecritureFichier(fichierImporter.contenuFichier(),
-                        "/fichier/" + fichierImporter.getTypeFichier()
+                        fichierImporter.getTypeFichier()
                                 + "_" + dateDuJour);
             } else {
                 Fichier fichierExistant = new Fichier(nomFichier);
@@ -103,44 +117,36 @@ public class Importer {
         // Obtenir le stage principal à partir de MainControleur
         Stage stage = MainControleur.getFenetrePrincipale();
 
-        // Afficher la boîte de dialogue de sélection de fichier
-        fichier = fileChooser.showOpenDialog(stage);
-        fichierImporter = new Fichier(fichier.getAbsolutePath());
-        actualisationValiditeFichier();
-    }
+        List<File> fichiers = fileChooser.showOpenMultipleDialog(stage);
 
-    /**
-     * Actualise la validité du fichier sélectionné et met à jour les éléments
-     * de l'interface utilisateur en conséquence.
-     * <p>
-     * Cette méthode vérifie si un fichier a été sélectionné et :
-     * <ul>
-     *     <li>Active ou désactive le bouton d'importation en fonction de la validité du fichier.</li>
-     *     <li>Affiche les informations sur le fichier sélectionné, notamment le chemin et le nom du fichier,
-     *         dans les éléments `Text` appropriés.</li>
-     *     <li>Modifie le style des textes pour
-     *         leur appliquer une couleur noire quand le fichier est sélectionné.</li>
-     * </ul>
-     * Si aucun fichier n'a été sélectionné, le bouton d'importation est désactivé
-     */
-    private void actualisationValiditeFichier() {
-        btnImporter.setDisable(true);
-        // Vérifier si un fichier a été sélectionné
-        if (fichier != null) {
-            /* Affichage dans la console */
-            System.out.println("Fichier sélectionné : " + fichier.getAbsolutePath());
+        if (fichiers != null && fichiers.size() <= 4) {
+            StringBuilder chemins = new StringBuilder();
+            StringBuilder noms = new StringBuilder();
+            cheminsDesFichiers = new ArrayList<>();
 
-            textCheminFichier.setText("Chemin du fichier choisi : " + fichier.getAbsolutePath());
-            textNomFichier.setText("Nom du fichier : " + fichier.getName());
+            for (File fichier : fichiers) {
+                cheminsDesFichiers.add(fichier.getPath());
+                chemins.append(fichier.getAbsolutePath()).append("\n");
+                noms.append(fichier.getName()).append("\n");
+            }
 
-            textCheminFichier.setStyle("-fx-fill: #000000;");
-            textNomFichier.setStyle("-fx-fill: #000000;");
+            texteCheminFichier.setText(chemins.toString());
+            texteNomFichier.setText(noms.toString());
+
+            texteCheminFichier.setStyle("-fx-fill: #000000;");
+            texteNomFichier.setStyle("-fx-fill: #000000;");
+            cheminFichier.setStyle("-fx-fill: #000000;");
+            nomFichier.setStyle("-fx-fill: #000000;");
             btnImporter.setStyle("-fx-background-color: #4CAF50;");
-
             btnImporter.setDisable(false);
-            // Traiter le fichier comme vous le souhaitez (par exemple, l'envoyer au modèle pour traitement)
+
+            System.out.println("Fichiers sélectionnés : \n" + chemins);
+
+        } else if (fichiers != null) {
+            System.out.println("Vous devez sélectionner "
+                    + "au maximum 4 fichiers.");
         } else {
-            btnImporter.setDisable(true);
+            System.out.println("Aucun fichier sélectionné.");
         }
     }
 }
