@@ -23,11 +23,10 @@ import java.util.Optional;
 /**
  * Classe du controller Importer,
  * Qui permet de faire le lien entre la vue Importer et son modèle
- * @author MathiasCambon
- *         Robin Montes
+ * @author Mathias CAMBON
+ *         Robin MONTES
+ *         Erwan THIERRY
  */
-
-
 public class Importer {
 
     public Button btnFichier;
@@ -49,14 +48,7 @@ public class Importer {
      */
     private List<String> cheminsDesFichiers;
 
-    private File fichier;
-
     Fichier fichierImporter;
-
-    @FXML
-    private void initialize() {
-        fichier = null;
-    }
 
     @FXML
     void actionRetour() {
@@ -77,7 +69,6 @@ public class Importer {
         Optional<ButtonType> result = envoyer.showAndWait();
 
         if (result.get() == ButtonType.OK){
-
 
             String dateDuJour = new SimpleDateFormat("ddMMyyyy")
                                     .format(new Date());
@@ -105,7 +96,6 @@ public class Importer {
             System.out.println("Aucun fichier sélectionné.");
             System.out.print("Erreur : le ou les fichiers n'ont pas pu être importé(s)");
         }
-        // TODO affichage d'un message de confirmation, et importation des fichiers
     }
 
     @FXML

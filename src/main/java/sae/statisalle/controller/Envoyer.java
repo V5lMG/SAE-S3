@@ -7,6 +7,7 @@ package sae.statisalle.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -16,12 +17,14 @@ import sae.statisalle.Session;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrôleur pour gérer l'envoi de fichiers dans l'application StatiSalle.
  * Permet de sélectionner des fichiers à envoyer et de gérer l'interface.
  *
- * @author valentin.munier-genie
+ * @author Valentin MUNIER-GENIE
+ *         Erwan THIERRY
  */
 public class Envoyer {
 
@@ -145,41 +148,51 @@ public class Envoyer {
      */
     @FXML
     void actionEnvoyer() {
-        try {
-            reseau = Session.getReseau();
-            List<File> fichiers = new ArrayList<>();
+        Alert envoyer = new Alert (Alert.AlertType.CONFIRMATION);
+        envoyer.setTitle("Envoyer");
+        envoyer.setHeaderText(null);
+        envoyer.setContentText("Voulez vous vraiment envoyer ce/ces fichier(s) ?");
+        Optional<ButtonType> result = envoyer.showAndWait();
 
-            // ajouter les chemins des fichiers sélectionnés
-            for (String cheminFichier : cheminsDesFichiers) {
-                fichiers.add(new File(cheminFichier));
+        if (result.get() == ButtonType.OK){
+            try {
+                reseau = Session.getReseau();
+                List<File> fichiers = new ArrayList<>();
+
+                // ajouter les chemins des fichiers sélectionnés
+                for (String cheminFichier : cheminsDesFichiers) {
+                    fichiers.add(new File(cheminFichier));
+                }
+
+                // envoyer les fichiers
+                for (File fichier : fichiers) {
+                    reseau.envoyer(fichier.getPath());
+
+                    // recevoir une réponse du serveur
+                    String reponse = reseau.recevoirReponse();
+                    reseau.utiliserReponse(reponse);
+                }
+
+                System.out.println("Tous les fichiers ont été envoyés !");
+                afficherConfirmationEtRetour();
+
+            } catch (IllegalArgumentException e) {
+                System.err.println("Erreur d'envoi : " + e.getMessage());
+                showAlert("Erreur d'envoi",
+                        "Une erreur est survenue lors de l'envoi : "
+                                + e.getMessage());
+
+            } catch (Exception e) {
+                System.err.println("Erreur inattendue : " + e.getMessage());
+                showAlert("Erreur inattendue",
+                        "Une erreur inattendue est survenue : "
+                                + e.getMessage());
+
+            } finally {
+                reseau.fermerClient();
             }
-
-            // envoyer les fichiers
-            for (File fichier : fichiers) {
-                reseau.envoyer(fichier.getPath());
-
-                // recevoir une réponse du serveur
-                String reponse = reseau.recevoirReponse();
-                reseau.utiliserReponse(reponse);
-            }
-
-            System.out.println("Tous les fichiers ont été envoyés !");
-            afficherConfirmationEtRetour();
-
-        } catch (IllegalArgumentException e) {
-            System.err.println("Erreur d'envoi : " + e.getMessage());
-            showAlert("Erreur d'envoi",
-                   "Une erreur est survenue lors de l'envoi : "
-                           + e.getMessage());
-
-        } catch (Exception e) {
-            System.err.println("Erreur inattendue : " + e.getMessage());
-            showAlert("Erreur inattendue",
-                  "Une erreur inattendue est survenue : "
-                           + e.getMessage());
-
-        } finally {
-            reseau.fermerClient();
+        } else if (result.get() == ButtonType.CANCEL){
+            envoyer.close();
         }
     }
 
