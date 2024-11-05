@@ -33,11 +33,9 @@ public class MainControleur extends Application {
     private static Scene AideAccueil;
     private static Scene AideConnexion;
     private static Scene AideEnvoyer;
-    private static Scene AideExporter;
     private static Scene AideImporter;
     private static Scene Connexion;
     private static Scene Envoyer;
-    private static Scene Exporter;
     private static Scene Importer;
 
     /* Déclaration du stage */
@@ -73,13 +71,6 @@ public class MainControleur extends Application {
     }
 
     /**
-     * Change la scène pour afficher l'aide pour l'exportation de données.
-     */
-    public static void activerAideExporter() {
-        fenetrePrincipale.setScene(AideExporter);
-    }
-
-    /**
      * Change la scène pour afficher l'aide pour l'importation de données.
      */
     public static void activerAideImporter() {
@@ -98,13 +89,6 @@ public class MainControleur extends Application {
      */
     public static void activerEnvoyer() {
         fenetrePrincipale.setScene(Envoyer);
-    }
-
-    /**
-     * Change la scène pour afficher l'écran d'exportation de données.
-     */
-    public static void activerExporter() {
-        fenetrePrincipale.setScene(Exporter);
     }
 
     /**
@@ -154,12 +138,6 @@ public class MainControleur extends Application {
             conteneur = chargeurFXMLAideEnvoyer.load();
             AideEnvoyer = new Scene(conteneur);
 
-            FXMLLoader chargeurFXMLAideExporter = new FXMLLoader();
-            chargeurFXMLAideExporter.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideExporter.fxml"));
-            conteneur = chargeurFXMLAideExporter.load();
-            AideExporter = new Scene(conteneur);
-
             FXMLLoader chargeurFXMLAideImporter = new FXMLLoader();
             chargeurFXMLAideImporter.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/aideImporter.fxml"));
@@ -177,12 +155,6 @@ public class MainControleur extends Application {
                     .getResource("/sae/statisalle/vue/envoyer.fxml"));
             conteneur = chargeurFXMLEnvoyer.load();
             Envoyer = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLExporter = new FXMLLoader();
-            chargeurFXMLExporter.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/exporter.fxml"));
-            conteneur = chargeurFXMLExporter.load();
-            Exporter = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLImporter = new FXMLLoader();
             chargeurFXMLImporter.setLocation(getClass()

@@ -11,11 +11,6 @@ public class Accueil {
     }
 
     @FXML
-    void actionExporter(){
-        MainControleur.activerExporter();
-    }
-
-    @FXML
     void actionEnvoyer(){
         MainControleur.activerConnexion();
     }
