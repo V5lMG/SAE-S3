@@ -91,7 +91,7 @@ public class Connexion {
         String portText = textPort.getText();
         int port;
 
-        // Validation de l'adresse IP
+        // validation de l'adresse IP
         if (!isValidIPv4(ip)) {
             Session.setAdresseIp(ip);
             showAlert(AlertType.ERROR, "Erreur de connexion",
@@ -100,7 +100,7 @@ public class Connexion {
             return;
         }
 
-        // Validation du port
+        // validation du port
         try {
             port = Integer.parseInt(portText);
             if (port < 0 || port > 65535) {
@@ -113,7 +113,7 @@ public class Connexion {
             return;
         }
 
-        // Tentative de connexion
+        // tentative de connexion
         try {
             reseau.preparerClient(ip, port);
             Session.setAdresseIp(ip + ":" + portText);
@@ -149,7 +149,9 @@ public class Connexion {
             String ipAddress = ip.getHostAddress();
             btnAfficherIp.setText(ipAddress);
         } else {
-            btnAfficherIp.setText("Erreur de récupération de l'IP");
+            btnAfficherIp.setText("Pas de connexion");
+            showAlert(AlertType.INFORMATION,"Impossible d'afficher l'IP",
+                    "Absence de connexion a un réseau.");
             System.err.println("Erreur lors de la récupération de l'adresse IP.");
         }
     }

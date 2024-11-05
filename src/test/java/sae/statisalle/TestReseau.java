@@ -29,7 +29,7 @@ public class TestReseau {
      * Port d'écoute utilisé par le serveur pour
      * accepter les connexions clients.
      */
-    private static final int PORT = 12345;
+    private static final int PORT = 54321;
 
     /** Nom d'hôte ou adresse IP du serveur (ici configuré en local). */
     private static final String HOST = "localhost";

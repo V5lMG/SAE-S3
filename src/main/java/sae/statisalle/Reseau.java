@@ -116,13 +116,15 @@ public class Reseau {
 
     /**
      * Traite la requête reçue du client en remplaçant les marqueurs
-     * de fin de ligne par les caractères de saut de ligne réels.
-     * @param requete La requête reçue du client sous forme de chaîne de caractères.
+     * de fin de ligne par les caractères de saut de ligne.
+     * @param requete La requête reçue du client sous forme
+     *                de chaîne de caractères.
      * @return Une chaîne de caractères formatée pour l'enregistrement.
      */
     public String traiterRequete(String requete) {
         System.out.println("Message reçu du client : " + requete);
-        return requete.replace("/R", "\r").replace("/N", "\n");
+        return requete.replace("/R", "\r")
+                      .replace("/N", "\n");
     }
 
     /**
@@ -204,7 +206,7 @@ public class Reseau {
         }
 
         try {
-            // remplacer les fins de lignes par des espaces :
+            // remplacer les fins de lignes par des caractères
             String contenu = Files.readString(fichier.toPath())
                                   .replace("\n", "/N")
                                   .replace("\r", "/R");
@@ -239,7 +241,7 @@ public class Reseau {
      * @param reponse réponse du serveur
      */
     public void utiliserReponse(String reponse) {
-        // todo méthode ici pour traiter la réponse du serveur
+        // TODO : méthode ici pour traiter la réponse du serveur
         System.out.println("Réponse du serveur : " + reponse);
     }
 
@@ -263,25 +265,18 @@ public class Reseau {
      * @return l'adresse IP de la machine sous forme d'objet InetAddress.
      */
     public static InetAddress renvoyerIP() {
+        // 8.8.8.8 correspond au DNS de google
         try (Socket socket = new Socket("8.8.8.8", 53)) {
             InetAddress ipLocale = socket.getLocalAddress();
             System.out.println("Nom de la machine : " + ipLocale.getHostName());
             System.out.println("Adresse IP : " + ipLocale.getHostAddress());
             return ipLocale;
         } catch (IOException e) {
-            System.err.println("Erreur lors de la récupération de l'IP locale : " + e.getMessage());
-            return null;
+            System.err.println("Erreur lors de la récupération de l'IP : "
+                               + e.getMessage());
+            return null; // retourne null pour éviter les erreurs
         }
     }
-
-    /**
-     public static InetAddress renvoyerIP() throws UnknownHostException {
-        InetAddress ip = InetAddress.getLocalHost();
-        System.out.println("Nom de la machine : " + ip.getHostName());
-        System.out.println("IP de la machine : " + ip.getHostAddress());
-        return ip;
-     }
-    */
 }
 
 
