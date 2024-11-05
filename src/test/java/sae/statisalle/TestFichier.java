@@ -36,7 +36,7 @@ class TestFichier {
 
     private Fichier fichierSalle;
 
-    private Fichier fichierActvite;
+    private Fichier fichierActivite;
 
     private String[] cheminFichier = {
             "employes 26_08_24 13_40",
@@ -118,7 +118,7 @@ class TestFichier {
                 fichierSalle = new Fichier(tempFile.getAbsolutePath());
             }
             if (cheminFichier[i].contains("activites")) {
-                fichierActvite = new Fichier(tempFile.getAbsolutePath());
+                fichierActivite = new Fichier(tempFile.getAbsolutePath());
             }
         }
     }
@@ -127,7 +127,7 @@ class TestFichier {
     void tearDown() {
         // Nettoyage : Supprimer le fichier temporaire
 
-        File tempFileActivite = fichierActvite.getFichierExploite();
+        File tempFileActivite = fichierActivite.getFichierExploite();
         if (tempFileActivite.exists()) {
             tempFileActivite.delete();
         }
@@ -150,59 +150,144 @@ class TestFichier {
 
     @Test
     void extensionValide() {
-        assertTrue(fichierEmploye.extensionValide(), "L'extension du fichier devrait être valide.");
-        assertTrue(fichierReservation.extensionValide(), "L'extension du fichier devrait être valide.");
-        assertTrue(fichierSalle.extensionValide(), "L'extension du fichier devrait être valide.");
-        assertTrue(fichierActvite.extensionValide(), "L'extension du fichier devrait être valide.");
+        assertTrue(fichierEmploye.extensionValide());
+        assertTrue(fichierReservation.extensionValide());
+        assertTrue(fichierSalle.extensionValide());
+        assertTrue(fichierActivite.extensionValide());
     }
 
     @Test
     void contenuFichier() {
         List<String> contenuEmploye = fichierEmploye.contenuFichier();
-        assertNotNull(contenuEmploye, "Le contenu du fichier ne doit pas être null.");
-        assertEquals("Ident;Nom;Prenom;Telephone", contenuEmploye.getFirst(), "La première ligne doit correspondre à l'en-tête attendu.");
+        assertFalse(contenuEmploye.isEmpty());
+        assertEquals(9, contenuEmploye.size());
 
         List<String> contenuReservation = fichierReservation.contenuFichier();
-        assertNotNull(contenuReservation, "Le contenu du fichier ne doit pas être null.");
-        assertEquals("Ident;salle;employe;activite;date;heuredebut;heurefin;;;;;", contenuReservation.getFirst(), "La première ligne doit correspondre à l'en-tête attendu.");
+        assertFalse(contenuReservation.isEmpty());
+        assertEquals(19, contenuReservation.size());
 
         List<String> contenuSalle = fichierSalle.contenuFichier();
-        assertNotNull(contenuSalle, "Le contenu du fichier ne doit pas être null.");
-        assertEquals("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante", contenuSalle.getFirst(), "La première ligne doit correspondre à l'en-tête attendu.");
+        assertFalse(contenuSalle.isEmpty());
+        assertEquals(10, contenuSalle.size());
 
-        List<String> contenuActivite = fichierActvite.contenuFichier();
-        assertNotNull(contenuActivite, "Le contenu du fichier ne doit pas être null.");
-        assertEquals("Ident;Activité", contenuActivite.getFirst(), "La première ligne doit correspondre à l'en-tête attendu.");
+        List<String> contenuActivite = fichierActivite.contenuFichier();
+        assertFalse(contenuActivite.isEmpty());
+        assertEquals(7, contenuActivite.size());
     }
 
     @Test
     void nomFichier() {
         String nomFichierEmploye = fichierEmploye.nomFichier();
-        assertTrue(nomFichierEmploye.startsWith("employes 26_08_24 13_40"), "Le nom du fichier devrait correspondre à 'employe 26_08_24 13_40'.");
+        assertTrue(nomFichierEmploye.startsWith("employes 26_08_24 13_40"));
 
-        String nomFichierRservation = fichierReservation.nomFichier();
-        assertTrue(nomFichierRservation.startsWith("reservations 26_08_24 13_40"), "Le nom du fichier devrait correspondre à 'reservation 26_08_24 13_40'.");
+        String nomFichierReservation = fichierReservation.nomFichier();
+        assertTrue(nomFichierReservation.startsWith("reservations 26_08_24 13_40"));
 
         String nomFichierSalle = fichierSalle.nomFichier();
-        assertTrue(nomFichierSalle.startsWith("salles 26_08_24 13_40"), "Le nom du fichier devrait correspondre à 'salles 26_08_24 13_40'.");
+        assertTrue(nomFichierSalle.startsWith("salles 26_08_24 13_40"));
 
-        String nomFichierActivite = fichierActvite.nomFichier();
-        assertTrue(nomFichierActivite.startsWith("activites 26_08_24 13_40"), "Le nom du fichier devrait correspondre à 'activites 26_08_24 13_40'.");
+        String nomFichierActivite = fichierActivite.nomFichier();
+        assertTrue(nomFichierActivite.startsWith("activites 26_08_24 13_40"));
+    }
+
+    @Test
+    void getFichierExploite() {
+        assertNotNull(fichierEmploye.getFichierExploite());
+        assertNotNull(fichierReservation.getFichierExploite());
+        assertNotNull(fichierSalle.getFichierExploite());
+        assertNotNull(fichierActivite.getFichierExploite());
     }
 
     @Test
     void getTypeFichier() {
-        String typeEmploye = fichierEmploye.getTypeFichier();
-        assertEquals("Employe", typeEmploye, "Le type de fichier devrait être 'Employe' d'après le contenu.");
+        assertEquals("Employe", fichierEmploye.getTypeFichier());
+        assertEquals("Reservation", fichierReservation.getTypeFichier());
+        assertEquals("Salle", fichierSalle.getTypeFichier());
+        assertEquals("Activite", fichierActivite.getTypeFichier());
+    }
 
-        String typeReservation = fichierReservation.getTypeFichier();
-        assertEquals("Reservation", typeReservation, "Le type de fichier devrait être 'Reservation' d'après le contenu.");
+    @Test
+    void reecritureFichier() {
+        // Nouveau contenu pour le fichier d'employés
+        List<String> nouveauContenu = List.of(
+                "Ident;Nom;Prenom;Telephone",
+                "E000009;Dupont;Marie;1234",
+                "E000010;Martin;Paul;5678"
+        );
 
-        String typeSalle = fichierSalle.getTypeFichier();
-        assertEquals("Salle", typeSalle, "Le type de fichier devrait être 'Salle' d'après le contenu.");
+        // Réécrire le fichier d'employés
+        fichierEmploye.reecritureFichier(nouveauContenu);
 
-        String typeActivite = fichierActvite.getTypeFichier();
-        assertEquals("Activite", typeActivite, "Le type de fichier devrait être 'Activite' d'après le contenu.");
+        // Vérifier que le fichier a été réécrit correctement
+        List<String> contenuReecrit = fichierEmploye.contenuFichier();
+        assertEquals(nouveauContenu.size(), contenuReecrit.size());
+        for (int i = 0; i < nouveauContenu.size(); i++) {
+            assertEquals(nouveauContenu.get(i), contenuReecrit.get(i));
+        }
+    }
 
+    @Test
+    void ecritureFichier() {
+        // Nouveau contenu pour le fichier de réservations
+        List<String> nouveauContenu = List.of(
+                "Ident;salle;employe;activite;date;heuredebut;heurefin",
+                "R000019;00000002;E000002;réunion;15/10/2024;10h00;11h00"
+        );
+
+        // Chemin pour le fichier de sortie
+        String cheminFichierSortie = "test_ecriture_reservation.csv";
+
+        Fichier.ecritureFichier(nouveauContenu, cheminFichierSortie);
+
+        Fichier fichierEcrit = new Fichier(cheminFichierSortie);
+        List<String> contenuEcrit = fichierEcrit.contenuFichier();
+
+        assertEquals(nouveauContenu.size(), contenuEcrit.size());
+        for (int i = 0; i < nouveauContenu.size(); i++) {
+            assertEquals(nouveauContenu.get(i), contenuEcrit.get(i));
+        }
+
+        new File(cheminFichierSortie).delete();
+    }
+
+    @Test
+    void fichierExiste() {
+        assertTrue(Fichier.fichierExiste(fichierEmploye.getFichierExploite().getAbsolutePath()));
+        assertTrue(Fichier.fichierExiste(fichierReservation.getFichierExploite().getAbsolutePath()));
+        assertTrue(Fichier.fichierExiste(fichierSalle.getFichierExploite().getAbsolutePath()));
+        assertTrue(Fichier.fichierExiste(fichierActivite.getFichierExploite().getAbsolutePath()));
+
+        assertFalse(Fichier.fichierExiste("non_existant_fichier.csv"));
+    }
+
+    @Test
+    void ecrireFichier() {
+        List<String> nouveauContenu = List.of(
+                "Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante",
+                "00000010;salle Test;20;oui;non;2;PC;logiciels;oui"
+        );
+
+        // Chemin pour le fichier de sortie
+        String cheminFichierSortie = "test_ecriture_salle.csv";
+
+        Fichier.ecritureFichier(nouveauContenu, cheminFichierSortie);
+
+        Fichier fichierEcrit = new Fichier(cheminFichierSortie);
+        List<String> contenuEcrit = fichierEcrit.contenuFichier();
+
+        assertEquals(nouveauContenu.size(), contenuEcrit.size());
+        for (int i = 0; i < nouveauContenu.size(); i++) {
+            assertEquals(nouveauContenu.get(i), contenuEcrit.get(i));
+        }
+
+        new File(cheminFichierSortie).delete();
+    }
+
+    @Test
+    void ouvrirDossier() {
+        assertNotNull(fichierEmploye.getFichierExploite());
+        assertNotNull(fichierSalle.getFichierExploite());
+        assertNotNull(fichierActivite.getFichierExploite());
+        assertNotNull(fichierReservation.getFichierExploite());
     }
 }

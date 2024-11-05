@@ -157,8 +157,6 @@ public class Fichier {
                 writer.newLine();
             }
 
-            // FIXME jamais appelé
-            writer.close();
         } catch (IOException e) {
             err.println(ERREUR_ECRITURE_FICHIER);
         }
@@ -185,8 +183,6 @@ public class Fichier {
                 writer.newLine();
             }
 
-            // FIXME jamais appelé
-            writer.close();
         } catch (IOException e) {
             err.println(ERREUR_ECRITURE_FICHIER);
         }
@@ -203,6 +199,7 @@ public class Fichier {
         if (pointIndex == -1) {
             return nomFichier;
         }
+
         return nomFichier.substring(0, pointIndex);
     }
 
@@ -295,6 +292,4 @@ public class Fichier {
                     + e.getMessage());
         }
     }
-
-
 }
