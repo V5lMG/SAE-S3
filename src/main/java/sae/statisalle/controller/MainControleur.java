@@ -37,6 +37,7 @@ public class MainControleur extends Application {
     private static Scene Connexion;
     private static Scene Envoyer;
     private static Scene Importer;
+    private static Scene Affichage;
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -96,6 +97,13 @@ public class MainControleur extends Application {
      */
     public static void activerImporter() {
         fenetrePrincipale.setScene(Importer);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran d'affichage des données.
+     */
+    public static void activerAffichage() {
+        fenetrePrincipale.setScene(Affichage);
     }
 
     /**
@@ -161,6 +169,12 @@ public class MainControleur extends Application {
                     .getResource("/sae/statisalle/vue/importer.fxml"));
             conteneur = chargeurFXMLImporter.load();
             Importer = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
+            chargeurFXMLImporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/affichage.fxml"));
+            conteneur = chargeurFXMLImporter.load();
+            Affichage = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
