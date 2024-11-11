@@ -1,5 +1,5 @@
 /*
- * Fichier.java               06/11/2024
+ * Chiffrement.java               06/11/2024
  * IUT DE RODEZ               Pas de copyrights
  */
 
@@ -22,8 +22,8 @@ public class Chiffrement {
 
     public static String donnees;
 
-    /*La clef à partir de laquelle le chiffrement est effectué*/
-    private static String cle = "BUTINFORMATIQUE";
+    /* Nombre de caractere dans les données*/
+    private static int tailleDonnees;
 
     /**
      * Méthode de chiffrement des données,
@@ -34,13 +34,27 @@ public class Chiffrement {
      *              message
      * @param fichier : Fichier qui contient les données à crypter
      */
-    public static void chiffrementDonnees(Fichier fichier,
+    public static String chiffrementDonnees(Fichier fichier,
                                           String cle) {
+        String messChiffre = "";
+        char charDonnees,
+                charCle;
+        int codeDonnees,
+                codeCle,
+                codeCharChiffre;
         donnees = fichier.contenuFichier().toString();
-        tailleClef(donnees);
+        defTailleClef(donnees, cle);
 
 
-
+        for(int i = 0; i < tailleDonnees; i++){
+            charDonnees = donnees.charAt(i);
+            charCle = cle.charAt(i);
+            codeDonnees = charDonnees;
+            codeCle = charCle;
+            codeCharChiffre = (codeDonnees - codeCle);
+            messChiffre = messChiffre += codeCharChiffre;
+        }
+        return messChiffre;
     }
 
     /**
@@ -59,23 +73,24 @@ public class Chiffrement {
      * message.
      * @param donnees : les données présentes dans le fichier
      */
-    public static String tailleClef(String donnees){
-        int tailleDonnees = donnees.length();
+    public static void defTailleClef(String donnees, String cle){
+        tailleDonnees = donnees.length();
+        /*Nombre de caractere dans la clé adatper en fonction de la taille des données*/
         int tailleCle = cle.length();
-        for(int i = 0; i < tailleDonnees; i++){
+        for(int i = 0; i < tailleDonnees - 1; i++){
             if(i == tailleCle - 1){
                 i = 0;
-                cle += cle.charAt(i);
             }
+            cle += cle.charAt(i);
         }
-        return cle;
     }
 
     /**
      * Générer une clé aléatoire de taille aléatoire
      */
     public static String genererCle(String donnees, int longueurMaxCle){
+        //TODO
         longueurMaxCle = donnees.length();
-        return cle;
+        return ""; //STUB
     }
 }
