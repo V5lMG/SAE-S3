@@ -4,17 +4,29 @@
  */
 package sae.statisalle;
 
+import java.util.List;
 /**
  * CLasse qui teste chaque méthode de la classe Chiffrement
  */
 public class TestChiffrement {
 
     public static void testGenererCleAleatoire() {
-        String donnees = "Ceci est un exemple de données";  // Exemple de données
+        List<String> donnees = new List<>(); // Exemple de données
+        donnees.add("Ceci est un exemple de données");
         String cle = Chiffrement.genererCleAleatoire(donnees);
         System.out.println("Clé générée : " + cle);
     }
+
+    public static void testDefTailleClef() {
+        String donnees = "Bonjour ahaha";  // Exemple de données
+        String cle = Chiffrement.genererCleAleatoire(donnees);
+        System.out.println("cle générer " + cle);
+        Chiffrement.defTailleClef(donnees,cle);
+        System.out.println("Clé adapter à la taille du texte : " + cle);
+    }
+
     public static void main(String[] args) {
-        testGenererCleAleatoire();
+        //testGenererCleAleatoire();
+        testDefTailleClef();
     }
 }
