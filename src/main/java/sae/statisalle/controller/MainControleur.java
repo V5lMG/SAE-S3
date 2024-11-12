@@ -171,9 +171,9 @@ public class MainControleur extends Application {
             Importer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
-            chargeurFXMLImporter.setLocation(getClass()
+            chargeurFXMLAffichage.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/affichage.fxml"));
-            conteneur = chargeurFXMLImporter.load();
+            conteneur = chargeurFXMLAffichage.load();
             Affichage = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
@@ -181,7 +181,7 @@ public class MainControleur extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            System.err.println("Erreur lors du chargement des vues"
+            System.err.println("Erreur lors du chargement des vues "
                                + e.getMessage());
         }
     }

@@ -27,6 +27,9 @@ public class Salle {
     /*Identifiant de la salle*/
     String identifiant;
 
+    /*Nom de la salle*/
+    String nom;
+
     /*Capacité de place de la salle*/
     int capacite;
 
@@ -39,21 +42,60 @@ public class Salle {
     /*Nombre de machine présente dans la salle*/
     int nbMachine;
 
+    /*Type des machines*/
+    String typeMachine;
+
     /*Liste des logiciels utilisable dans la salle*/
     ArrayList<String> logiciel;
 
     /*Indique la présence d'imprimante dans la salle*/
     boolean imprimante;
 
-    public Salle(String identifiant, int capacite, boolean videoProj, boolean ecranXXL, int nbMachine, ArrayList<String> logiciel, boolean imprimante) {
+    public Salle(String identifiant, String nom, int capacite, boolean ecranXXL, String typeMachine, boolean videoProj, int nbMachine, ArrayList<String> logiciel, boolean imprimante) {
         this.identifiant = identifiant;
+        this.nom = nom;
         this.capacite = capacite;
-        this.videoProj = videoProj; //à Vérifier
         this.ecranXXL = ecranXXL;
+        this.typeMachine = typeMachine;
+        this.videoProj = videoProj;
         this.nbMachine = nbMachine;
         this.logiciel = logiciel;
         this.imprimante = imprimante;
     }
 
+    public String getIdentifiant() {
+        return identifiant;
+    }
 
+    public String getNom() {
+        return nom;
+    }
+
+    public int getCapacite() {
+        return capacite;
+    }
+
+    public boolean isVideoProj() {
+        return videoProj;
+    }
+
+    public boolean isEcranXXL() {
+        return ecranXXL;
+    }
+
+    public int getNbMachine() {
+        return nbMachine;
+    }
+
+    public String getTypeMachine() {
+        return typeMachine;
+    }
+
+    public ArrayList<String> getLogiciel() {
+        return logiciel;
+    }
+
+    public boolean isImprimante() {
+        return imprimante;
+    }
 }

@@ -28,7 +28,7 @@ public class Reservation {
     DateFormat date;
 
     /*Créneau de réservation*/
-    Creneau creneau;
+    Creneau creneau; //intuile approximativement
 
     public Reservation(String idReservation, DateFormat date, Creneau creneau) {
         this.idReservation = idReservation;

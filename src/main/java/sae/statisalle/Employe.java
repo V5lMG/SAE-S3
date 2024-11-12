@@ -33,4 +33,16 @@ public class Employe {
         this.prenom = prenom;
         this.numTel = numTel;
     }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getNumTel() {
+        return numTel;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
 }

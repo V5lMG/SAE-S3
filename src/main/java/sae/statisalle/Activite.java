@@ -25,7 +25,13 @@ public class Activite {
     public Activite(String type,  String idActivite) {
         this.idActivite = idActivite;
         this.type = type;
-
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public String getIdActivite() {
+        return idActivite;
+    }
 }
