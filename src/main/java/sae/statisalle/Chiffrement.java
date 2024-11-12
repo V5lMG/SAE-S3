@@ -23,15 +23,12 @@ import java.util.ArrayList;
  */
 public class Chiffrement {
 
-    private static List<String> donnees;
-
-    private static String cle = null;
-
     /* Nombre de caractere dans les données*/
     private static int tailleDonnees;
 
-    /* Contient le total des caractères que nous utilisons pour le chiffrement*/
+    /*Contient les caractères utilisés pour le chiffrement*/
     private static List<Character> alphabet;
+
 
     /**
      * Méthode de chiffrement des données,
@@ -48,40 +45,37 @@ public class Chiffrement {
         String ligne = "";
         StringBuilder messChiffre = new StringBuilder();
 
-        char charDonnees,
-                charCle;
-
         int codeDonnees,
                 codeCle,
                 codeCharChiffre;
 
         creerAlphabet();
-        donnees = fichier.contenuFichier();
+        List<String> donnees = fichier.contenuFichier();
+        cle = genererCleAleatoire(); // uniquement pour les tests le temps d'avoir l'algo sur Diffie Hellman
         defTailleClef(donnees, cle);
-        genererCleAleatoire(donnees);
 
-
-
-        for (int i = 0; i < tailleDonnees - 1; i++) {
+        for (int i = 0; i < tailleDonnees; i++) {
             ligne = donnees.get(i);
             for(int j = 0; j < ligne.length(); j++){
-                charDonnees = ligne.charAt(j);
-                charCle = cle.charAt(j);
-                codeDonnees = charDonnees;
-                codeCle = charCle;
-                codeCharChiffre = (codeDonnees + codeCle % 26);
-                messChiffre = new StringBuilder(messChiffre.append(codeCharChiffre));
+                codeDonnees = alphabet.indexOf(ligne.charAt(j));
+                codeCle = alphabet.indexOf(cle.charAt(j % cle.length()));
+                if (codeDonnees != -1 && codeCle != -1) {
+                    codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
+                    messChiffre.append(alphabet.get(codeCharChiffre));
+                } else {
+                    messChiffre.append(ligne.charAt(j)); // Conserve le caractère si non trouvé
+                }
             }
         }
         return messChiffre.toString();
     }
 
-    public static List<Character> creerAlphabet() {
+    public static void creerAlphabet() {
         // Crée une nouvelle liste pour stocker les caractères
         alphabet = new ArrayList<>();
 
         // Ajoute les lettres de l'alphabet (minuscules et majuscules)
-            for (char c = 'a'; c <= 'z'; c++) {
+        for (char c = 'a'; c <= 'z'; c++) {
             alphabet.add(c);
             alphabet.add(Character.toUpperCase(c));
         }
@@ -90,14 +84,13 @@ public class Chiffrement {
         char[] accents = {
                 'à', 'â', 'ä', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'ö', 'ù', 'û', 'ü', 'ç', 'œ', 'æ'
         };
-            for (char c : accents) {
+        for (char c : accents) {
             alphabet.add(c);
         }
 
         //Ajout de l'espace de l'aphabet.
         alphabet.add(' ');
 
-        return alphabet;
     }
 
     /**
@@ -116,7 +109,7 @@ public class Chiffrement {
      *
      * @param donnees : les données présentes dans le fichier
      */
-    public static String defTailleClef(List<String> donnees, String cle) {
+    public static void defTailleClef(List<String> donnees, String cle) {
         tailleDonnees = donnees.size();
         /*Nombre de caractères dans la clé en fonction de la taille des données*/
         int tailleCle = cle.length();
@@ -128,69 +121,62 @@ public class Chiffrement {
             cleBuilder.append(cleBuilder.charAt(i));
         }
         cle = cleBuilder.toString();
-        return cle;
     }
 
     /**
      * Génère une clé aléatoire de taille aléatoire entre 1 et la longueur des données.
-     * @param donnees La chaîne de données qui détermine la longueur maximale de la clé.
      * @return La clé générée sous forme de String.
      */
-    public static String genererCleAleatoire(List<String> donnees) {
+    public static String genererCleAleatoire() {
         Random random = new Random();
+        int longueurCle = random.nextInt(tailleDonnees - 1) + 1;
+        StringBuilder cleBuilder = new StringBuilder();
 
-        // le +1 garantit au moins une lettre
-        int longueurCle = random.nextInt(donnees.size()) + 1;
-
-        String cle = "";
-
-        // Générer la clé aléatoire avec des lettres contenues dans la liste alphabet
-        // jusqu'à atteindre la longueur souhaitée
         for (int i = 0; i < longueurCle; i++) {
-            char lettre = (char) ('a' + random.nextInt(alphabet.size()));
-            cle = cle + lettre;
+            char lettre = alphabet.get(random.nextInt(alphabet.size())); // Choisir une lettre aléatoire dans l'alphabet
+            cleBuilder.append(lettre);
         }
-        return cle;
+        return cleBuilder.toString();
     }
 
 
 
 
     /**
-    
-    // 3. Chiffrement d'une ligne de texte
-    public String chiffrerLigne(String ligne, String cle) {
-        StringBuilder resultat = new StringBuilder();
-        for (int i = 0; i < ligne.length(); i++) {
-            char caractere = ligne.charAt(i);
-            char cleChar = cle.charAt(i);
 
-            int indexCaractere = ALPHABET.indexOf(caractere);
-            int indexCle = ALPHABET.indexOf(cleChar);
+     // 3. Chiffrement d'une ligne de texte
+     public String chiffrerLigne(String ligne, String cle) {
+     StringBuilder resultat = new StringBuilder();
+     for (int i = 0; i < ligne.length(); i++) {
+     char caractere = ligne.charAt(i);
+     char cleChar = cle.charAt(i);
 
-            if (indexCaractere == -1 || indexCle == -1) {
-                resultat.append(caractere); // Si le caractère n'est pas dans l'alphabet, on le laisse inchangé
-            } else {
-                int indexChiffre = (indexCaractere + indexCle) % ALPHABET.length();
-                resultat.append(ALPHABET.charAt(indexChiffre));
-            }
-        }
-        return resultat.toString();
-    }
+     int indexCaractere = ALPHABET.indexOf(caractere);
+     int indexCle = ALPHABET.indexOf(cleChar);
 
-    // 5. Chiffrement du contenu complet d'un fichier
-    public List<String> chiffrerContenu(List<String> contenu) {
-        int longueurContenu = contenu.stream().mapToInt(String::length).sum(); // Calcul de la longueur totale du contenu
-        String cleAjustee = ajusterCle(this.cle, longueurContenu); // Ajuste la clé
-        List<String> contenuChiffre = new ArrayList<>();
+     if (indexCaractere == -1 || indexCle == -1) {
+     resultat.append(caractere); // Si le caractère n'est pas dans l'alphabet, on le laisse inchangé
+     } else {
+     int indexChiffre = (indexCaractere + indexCle) % ALPHABET.length();
+     resultat.append(ALPHABET.charAt(indexChiffre));
+     }
+     }
+     return resultat.toString();
+     }
 
-        int indexCle = 0; // Pour parcourir la clé
-        for (String ligne : contenu) {
-            String cleLigne = cleAjustee.substring(indexCle, indexCle + ligne.length());
-            contenuChiffre.add(chiffrerLigne(ligne, cleLigne));
-            indexCle += ligne.length();
-        }
-        return contenuChiffre;
-    }
+     // 5. Chiffrement du contenu complet d'un fichier
+     public List<String> chiffrerContenu(List<String> contenu) {
+     int longueurContenu = contenu.stream().mapToInt(String::length).sum(); // Calcul de la longueur totale du contenu
+     String cleAjustee = ajusterCle(this.cle, longueurContenu); // Ajuste la clé
+     List<String> contenuChiffre = new ArrayList<>();
+
+     int indexCle = 0; // Pour parcourir la clé
+     for (String ligne : contenu) {
+     String cleLigne = cleAjustee.substring(indexCle, indexCle + ligne.length());
+     contenuChiffre.add(chiffrerLigne(ligne, cleLigne));
+     indexCle += ligne.length();
+     }
+     return contenuChiffre;
+     }
      */
 }
