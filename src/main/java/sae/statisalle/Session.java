@@ -2,6 +2,7 @@ package sae.statisalle;
 
 public class Session {
     private static String adresseIp;
+    private static String contenu;
     private static Reseau reseau;
 
     public static String getAdresseIp() {
@@ -18,5 +19,13 @@ public class Session {
 
     public static void setReseau(Reseau reseau) {
         Session.reseau = reseau;
+    }
+
+    public static String getContenu() {
+        return contenu;
+    }
+
+    public static void setContenu(String contenu) {
+        Session.contenu = contenu;
     }
 }

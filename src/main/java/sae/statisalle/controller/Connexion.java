@@ -5,8 +5,6 @@
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import sae.statisalle.Reseau;
@@ -94,7 +92,7 @@ public class Connexion {
         // validation de l'adresse IP
         if (!isValidIPv4(ip)) {
             Session.setAdresseIp(ip);
-            showAlert(AlertType.ERROR, "Erreur de connexion",
+            MainControleur.showAlert("Erreur de connexion",
                     "L'adresse IP n'est pas valide. " +
                             "Veuillez saisir une adresse IPv4.");
             return;
@@ -107,7 +105,7 @@ public class Connexion {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
+            MainControleur.showAlert("Erreur de connexion",
                     "Le numéro de port n'est pas valide. " +
                             "Veuillez saisir un port entre 0 et 65535.");
             return;
@@ -119,12 +117,9 @@ public class Connexion {
             Session.setAdresseIp(ip + ":" + portText);
             Session.setReseau(reseau);
 
-            showAlert(AlertType.INFORMATION, "Connexion réussie",
-                    "Connexion établie avec l'adresse IP : "
-                            + ip + " : " + portText);
             MainControleur.activerEnvoyer();
         } catch (MauvaiseConnexionServeur e) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
+            MainControleur.showAlert("Erreur de connexion",
                     "Impossible de se connecter au serveur : "
                             + e.getMessage());
         }
@@ -150,7 +145,7 @@ public class Connexion {
             btnAfficherIp.setText(ipAddress);
         } else {
             btnAfficherIp.setText("Pas de connexion");
-            showAlert(AlertType.INFORMATION,"Impossible d'afficher l'IP",
+            MainControleur.showAlert("Impossible d'afficher l'IP",
                     "Absence de connexion a un réseau.");
             System.err.println("Erreur lors de la récupération de l'adresse IP.");
         }
@@ -168,21 +163,5 @@ public class Connexion {
                 "[0-1]?[0-9]{1,2})\\.){3}(25[0-5]|2[0-4][0-9]|" +
                 "[0-1]?[0-9]{1,2}))$";
         return ip.matches(ipv4Pattern);
-    }
-
-    /**
-     * Affiche une alerte pour informer l'utilisateur
-     * d'une situation spécifique.
-     *
-     * @param alertType le type de l'alerte.
-     * @param title le titre de l'alerte.
-     * @param message le message de l'alerte.
-     */
-    private void showAlert(AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
