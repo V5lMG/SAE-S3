@@ -11,13 +11,14 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="164.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" />
+                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" />
                   <Button fx:id="btnImporter" layoutY="61.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Importer         " />
                   <ImageView fitHeight="33.0" fitWidth="31.0" layoutX="78.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/OIP-removebg-preview.png" />
                      </image></ImageView>
                   <Button layoutX="187.0" layoutY="61.0" mnemonicParsing="false" onAction="#actionEnvoyer" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Envoyer" textFill="#030303" />
+                  <Button layoutX="95.0" layoutY="127.0" mnemonicParsing="false" onAction="#actionAfficher" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Afficher les données" />
                </children>
             </AnchorPane>
          </children></VBox>

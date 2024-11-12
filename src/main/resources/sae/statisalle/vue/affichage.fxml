@@ -7,19 +7,21 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Affichage">
     <center>
-        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
+
                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                <Button fx:id="btnAfficherTableaux" mnemonicParsing="false" onAction="#afficherTableaux" prefHeight="50.0" prefWidth="150.0" text="Charger les données" />
                <children>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <TabPane prefHeight="234.0" prefWidth="593.0" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="grandTableau" prefHeight="234.0" prefWidth="593.0" visible="false" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
                             <Tab text="Reservation">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TableView fx:id="tabReservation" prefHeight="208.0" prefWidth="593.0">
+                                          <TableView fx:id="tabReservation" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn fx:id="idReservation" prefWidth="75.0" text="Identifiant" />
                                                 <TableColumn fx:id="salleR" prefWidth="75.0" text="Salle" />
@@ -46,7 +48,7 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TableView fx:id="tabSalle" prefHeight="208.0" prefWidth="593.0">
+                                          <TableView fx:id="tabSalle" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                               <TableColumn fx:id="idSalle" prefWidth="75.0" text="Identifiant" />
                                               <TableColumn fx:id="nomS" prefWidth="75.0" text="Nom" />
@@ -69,7 +71,7 @@
                                 <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TableView fx:id="tabActivite" prefHeight="208.0" prefWidth="593.0">
+                                          <TableView fx:id="tabActivite" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                               <TableColumn fx:id="idActivite" prefWidth="75.0" text="Identifiant" />
                                               <TableColumn fx:id="activiteA" prefWidth="75.0" text="Activité" />
@@ -81,11 +83,11 @@
                                        </children></AnchorPane>
                                 </content>
                             </Tab>
-                              <Tab text="Employé">
+                              <Tab fx:id="ongletEmploye" text="Employé">
                                   <content>
                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="592.0">
                                        <children>
-                                          <TableView fx:id="tabEmploye" prefHeight="208.0" prefWidth="593.0">
+                                          <TableView fx:id="tabEmploye" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                               <TableColumn fx:id="idEmploye" prefWidth="75.0" text="Identifiant" />
                                               <TableColumn fx:id="nomE" prefWidth="75.0" text="Nom" />
