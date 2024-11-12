@@ -51,7 +51,7 @@ public class Chiffrement {
 
         creerAlphabet();
         List<String> donnees = fichier.contenuFichier();
-        cle = genererCleAleatoire(); // uniquement pour les tests le temps d'avoir l'algo sur Diffie Hellman
+        cle = genererCleAleatoire(donnees); // uniquement pour les tests le temps d'avoir l'algo sur Diffie Hellman
         defTailleClef(donnees, cle);
 
         for (int i = 0; i < tailleDonnees; i++) {
@@ -110,7 +110,6 @@ public class Chiffrement {
      * @param donnees : les données présentes dans le fichier
      */
     public static void defTailleClef(List<String> donnees, String cle) {
-        tailleDonnees = donnees.size();
         /*Nombre de caractères dans la clé en fonction de la taille des données*/
         int tailleCle = cle.length();
         StringBuilder cleBuilder = new StringBuilder(cle);
@@ -127,9 +126,15 @@ public class Chiffrement {
      * Génère une clé aléatoire de taille aléatoire entre 1 et la longueur des données.
      * @return La clé générée sous forme de String.
      */
-    public static String genererCleAleatoire() {
+    public static String genererCleAleatoire(List<String> donnees) {
+        tailleDonnees = donnees.size();
+
+        if (tailleDonnees == 0) {
+            throw new IllegalArgumentException("La liste des données est vide. Impossible de générer une clé.");
+        }
+
         Random random = new Random();
-        int longueurCle = random.nextInt(tailleDonnees - 1) + 1;
+        int longueurCle = random.nextInt(1000);
         StringBuilder cleBuilder = new StringBuilder();
 
         for (int i = 0; i < longueurCle; i++) {
