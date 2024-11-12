@@ -14,6 +14,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
 
@@ -37,7 +38,7 @@ public class MainControleur extends Application {
     private static Scene Connexion;
     private static Scene Envoyer;
     private static Scene Importer;
-    private static Scene Affichage;
+    private static Scene Visualiser;
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -103,7 +104,7 @@ public class MainControleur extends Application {
      * Change la scène pour afficher l'écran d'affichage des données.
      */
     public static void activerAffichage() {
-        fenetrePrincipale.setScene(Affichage);
+        fenetrePrincipale.setScene(Visualiser);
     }
 
     /**
@@ -174,7 +175,7 @@ public class MainControleur extends Application {
             chargeurFXMLAffichage.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/affichage.fxml"));
             conteneur = chargeurFXMLAffichage.load();
-            Affichage = new Scene(conteneur);
+            Visualiser = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;

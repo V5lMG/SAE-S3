@@ -1,101 +1,149 @@
 package sae.statisalle.controller;
 
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
+import sae.statisalle.Activite;
+import sae.statisalle.Employe;
+import sae.statisalle.Reservation;
+import sae.statisalle.Salle;
 
 public class Affichage {
 
     @FXML
-    private Button btnAide;
-
-    @FXML
-    private Button btnRetour;
+    private Button btnAfficherTableaux;
 
     @FXML
     private Text titre;
 
+    @FXML
+    private TabPane grandTableau;
+
+    @FXML
+    private AnchorPane toutTableau;
+
     // Table de réservations
     @FXML
-    private TableView<?> tabReservation;
+    private TableView<Reservation> tabReservation;
     @FXML
-    private TableColumn<?, ?> idReservation;
+    private TableColumn<Reservation, ?> idReservation;
     @FXML
-    private TableColumn<?, ?> salleR;
+    private TableColumn<Reservation, ?> salleR;
     @FXML
-    private TableColumn<?, ?> employeR;
+    private TableColumn<Reservation, ?> employeR;
     @FXML
-    private TableColumn<?, ?> activiteR;
+    private TableColumn<Reservation, ?> activiteR;
     @FXML
-    private TableColumn<?, ?> dateR;
+    private TableColumn<Reservation, ?> dateR;
     @FXML
-    private TableColumn<?, ?> heureDebutR;
+    private TableColumn<Reservation, ?> heureDebutR;
     @FXML
-    private TableColumn<?, ?> heureFinR;
+    private TableColumn<Reservation, ?> heureFinR;
     @FXML
-    private TableColumn<?, ?> descriptionR;
+    private TableColumn<Reservation, ?> descriptionR;
     @FXML
-    private TableColumn<?, ?> nomR;
+    private TableColumn<Reservation, ?> nomR;
     @FXML
-    private TableColumn<?, ?> prenomR;
+    private TableColumn<Reservation, ?> prenomR;
     @FXML
-    private TableColumn<?, ?> numTelR;
+    private TableColumn<Reservation, ?> numTelR;
     @FXML
-    private TableColumn<?, ?> usageR;
+    private TableColumn<Reservation, ?> usageR;
 
     // Table des salles
     @FXML
-    private TableView<?> tabSalle;
+    private TableView<Salle> tabSalle;
     @FXML
-    private TableColumn<?, ?> idSalle;
+    private TableColumn<Salle, ?> idSalle;
     @FXML
-    private TableColumn<?, ?> nomS;
+    private TableColumn<Salle, ?> nomS;
     @FXML
-    private TableColumn<?, ?> capaciteS;
+    private TableColumn<Salle, ?> capaciteS;
     @FXML
-    private TableColumn<?, ?> videoProjS;
+    private TableColumn<Salle, ?> videoProjS;
     @FXML
-    private TableColumn<?, ?> ecranXXLS;
+    private TableColumn<Salle, ?> ecranXXLS;
     @FXML
-    private TableColumn<?, ?> nbrOrdiS;
+    private TableColumn<Salle, ?> nbrOrdiS;
     @FXML
-    private TableColumn<?, ?> typeS;
+    private TableColumn<Salle, ?> typeS;
     @FXML
-    private TableColumn<?, ?> logicielS;
+    private TableColumn<Salle, ?> logicielS;
     @FXML
-    private TableColumn<?, ?> imprimanteS;
+    private TableColumn<Salle, ?> imprimanteS;
 
     // Table des activités
     @FXML
-    private TableView<?> tabActivite;
+    private TableView<Activite> tabActivite;
     @FXML
-    private TableColumn<?, ?> idActivite;
+    private TableColumn<Activite, ?> idActivite;
     @FXML
-    private TableColumn<?, ?> activiteA;
+    private TableColumn<Activite, ?> activiteA;
 
     // Table des employés
     @FXML
-    private TableView<?> tabEmploye;
+    private Tab ongletEmploye;
     @FXML
-    private TableColumn<?, ?> idEmploye;
+    private TableView<Employe> tabEmploye;
     @FXML
-    private TableColumn<?, ?> nomE;
+    private TableColumn<Employe, String> idEmploye;
     @FXML
-    private TableColumn<?, ?> prenomE;
+    private TableColumn<Employe, String> nomE;
     @FXML
-    private TableColumn<?, ?> numTelE;
+    private TableColumn<Employe, String> prenomE;
+    @FXML
+    private TableColumn<Employe, String> numTelE;
+
+    ObservableList<Employe> listEmploye = FXCollections.observableArrayList(
+
+            // TODO Création d'objet correspondat à la liste (ici employe)
+            new Employe ("Id1","Nom1","Prenom1","numTel1"),
+            new Employe ("Id2","Nom2","Prenom2","numTel2")
+
+    );
 
     // Méthodes d'action pour les boutons
     @FXML
     private void actionAide() {
-        // Logique pour l'action du bouton Aide
+        // TODO Logique pour l'action du bouton Aide
+
     }
 
     @FXML
     void actionRetour() {
+        grandTableau.setVisible(false);
+        btnAfficherTableaux.setVisible(true);
         MainControleur.activerAccueil();
     }
+
+    public void afficherEmploye() {
+
+        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+
+        tabEmploye.setItems(listEmploye);
+    }
+
+    @FXML
+    private void afficherTableaux() {
+        // Cache le bouton
+        btnAfficherTableaux.setVisible(false);
+
+        // Affiche les tableaux
+        grandTableau.setVisible(true);
+    }
 }
+
+//        Pour la modification du nom du titre
+//        if (ongletEmploye.isSelected()) {
+//            titre.setText("Affichage de Employe");
+//        }
 
