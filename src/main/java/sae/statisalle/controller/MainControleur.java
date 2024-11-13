@@ -21,8 +21,9 @@ import java.io.IOException;
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
  * @author rodrigo.xavier-taborda
- * @author MathiasCambon
+ * @author mathias.cambon
  * @author valentin.munier-genie
+ * @author erwan.thierry
  */
 public class MainControleur extends Application {
 
