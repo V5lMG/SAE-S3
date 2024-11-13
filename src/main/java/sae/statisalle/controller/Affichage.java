@@ -13,6 +13,11 @@ import sae.statisalle.Activite;
 import sae.statisalle.Employe;
 import sae.statisalle.Reservation;
 import sae.statisalle.Salle;
+import sae.statisalle.Fichier;
+
+import java.io.File;
+import java.net.URL;
+import java.util.List;
 
 public class Affichage {
 
@@ -20,10 +25,10 @@ public class Affichage {
     private Button btnAfficherTableaux;
 
     @FXML
-    private Text titre;
+    private TabPane grandTableau;
 
     @FXML
-    private TabPane grandTableau;
+    private Text titre;
 
     @FXML
     private AnchorPane toutTableau;
@@ -32,59 +37,59 @@ public class Affichage {
     @FXML
     private TableView<Reservation> tabReservation;
     @FXML
-    private TableColumn<Reservation, ?> idReservation;
+    private TableColumn<Reservation, String> idReservation;
     @FXML
-    private TableColumn<Reservation, ?> salleR;
+    private TableColumn<Reservation, String> salleR;
     @FXML
-    private TableColumn<Reservation, ?> employeR;
+    private TableColumn<Reservation, String> employeR;
     @FXML
-    private TableColumn<Reservation, ?> activiteR;
+    private TableColumn<Reservation, String> activiteR;
     @FXML
-    private TableColumn<Reservation, ?> dateR;
+    private TableColumn<Reservation, String> dateR;
     @FXML
-    private TableColumn<Reservation, ?> heureDebutR;
+    private TableColumn<Reservation, String> heureDebutR;
     @FXML
-    private TableColumn<Reservation, ?> heureFinR;
+    private TableColumn<Reservation, String> heureFinR;
     @FXML
-    private TableColumn<Reservation, ?> descriptionR;
+    private TableColumn<Reservation, String> descriptionR;
     @FXML
-    private TableColumn<Reservation, ?> nomR;
+    private TableColumn<Reservation, String> nomR;
     @FXML
-    private TableColumn<Reservation, ?> prenomR;
+    private TableColumn<Reservation, String> prenomR;
     @FXML
-    private TableColumn<Reservation, ?> numTelR;
+    private TableColumn<Reservation, String> numTelR;
     @FXML
-    private TableColumn<Reservation, ?> usageR;
+    private TableColumn<Reservation, String> usageR;
 
     // Table des salles
     @FXML
     private TableView<Salle> tabSalle;
     @FXML
-    private TableColumn<Salle, ?> idSalle;
+    private TableColumn<Salle, String> idSalle;
     @FXML
-    private TableColumn<Salle, ?> nomS;
+    private TableColumn<Salle, String> nomS;
     @FXML
-    private TableColumn<Salle, ?> capaciteS;
+    private TableColumn<Salle, String> capaciteS;
     @FXML
-    private TableColumn<Salle, ?> videoProjS;
+    private TableColumn<Salle, String> videoProjS;
     @FXML
-    private TableColumn<Salle, ?> ecranXXLS;
+    private TableColumn<Salle, String> ecranXXLS;
     @FXML
-    private TableColumn<Salle, ?> nbrOrdiS;
+    private TableColumn<Salle, String> nbrOrdiS;
     @FXML
-    private TableColumn<Salle, ?> typeS;
+    private TableColumn<Salle, String> typeS;
     @FXML
-    private TableColumn<Salle, ?> logicielS;
+    private TableColumn<Salle, String> logicielS;
     @FXML
-    private TableColumn<Salle, ?> imprimanteS;
+    private TableColumn<Salle, String> imprimanteS;
 
     // Table des activités
     @FXML
     private TableView<Activite> tabActivite;
     @FXML
-    private TableColumn<Activite, ?> idActivite;
+    private TableColumn<Activite, String> idActivite;
     @FXML
-    private TableColumn<Activite, ?> activiteA;
+    private TableColumn<Activite, String> activiteA;
 
     // Table des employés
     @FXML
@@ -100,13 +105,15 @@ public class Affichage {
     @FXML
     private TableColumn<Employe, String> numTelE;
 
-    ObservableList<Employe> listEmploye = FXCollections.observableArrayList(
+    private ObservableList<Reservation> listReservation;
 
-            // TODO Création d'objet correspondat à la liste (ici employe)
-            new Employe ("Id1","Nom1","Prenom1","numTel1"),
-            new Employe ("Id2","Nom2","Prenom2","numTel2")
+    private ObservableList<Salle> listSalle;
 
-    );
+    private ObservableList<Activite> listActivite;
+
+    private ObservableList<Employe> listEmploye;
+
+    private static final String REPERTOIRE_CSV = "SAE-S3/"; // TODO Modifier le chemin du répertoire
 
     // Méthodes d'action pour les boutons
     @FXML
@@ -122,28 +129,74 @@ public class Affichage {
         MainControleur.activerAccueil();
     }
 
-    public void afficherEmploye() {
-
-        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-
-        tabEmploye.setItems(listEmploye);
-    }
-
     @FXML
-    private void afficherTableaux() {
+    private void chargerDonnees() {
         // Cache le bouton
         btnAfficherTableaux.setVisible(false);
 
         // Affiche les tableaux
         grandTableau.setVisible(true);
+
+        // Récupère le chemin du répertoire "resources"
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL ressourceURL = classLoader.getResource("csv"); // URL = la racine de classLoader => src/main/ressources
+        if (ressourceURL != null) {
+            File dossier = new File(ressourceURL.getPath());
+            // Filtre pour obtenir uniquement les fichiers CSV dans le répertoire
+            File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
+
+            System.out.println(dossier);
+            System.out.println(fichiers);
+
+            for (File fichier : fichiers) {
+                Fichier fichierExploite = new Fichier(fichier.getPath());
+
+                List<List<String>> contenu = fichierExploite.recupererDonnees();
+
+                switch (fichierExploite.getTypeFichier()) {
+                    case "Employe":
+                        listEmploye = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 4) {
+                                listEmploye.add(new Employe(ligne.get(0), ligne.get(1), ligne.get(2), ligne.get(3)));
+                            }
+                        }
+                        tabEmploye.setItems(listEmploye);
+                        break;
+                    case "Salle":
+                        listSalle = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 9) {
+                                listSalle.add(new Salle(ligne.get(0), ligne.get(1), ligne.get(2), ligne.get(3),
+                                        ligne.get(4), ligne.get(5), ligne.get(6), ligne.get(7), ligne.get(8)));
+                            }
+                        }
+                        tabSalle.setItems(listSalle);
+                        break;
+                    case "Activite":
+                        listActivite = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 2) {
+                                listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
+                            }
+                        }
+                        tabActivite.setItems(listActivite);
+                        break;
+                    case "Reservation":
+                        listReservation = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 10) {
+                                listReservation.add(new Reservation(ligne.get(0), ligne.get(1), ligne.get(2), ligne.get(3),
+                                        ligne.get(4), ligne.get(5), ligne.get(6), ligne.get(7), ligne.get(8), ligne.get(9)));
+                            }
+                        }
+                        tabReservation.setItems(listReservation);
+                        break;
+                    default:
+                        // TODO Faire un message d'erreur plus clair
+                        System.out.println("Fichier inconnu : " + fichier.getName());
+                }
+            }
+        }
     }
 }
-
-//        Pour la modification du nom du titre
-//        if (ongletEmploye.isSelected()) {
-//            titre.setText("Affichage de Employe");
-//        }
-

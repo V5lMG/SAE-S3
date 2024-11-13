@@ -24,34 +24,35 @@ import java.util.ArrayList;
  * @author robin.montes
  */
 public class Salle {
-    /*Identifiant de la salle*/
+    /* Identifiant de la salle */
     String identifiant;
 
-    /*Nom de la salle*/
+    /* Nom de la salle*/
     String nom;
 
-    /*Capacité de place de la salle*/
-    int capacite;
+    /* Capacité de place de la salle */
+    String capacite;
 
-    /*Indique la présence de vidéo projecteur dans la salle*/
-    boolean videoProj;
+    /* Indique la présence de vidéo projecteur dans la salle */
+    String videoProj;
 
-    /*Indique la présence d'écran XXL dans la salle*/
-    boolean ecranXXL;
+    /* Indique la présence d'écran XXL dans la salle */
+    String ecranXXL;
 
-    /*Nombre de machine présente dans la salle*/
-    int nbMachine;
+    /* Nombre de machine présente dans la salle */
+    String nbMachine;
 
-    /*Type des machines*/
+    /* Type des machines*/
     String typeMachine;
 
-    /*Liste des logiciels utilisable dans la salle*/
-    ArrayList<String> logiciel;
+    /* Liste des logiciels utilisable dans la salle */
+    String logiciel;
 
-    /*Indique la présence d'imprimante dans la salle*/
-    boolean imprimante;
+    /* Indique la présence d'imprimante dans la salle */
+    String imprimante;
 
-    public Salle(String identifiant, String nom, int capacite, boolean ecranXXL, String typeMachine, boolean videoProj, int nbMachine, ArrayList<String> logiciel, boolean imprimante) {
+    public Salle(String identifiant, String nom, String capacite, String videoProj, String ecranXXL,
+                 String nbMachine, String typeMachine, String logiciel, String imprimante) {
         this.identifiant = identifiant;
         this.nom = nom;
         this.capacite = capacite;
@@ -71,31 +72,67 @@ public class Salle {
         return nom;
     }
 
-    public int getCapacite() {
+    public String getCapacite() {
         return capacite;
     }
 
-    public boolean isVideoProj() {
+    public String getVideoProj() {
         return videoProj;
     }
 
-    public boolean isEcranXXL() {
+    public String getEcranXXL() {
         return ecranXXL;
-    }
-
-    public int getNbMachine() {
-        return nbMachine;
     }
 
     public String getTypeMachine() {
         return typeMachine;
     }
 
-    public ArrayList<String> getLogiciel() {
+    public String getNbMachine() {
+        return nbMachine;
+    }
+
+    public String getLogiciel() {
         return logiciel;
     }
 
-    public boolean isImprimante() {
+    public String getImprimante() {
         return imprimante;
+    }
+
+    public void setIdentifiant(String identifiant) {
+        this.identifiant = identifiant;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setCapacite(String capacite) {
+        this.capacite = capacite;
+    }
+
+    public void setVideoProj(String videoProj) {
+        this.videoProj = videoProj;
+    }
+
+    public void setEcranXXL(String ecranXXL) {
+        this.ecranXXL = ecranXXL;
+    }
+
+    public void setNbMachine(String nbMachine) {
+        this.nbMachine = nbMachine;
+    }
+
+    public void setTypeMachine(String typeMachine) {
+        this.typeMachine = typeMachine;
+    }
+
+    public void setLogiciel(String logiciel) {
+        this.logiciel = logiciel;
+    }
+
+    public void setImprimante(String imprimante) {
+        this.imprimante = imprimante;
     }
 }

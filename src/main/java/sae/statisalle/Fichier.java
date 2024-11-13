@@ -146,6 +146,33 @@ public class Fichier {
     }
 
     /**
+     * Stocke les données d'un fichier CSV sans l'en-tête dans une liste de listes.
+     * Chaque ligne du fichier CSV est transformée en une liste de chaînes de caractères.
+     *
+     * La première ligne du fichier (l'en-tête) n'est pas pris en compte dans le traitement.
+     * Les lignes suivantes représentent les données du fichier, chaque cellule étant séparée par un point-virgule (';').
+     *
+     * @return une liste de listes de chaînes de caractères représentant les données du fichier CSV.
+     *         Chaque sous-liste suivante représente une ligne de données.
+     *         Si le fichier est vide ou ne contient pas de données, une liste vide est retournée.
+     */
+    public List<List<String>> recupererDonnees() {
+        List<List<String>> tableau3D = new ArrayList<>();
+        List<String> contenu = contenuFichier();
+
+        if (contenu.isEmpty()) {
+            return tableau3D;
+        }
+
+        for (int i = 1; i < contenu.size(); i++) {
+            String[] ligne = contenu.get(i).split(";");
+            tableau3D.add(new ArrayList<>(List.of(ligne)));
+        }
+
+        return tableau3D;
+    }
+
+    /**
      * Réécrit le contenu du fichier avec une nouvelle liste de chaînes de caractères.
      * <br>
      * Chaque chaîne dans la liste représente une ligne qui sera écrite dans le fichier.

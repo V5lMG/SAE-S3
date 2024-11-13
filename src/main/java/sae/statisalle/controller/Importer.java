@@ -82,8 +82,8 @@ public class Importer {
 
                 if (!Fichier.fichierExiste(nomFichier)) {
                     Fichier.ecritureFichier(fichierImporter.contenuFichier(),
-                            fichierImporter.getTypeFichier()
-                                    + "_" + dateDuJour);
+                            "src/main/resources/csv/" + fichierImporter.getTypeFichier()
+                                    + "_" + dateDuJour + ".csv");
                 } else {
                     Fichier fichierExistant = new Fichier(nomFichier);
                     fichierExistant.reecritureFichier(
@@ -91,6 +91,14 @@ public class Importer {
                 }
             }
             System.out.println("Le fichier ou les fichiers ont bien été importé(s)");
+            MainControleur.activerAccueil();
+
+            Alert information = new Alert (Alert.AlertType.INFORMATION);
+            information.setTitle("Validation");
+            information.setHeaderText(null);
+            information.setContentText("Le/Les fichier(s) a/ont bien été importé(s)");
+            Optional<ButtonType> resultat = information.showAndWait();
+
         } else if (result.get() == ButtonType.CANCEL){
             envoyer.close();
         } else {
