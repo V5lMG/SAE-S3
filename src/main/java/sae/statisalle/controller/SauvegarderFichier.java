@@ -15,6 +15,8 @@ import sae.statisalle.Fichier;
 import sae.statisalle.Session;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import static sae.statisalle.controller.MainControleur.activerAccueil;
 
@@ -142,9 +144,11 @@ public class SauvegarderFichier {
             for (int i = 0; i < nombreDeFichiers; i++) {
                 if (chemins[i] != null && !champsTexte[i].getText().isEmpty()) {
                     String contenu = contenuFichier.split("/EOF")[i];
-                    Fichier.ecrireFichier(chemins[i]
+                    List<String> contenuListe = Arrays.asList(contenu.split("\n"));
+
+                    Fichier.ecritureFichier(contenuListe, chemins[i]
                                           + champsTexte[i].getText()
-                                          + ".csv", contenu);
+                                          + ".csv");
 
                     Fichier.ouvrirDossier(chemins[i]
                                           + champsTexte[i].getText() + ".csv");

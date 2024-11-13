@@ -181,9 +181,10 @@ public class Fichier {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
             for (String ligne : contenuFichier) {
                 writer.write(ligne);
-                writer.newLine();
+                if (contenuFichier.size() >= 2) {
+                    writer.newLine();
+                }
             }
-
         } catch (IOException e) {
             err.println(ERREUR_ECRITURE_FICHIER);
         }
@@ -247,28 +248,6 @@ public class Fichier {
         } // else
 
         return typeFichier;
-    }
-
-    /**
-     * Enregistre le contenu dans un fichier
-     * @author valentin.munier-genie
-     *
-     * @param cheminFichier Le chemin du fichier dans lequel
-     *                      enregistrer le contenu.
-     * @param contenu Le contenu à enregistrer dans le fichier.
-     */
-    public static void ecrireFichier(String cheminFichier, String contenu) {
-
-        File fichier = new File(cheminFichier);
-
-        try (FileWriter writer = new FileWriter(fichier)) {
-            writer.write(contenu);
-            System.out.println("Fichier enregistré avec succès : "
-                               + fichier.getAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Erreur lors de l'enregistrement du fichier : "
-                               + e.getMessage());
-        }
     }
 
     /**

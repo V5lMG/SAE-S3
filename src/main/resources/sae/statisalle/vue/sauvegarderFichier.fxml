@@ -56,7 +56,7 @@
             <HBox prefHeight="47.0" prefWidth="200.0" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                 <AnchorPane prefHeight="55.0" prefWidth="200.0">
-                    <Button fx:id="btnEnregistrer" layoutX="22.0" layoutY="17.0" mnemonicParsing="false" onAction="#actionEnregistrer" prefHeight="42.0" prefWidth="164.0" style="-fx-background-color: #D3D3D3;" text="Enregistrer tous les fichiers" />
+                    <Button fx:id="btnEnregistrer" layoutX="22.0" layoutY="17.0" mnemonicParsing="false" onAction="#actionEnregistrer" prefHeight="42.0" prefWidth="164.0" style="-fx-background-color: #D3D3D3;" text="Enregistrer tous les fichiers" textFill="#797777" />
                 </AnchorPane>
             </HBox>
         </HBox>
