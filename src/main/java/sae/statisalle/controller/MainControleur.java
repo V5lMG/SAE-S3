@@ -11,9 +11,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
 import sae.statisalle.Session;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -34,6 +36,7 @@ public class MainControleur extends Application {
     private static Scene Envoyer;
     private static Scene Importer;
     private static Scene Sauvegarder;
+    private static Scene Affichage;
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -107,6 +110,13 @@ public class MainControleur extends Application {
     }
 
     /**
+     * Change la scène pour afficher l'écran d'affichage des données.
+     */
+    public static void activerAffichage() {
+        fenetrePrincipale.setScene(Affichage);
+    }
+
+    /**
      * Renvoie la fenêtre principale de l'application.
      * @return l'objet Stage de la fenêtre principale.
      */
@@ -175,6 +185,12 @@ public class MainControleur extends Application {
                             "sauvegarderFichier.fxml"));
             conteneur = chargeurFXMLSauvegarder.load();
             Sauvegarder = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
+            chargeurFXMLImporter.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/affichage.fxml"));
+            conteneur = chargeurFXMLImporter.load();
+            Affichage = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
