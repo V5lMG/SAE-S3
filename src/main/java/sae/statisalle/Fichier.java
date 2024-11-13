@@ -151,6 +151,7 @@ public class Fichier {
      *
      * La première ligne du fichier (l'en-tête) n'est pas pris en compte dans le traitement.
      * Les lignes suivantes représentent les données du fichier, chaque cellule étant séparée par un point-virgule (';').
+     * Si la cellule est vide alors un espace est mis à sa place.
      *
      * @return une liste de listes de chaînes de caractères représentant les données du fichier CSV.
      *         Chaque sous-liste suivante représente une ligne de données.
@@ -164,11 +165,30 @@ public class Fichier {
             return tableau3D;
         }
 
+        // Récupérer les entêtes de colonnes pour déterminer la taille des lignes
+        String[] entetes = contenu.get(0).split(";");
+
+        // Parcourt les lignes de données du fichier
         for (int i = 1; i < contenu.size(); i++) {
             String[] ligne = contenu.get(i).split(";");
-            tableau3D.add(new ArrayList<>(List.of(ligne)));
-        }
+            List<String> ligneTraitee = new ArrayList<>();
 
+            // Traite chaque cellule de la ligne
+            for (String cellule : ligne) {
+                // Remplace les cellules vides au milieu de la ligne par un espace
+                if (cellule.isEmpty()) {
+                    ligneTraitee.add(" ");
+                } else {
+                    ligneTraitee.add(cellule);
+                }
+            }
+
+            // Complète la ligne avec des espaces afin de faire la même taille que l'en-tête
+            while (ligneTraitee.size() < entetes.length) {
+                ligneTraitee.add(" ");
+            }
+            tableau3D.add(ligneTraitee);
+        }
         return tableau3D;
     }
 
