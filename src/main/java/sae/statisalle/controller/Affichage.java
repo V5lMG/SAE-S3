@@ -30,9 +30,6 @@ public class Affichage {
     @FXML
     private Text titre;
 
-    @FXML
-    private AnchorPane toutTableau;
-
     // Table de réservations
     @FXML
     private TableView<Reservation> tabReservation;
@@ -93,8 +90,6 @@ public class Affichage {
 
     // Table des employés
     @FXML
-    private Tab ongletEmploye;
-    @FXML
     private TableView<Employe> tabEmploye;
     @FXML
     private TableColumn<Employe, String> idEmploye;
@@ -113,13 +108,10 @@ public class Affichage {
 
     private ObservableList<Employe> listEmploye;
 
-    private static final String REPERTOIRE_CSV = "SAE-S3/"; // TODO Modifier le chemin du répertoire
-
     // Méthodes d'action pour les boutons
     @FXML
     private void actionAide() {
-        // TODO Logique pour l'action du bouton Aide
-
+        MainControleur.activerAideAffichage();
     }
 
     @FXML
