@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * <br>
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * Nous utiliserons le chiffrement avec la methode de Vignère pour chiffrer le
- * contenu du fichier. Ensuite, nous utiliserons la méthode de Diffie-Helman
+ * contenu du fichier. Ensuite, nous utiliserons la méthode de Diffie-Hellman
  * @author Montes Robin
  * @author Xavier-Taborda Rodrigo
  * @author Cambon Mathias
@@ -35,27 +35,32 @@ public class Chiffrement {
      * en utilisant l'algorithme de Vigenère.
      * Pour cela, il faut utiliser une clé qui va nous permettre de chiffrer
      * et déchiffrer les données.
-     *
-     * @param cle     : Cle de chiffrement que nous utiliserons pour chiffre le
-     *                message
-     * @param fichier : Fichier qui contient les données à crypter
+     * @param cle Cle de chiffrement que nous utiliserons pour chiffre le
+     *            message
+     * @param fichier Fichier qui contient les données à crypter
+     * @return Le message chiffré sous forme de String
      */
-    public static String chiffrementDonnees(Fichier fichier,
-                                            String cle) {
-        String ligne = "";
+    public static String chiffrementDonnees(Fichier fichier, String cle) {
         StringBuilder messChiffre = new StringBuilder();
 
         int codeDonnees,
                 codeCle,
                 codeCharChiffre;
 
+        // Initialisation de l'alphabet
         creerAlphabet();
-        List<String> donnees = fichier.contenuFichier();
-        cle = genererCleAleatoire(donnees); // uniquement pour les tests le temps d'avoir l'algo sur Diffie Hellman
-        defTailleClef(donnees, cle);
 
-        for (int i = 0; i < tailleDonnees; i++) {
-            ligne = donnees.get(i);
+        // Charger le contenu du fichier
+        List<String> donnees = fichier.contenuFichier();
+        tailleDonnees = donnees.size();
+
+        // Générer une clé pour les tests uniquement
+        cle = genererCleAleatoire(donnees); // uniquement pour les tests le temps d'avoir l'algo sur Diffie-Hellman
+
+        // Ajuster la clé pour qu'elle ait la bonne longueur
+        cle = defTailleClef(donnees, cle);
+
+        for (String ligne : donnees) {
             for(int j = 0; j < ligne.length(); j++){
                 codeDonnees = alphabet.indexOf(ligne.charAt(j));
                 codeCle = alphabet.indexOf(cle.charAt(j % cle.length()));
@@ -63,13 +68,67 @@ public class Chiffrement {
                     codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
                     messChiffre.append(alphabet.get(codeCharChiffre));
                 } else {
-                    messChiffre.append(ligne.charAt(j)); // Conserve le caractère si non trouvé
+                    // Conserve le caractère si non trouvé
+                    messChiffre.append(ligne.charAt(j));
                 }
             }
+            // Ajoute un retour à la ligne après chaque ligne de données chiffrée
+            messChiffre.append("\n");
         }
         return messChiffre.toString();
     }
 
+    /**
+     * Méthode de déchiffrement des données,
+     * en utilisant l'algorithme de Vigenère.
+     * Cette méthode utilise la même clé que pour le chiffrement afin de décrypter
+     * les données d'origine.
+     * @param cle cle de déchiffrement que nous utiliserons pour déchiffrer le
+     *            message
+     * @param fichier fichier qui contient les données à décrypter
+     * @return Le message déchiffré sous forme de String
+     */
+    public static String dechiffrementDonnees(Fichier fichier, String cle) {
+        StringBuilder messDechiffre = new StringBuilder();
+
+        int codeDonnees,
+                codeCle,
+                codeCharDechiffre;
+
+        // Initialisation de l'alphabet
+        creerAlphabet();
+
+        // Charger le contenu du fichier
+        List<String> donnees = fichier.contenuFichier();
+        tailleDonnees = donnees.size();
+
+        // Ajuster la clé pour qu'elle ait la bonne longueur
+        cle = defTailleClef(donnees, cle);
+
+        for (String ligne : donnees) {
+            for (int j = 0; j < ligne.length(); j++) {
+                codeDonnees = alphabet.indexOf(ligne.charAt(j));
+                codeCle = alphabet.indexOf(cle.charAt(j % cle.length()));
+
+                if (codeDonnees != -1 && codeCle != -1) {
+                    // Calculer l'index du caractère d'origine en utilisant la soustraction
+                    codeCharDechiffre = (codeDonnees - codeCle + alphabet.size()) % alphabet.size();
+                    messDechiffre.append(alphabet.get(codeCharDechiffre));
+                } else {
+                    // Conserve le caractère si non trouvé
+                    messDechiffre.append(ligne.charAt(j));
+                }
+            }
+            // Ajoute un retour à la ligne après chaque ligne de données déchiffrée
+            messDechiffre.append("\n");
+        }
+        return messDechiffre.toString();
+    }
+
+    /**
+     * Création de notre alphabet avec l'ensemble des caractères que l'on peut
+     * retrouve à l'intérieur des fichiers csv
+     */
     public static void creerAlphabet() {
         // Crée une nouvelle liste pour stocker les caractères
         alphabet = new ArrayList<>();
@@ -94,32 +153,25 @@ public class Chiffrement {
     }
 
     /**
-     * Méthode de déchiffrement des données,
-     * en utilisant l'algorithme de Vigenère
-     * Pour cela, il faut utiliser une clé qui va nous permettre de chiffrer
-     * et déchiffrer les données.
+     * Adapte la taille de la clé pour qu'elle corresponde à la taille du message entier.
+     * @param donnees Les données présentes dans le fichier
+     * @param cle La clé initiale
+     * @return La clé ajustée à la taille des données
      */
-    public static void dechiffrementDonnees(Fichier fichier,
-                                            String cle) {
-    }
-
-    /**
-     * Adapte la taille de la clef de chiffrement en fonction de la taille du
-     * message.
-     *
-     * @param donnees : les données présentes dans le fichier
-     */
-    public static void defTailleClef(List<String> donnees, String cle) {
-        /*Nombre de caractères dans la clé en fonction de la taille des données*/
-        int tailleCle = cle.length();
-        StringBuilder cleBuilder = new StringBuilder(cle);
-        for (int i = 0; i < tailleDonnees - 1; i++) {
-            if (i == tailleCle - 1) {
-                i = 0;
-            }
-            cleBuilder.append(cleBuilder.charAt(i));
+    public static String defTailleClef(List<String> donnees, String cle) {
+        tailleDonnees = 0;
+        for (String ligne : donnees) {
+            tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
         }
-        cle = cleBuilder.toString();
+
+        StringBuilder cleAjustee = new StringBuilder();
+
+        while (cleAjustee.length() < tailleDonnees) {
+            cleAjustee.append(cle);
+        }
+
+        // Tronquer la clé à la taille exacte nécessaire
+        return cleAjustee.substring(0, tailleDonnees);
     }
 
     /**
@@ -127,61 +179,72 @@ public class Chiffrement {
      * @return La clé générée sous forme de String.
      */
     public static String genererCleAleatoire(List<String> donnees) {
-        tailleDonnees = donnees.size();
+        tailleDonnees = 0;
+        for (String ligne : donnees) {
+            tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
+        }
 
         if (tailleDonnees == 0) {
             throw new IllegalArgumentException("La liste des données est vide. Impossible de générer une clé.");
-        }
+        } else {
+            Random random = new Random();
+            int longueurCle = random.nextInt(tailleDonnees) + 1;
+            StringBuilder cleBuilder = new StringBuilder();
 
-        Random random = new Random();
-        int longueurCle = random.nextInt(1000);
-        StringBuilder cleBuilder = new StringBuilder();
-
-        for (int i = 0; i < longueurCle; i++) {
-            char lettre = alphabet.get(random.nextInt(alphabet.size())); // Choisir une lettre aléatoire dans l'alphabet
-            cleBuilder.append(lettre);
+            for (int i = 0; i < longueurCle; i++) {
+                char lettre = alphabet.get(random.nextInt(alphabet.size())); // Choisir une lettre aléatoire dans l'alphabet
+                cleBuilder.append(lettre);
+            }
+            return cleBuilder.toString();
         }
-        return cleBuilder.toString();
+    }
+
+    // ---------------------Diffie-Helmann--------------------------------------
+
+    /**
+     * Methode permettant de tester si un nombre est premier ou non
+     * Pour Diffie-Hellman
+     */
+    public static boolean estPremier(int p){
+        if(p == 0){
+            return false;
+        }
+        for(int i = 2; i < p; i++){
+            if(p % i == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Méthode effectuant le calcule d'une exponentiation modulaire en fonction
+     *
+     * @param a c'est la base sur laquelle il faut appliquer l'exposant
+     * @param exposant exposant du calcul
+     * @param modulo cela représente la clé publique partagée entre les deux
+     *               utilisateurs autrement dit (p).
+     * @return le resultat de l'exponentielle modulaire.
+     */
+    public static int expoModulaire(int a, int exposant, int modulo){
+        int resultat = 1;
+        while(exposant > 0){
+            if(exposant % 2 == 1){
+                resultat = (resultat * a) % modulo;
+            }
+            a = (a * a) % modulo;
+            exposant = exposant / 2;
+        }
+        return resultat;
+    }
+
+    /**
+     * Création de la clé à partir de la méthode de Diffie-Hellman
+     */
+    public static String cleDiffieHellman(int p, int b){
+        
+        return ""; //stub
     }
 
 
-
-
-    /**
-
-     // 3. Chiffrement d'une ligne de texte
-     public String chiffrerLigne(String ligne, String cle) {
-     StringBuilder resultat = new StringBuilder();
-     for (int i = 0; i < ligne.length(); i++) {
-     char caractere = ligne.charAt(i);
-     char cleChar = cle.charAt(i);
-
-     int indexCaractere = ALPHABET.indexOf(caractere);
-     int indexCle = ALPHABET.indexOf(cleChar);
-
-     if (indexCaractere == -1 || indexCle == -1) {
-     resultat.append(caractere); // Si le caractère n'est pas dans l'alphabet, on le laisse inchangé
-     } else {
-     int indexChiffre = (indexCaractere + indexCle) % ALPHABET.length();
-     resultat.append(ALPHABET.charAt(indexChiffre));
-     }
-     }
-     return resultat.toString();
-     }
-
-     // 5. Chiffrement du contenu complet d'un fichier
-     public List<String> chiffrerContenu(List<String> contenu) {
-     int longueurContenu = contenu.stream().mapToInt(String::length).sum(); // Calcul de la longueur totale du contenu
-     String cleAjustee = ajusterCle(this.cle, longueurContenu); // Ajuste la clé
-     List<String> contenuChiffre = new ArrayList<>();
-
-     int indexCle = 0; // Pour parcourir la clé
-     for (String ligne : contenu) {
-     String cleLigne = cleAjustee.substring(indexCle, indexCle + ligne.length());
-     contenuChiffre.add(chiffrerLigne(ligne, cleLigne));
-     indexCle += ligne.length();
-     }
-     return contenuChiffre;
-     }
-     */
 }
