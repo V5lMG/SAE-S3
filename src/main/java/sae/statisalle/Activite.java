@@ -22,7 +22,7 @@ public class Activite {
     /*Les différents types d'activité*/
     String type;
 
-    public Activite(String type,  String idActivite) {
+    public Activite(String type, String idActivite) {
         this.idActivite = idActivite;
         this.type = type;
     }
@@ -33,5 +33,13 @@ public class Activite {
 
     public String getIdActivite() {
         return idActivite;
+    }
+
+    public void setIdActivite(String idActivite) {
+        this.idActivite = idActivite;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
