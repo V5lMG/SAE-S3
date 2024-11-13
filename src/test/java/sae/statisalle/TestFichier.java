@@ -191,6 +191,39 @@ class TestFichier {
     }
 
     @Test
+    void recupererDonnees() {
+        // Récupérer les données sous forme de tableau 3D pour chaque fichier
+        List<List<String>> donneesEmploye = fichierEmploye.recupererDonnees();
+        List<List<String>> donneesReservation = fichierReservation.recupererDonnees();
+        List<List<String>> donneesSalle = fichierSalle.recupererDonnees();
+        List<List<String>> donneesActivite = fichierActivite.recupererDonnees();
+
+        // Vérifier que les données ne sont pas vides
+        assertFalse(donneesEmploye.isEmpty());
+        assertFalse(donneesReservation.isEmpty());
+        assertFalse(donneesSalle.isEmpty());
+        assertFalse(donneesActivite.isEmpty());
+
+        // Vérifier la taille des lignes récupérées dans chaque fichier
+        assertEquals(8, donneesEmploye.size());  // Il y a 9 lignes de données dans le fichier employe
+        assertEquals(18, donneesReservation.size());  // Il y a 19 lignes de données dans le fichier reservation
+        assertEquals(9, donneesSalle.size());  // Il y a 10 lignes de données dans le fichier salle
+        assertEquals(6, donneesActivite.size());  // Il y a 7 lignes de données dans le fichier activite
+
+        // Vérifier la taille des colonnes pour chaque ligne (en fonction des entêtes)
+        assertEquals(4, donneesEmploye.get(0).size());      // Fichier employe a 4 colonnes
+        assertEquals(12, donneesReservation.get(0).size());  // Fichier reservation a 7 colonnes
+        assertEquals(9, donneesSalle.get(0).size());        // Fichier salle a 9 colonnes
+        assertEquals(2, donneesActivite.get(0).size());     // Fichier activite a 2 colonnes
+
+        // Vérifier le contenu de certaines cellules pour s'assurer que les données sont correctement traitées
+        assertEquals("E000002", donneesEmploye.get(1).get(0));
+        assertEquals("R000002", donneesReservation.get(1).get(0));
+        assertEquals("00000002", donneesSalle.get(1).get(0));
+        assertEquals("A0000002", donneesActivite.get(1).get(0));
+    }
+
+    @Test
     void getFichierExploite() {
         assertNotNull(fichierEmploye.getFichierExploite());
         assertNotNull(fichierReservation.getFichierExploite());
