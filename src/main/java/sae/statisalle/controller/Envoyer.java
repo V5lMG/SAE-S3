@@ -7,26 +7,25 @@ package sae.statisalle.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sae.statisalle.Reseau;
 import sae.statisalle.Session;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Contrôleur pour gérer l'envoi de fichiers dans l'application StatiSalle.
  * Permet de sélectionner des fichiers à envoyer et de gérer l'interface.
  *
  * @author Valentin MUNIER-GENIE
- *         Erwan THIERRY
+ * @author Erwan THIERRY
  */
 public class Envoyer {
 
@@ -151,62 +150,59 @@ public class Envoyer {
      */
     @FXML
     void actionEnvoyer() {
-        Alert envoyer = new Alert(Alert.AlertType.CONFIRMATION);
-        envoyer.setTitle("Envoyer");
-        envoyer.setHeaderText(null);
-        envoyer.setContentText("Voulez-vous vraiment envoyer ce/ces fichier(s) ?");
-        Optional<ButtonType> result = envoyer.showAndWait();
+        try {
+            reseau = Session.getReseau();
+            StringBuilder contenuTotal = new StringBuilder();
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                reseau = Session.getReseau();
-                StringBuilder contenuTotal = new StringBuilder();
+            for (String cheminFichier : cheminsDesFichiers) {
+                File fichier = new File(cheminFichier);
 
-                for (String cheminFichier : cheminsDesFichiers) {
-                    File fichier = new File(cheminFichier);
-
-                    if (!fichier.exists()) {
-                        throw new IllegalArgumentException("Le fichier n'existe pas : " + cheminFichier);
-                    }
-                    if (!fichier.isFile()) {
-                        throw new IllegalArgumentException("Ce n'est pas un fichier valide : " + cheminFichier);
-                    }
-                    String contenu = Files.readString(fichier.toPath());
-                    contenuTotal.append(contenu).append("/EOF");
+                if (!fichier.exists()) {
+                    throw new IllegalArgumentException("Le fichier "
+                            + "n'existe pas : " + cheminFichier);
+                }
+                if (!fichier.isFile()) {
+                    throw new IllegalArgumentException("Ce n'est pas un "
+                            + "fichier valide : " + cheminFichier);
                 }
 
-                reseau.envoyer(contenuTotal.toString());
-                String reponse = reseau.recevoirReponse();
-
-                reseau.utiliserReponse(reponse);
-                afficherConfirmationEtRetour();
-
-            } catch (IllegalArgumentException e) {
-                System.err.println("Erreur d'envoi : " + e.getMessage());
-                MainControleur.showAlert("Erreur d'envoi",
-                        "Une erreur est survenue lors de l'envoi : "
-                                + e.getMessage());
-
-            } catch (IOException e) {
-                System.err.println("Erreur lors de la lecture des fichiers : "
-                        + e.getMessage());
-                MainControleur.showAlert("Erreur de lecture",
-                        "Une erreur est survenue lors de la lecture "
-                                + "des fichiers : " + e.getMessage());
-
-            } catch (Exception e) {
-                System.err.println("Erreur inattendue : " + e.getMessage());
-                MainControleur.showAlert("Erreur inattendue",
-                        "Une erreur inattendue est survenue : "
-                                + e.getMessage());
-
-            } finally {
-                if (reseau != null) {
-                    reseau.fermerClient();
+                StringBuilder contenu = new StringBuilder();
+                try (BufferedReader lectureFichier =
+                             new BufferedReader(
+                                     new FileReader(
+                                             fichier.getAbsolutePath()))) {
+                    String ligne;
+                    while ((ligne = lectureFichier.readLine()) != null) {
+                        contenu.append(ligne).append("\n");
+                    }
+                } catch (IOException e) {
+                    System.out.println("Erreur lors de la lecture du fichier "
+                            + ": " + e.getMessage());
                 }
+
+                contenuTotal.append(contenu).append("/EOF");
             }
-        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-            envoyer.close();
+
+            reseau.envoyer(contenuTotal.toString());
+            String reponse = reseau.recevoirReponse();
+
+            reseau.utiliserReponse(reponse);
+            afficherConfirmationEtRetour();
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erreur d'envoi : " + e.getMessage());
+            MainControleur.showAlert("Erreur d'envoi",
+                    "Une erreur est survenue lors de l'envoi : "
+                            + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Erreur inattendue : " + e.getMessage());
+            MainControleur.showAlert("Erreur inattendue",
+                    "Une erreur inattendue est survenue : "
+                            + e.getMessage());
+        } finally {
+            if (reseau != null) {
+                reseau.fermerClient();
+            }
         }
     }
 
@@ -215,15 +211,16 @@ public class Envoyer {
      * redirige vers l'écran de connexion si l'IP n'est pas localhost.
      */
     private void afficherConfirmationEtRetour() {
+        // récup l'ip et enlever le port
         String ipDestinataire = "localhost";
+        String ipSource = Session.getAdresseIp().split(":")[0];
 
-        // Si l'IP est localhost, ne pas quitter la page d'envoi.
-        if (Session.getAdresseIp().equals(ipDestinataire)) {
+        // Si l'IP est localhost, ne pas quitter la page d'envoi
+        if (ipSource.equals(ipDestinataire)) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
-
             alert.showAndWait();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -231,7 +228,6 @@ public class Envoyer {
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
 
-            // Redirection vers l'écran de connexion après la fermeture de l'alerte
             alert.setOnHidden(evt -> MainControleur.activerConnexion());
             alert.showAndWait();
         }

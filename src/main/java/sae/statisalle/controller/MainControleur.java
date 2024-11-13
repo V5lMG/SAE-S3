@@ -256,7 +256,7 @@ public class MainControleur extends Application {
     }
 
     /**
-     * Affiche une alerte d'erreur en cas de problème d'enregistrement.
+     * Affiche une alerte d'erreur en cas de problème.
      */
     public static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

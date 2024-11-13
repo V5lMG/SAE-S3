@@ -4,6 +4,7 @@
  */
 package sae.statisalle;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -218,7 +219,8 @@ public class Fichier {
     }
 
     /**
-     * Prend la premiere ligne du contenu du fichier et renvoie le type en fonction de ce qu'il contient
+     * Prend la premiere ligne du contenu du fichier et renvoie le type en
+     * fonction de ce qu'il contient.
      * @return typeFichier est soit Salle, Employe, Activite ou Reservation
      */
     public String getTypeFichier() {
@@ -229,16 +231,18 @@ public class Fichier {
         typeFichier = null;
         contenu = contenuFichier();
 
-        if (contenu.get(0).contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante")){
+        if (contenu.getFirst().contains("Ident;Nom;Capacite;videoproj;"
+                          + "ecranXXL;ordinateur;type;logiciels;imprimante")) {
             typeFichier = "Salle";
         }
-        if (contenu.get(0).contains("Ident;Nom;Prenom;Telephone")){
+        if (contenu.getFirst().contains("Ident;Nom;Prenom;Telephone")){
             typeFichier = "Employe";
         }
-        if (contenu.get(0).contains("Ident;Activité")){
+        if (contenu.getFirst().contains("Ident;Activité")){
             typeFichier = "Activite";
         }
-        if (contenu.get(0).contains("Ident;salle;employe;activite;date;heuredebut;heurefin")) {
+        if (contenu.getFirst().contains("Ident;salle;employe;activite;"
+                                        + "date;heuredebut;heurefin")) {
             typeFichier = "Reservation";
         } // else
 
@@ -246,28 +250,21 @@ public class Fichier {
     }
 
     /**
-     * Enregistre le contenu dans un fichier et envoie la réponse au client.
+     * Enregistre le contenu dans un fichier
      * @author valentin.munier-genie
      *
-     * @param clientReseau L'objet réseau du client.
-     * @param contenuRequete Le contenu à enregistrer.
-     * @param fichier Le fichier dans lequel enregistrer le contenu.
+     * @param cheminFichier Le chemin du fichier dans lequel
+     *                      enregistrer le contenu.
+     * @param contenu Le contenu à enregistrer dans le fichier.
      */
-    public static void ecrireFichier(Reseau clientReseau,
-                                     String contenuRequete,
-                                     File fichier) {
+    public static void ecrireFichier(String cheminFichier, String contenu) {
+
+        File fichier = new File(cheminFichier);
 
         try (FileWriter writer = new FileWriter(fichier)) {
-            writer.write(contenuRequete);
-
-            // envoi de la réponse
-            clientReseau.envoyerReponse("Données enregistrées dans : "
-                                        + fichier.getAbsolutePath());
+            writer.write(contenu);
             System.out.println("Fichier enregistré avec succès : "
                                + fichier.getAbsolutePath());
-
-            // ouvrir le dossier contenant le fichier
-            ouvrirDossier(fichier.getParentFile());
         } catch (IOException e) {
             System.err.println("Erreur lors de l'enregistrement du fichier : "
                                + e.getMessage());
@@ -275,21 +272,49 @@ public class Fichier {
     }
 
     /**
-     * Ouvre un dossier dans l'explorateur de fichiers.
+     * Ouvre le dossier contenant le fichier fournit en argument.
      * @author valentin.munier-genie
      *
-     * @param dossier Le dossier à ouvrir.
+     * @param cheminFichier Le chemin du fichier.
      */
-    public static void ouvrirDossier(File dossier) {
-        try {
-            if (dossier.exists()) {
-                // permet d'ouvrir le dossier séléctionné par l'utilisateur
-                new ProcessBuilder("explorer.exe",
-                        dossier.getAbsolutePath()).start();
+    public static void ouvrirDossier(String cheminFichier) {
+
+        File fichier = new File(cheminFichier);
+        File dossier = fichier.getParentFile();
+
+        if (dossier.exists() && dossier.isDirectory()) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(dossier);
+                } catch (IOException e) {
+                    System.err.println("Erreur lors de l'ouverture du dossier : " + e.getMessage());
+                }
+            } else {
+                System.err.println("Ouverture de dossier non supportée "
+                                   + "sur ce système.");
             }
-        } catch (IOException e) {
-            System.err.println("Impossible d'ouvrir le dossier : "
-                    + e.getMessage());
+        } else {
+            System.err.println("Le dossier spécifié n'existe pas ou n'est "
+                               + "pas un répertoire.");
         }
+    }
+
+    /**
+     * Compte le nombre d'occurrences d'un motif dans un texte.
+     * @author valentin.munier-genie
+     *
+     * @param texte Le texte à analyser.
+     * @param motif Le motif recherché.
+     * @return Le nombre d'occurrences du motif.
+     */
+    public static int compterMotif(String texte, String motif) {
+        int compteur = 0;
+        int index = 0;
+
+        while ((index = texte.indexOf(motif, index)) != -1) {
+            compteur++;
+            index += motif.length();
+        }
+        return compteur;
     }
 }

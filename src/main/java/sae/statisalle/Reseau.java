@@ -8,7 +8,6 @@ import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.Files;
 import java.io.IOException;
 
 /**
@@ -123,8 +122,13 @@ public class Reseau {
      */
     public String traiterRequete(String requete) {
         System.out.println("Message reçu du client : " + requete);
-        return requete.replace("/R", "\r")
-                      .replace("/N", "\n");
+        if (requete == null) {
+            throw new IllegalArgumentException("Le traitement de la requete "
+                                               + "a échoué");
+        } else {
+            return requete.replace("/R", "\r")
+                    .replace("/N", "\n");
+        }
     }
 
     /**

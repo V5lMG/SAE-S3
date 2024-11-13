@@ -24,7 +24,7 @@ import java.net.InetAddress;
 public class Connexion {
 
     /** Instance de la classe Reseau. */
-    private Reseau reseau = new Reseau();
+    private final Reseau reseau = new Reseau();
 
     @FXML
     private TextField textIp;
@@ -91,7 +91,6 @@ public class Connexion {
 
         // validation de l'adresse IP
         if (!isValidIPv4(ip)) {
-            Session.setAdresseIp(ip);
             MainControleur.showAlert("Erreur de connexion",
                     "L'adresse IP n'est pas valide. " +
                             "Veuillez saisir une adresse IPv4.");
@@ -120,8 +119,8 @@ public class Connexion {
             MainControleur.activerEnvoyer();
         } catch (MauvaiseConnexionServeur e) {
             MainControleur.showAlert("Erreur de connexion",
-                    "Impossible de se connecter au serveur : "
-                            + e.getMessage());
+                                     "Impossible de se connecter "
+                                     + "au serveur : " + e.getMessage());
         }
     }
 
@@ -146,8 +145,9 @@ public class Connexion {
         } else {
             btnAfficherIp.setText("Pas de connexion");
             MainControleur.showAlert("Impossible d'afficher l'IP",
-                    "Absence de connexion a un réseau.");
-            System.err.println("Erreur lors de la récupération de l'adresse IP.");
+                             "Absence de connexion a un réseau.");
+            System.err.println("Erreur lors de la récupération "
+                               + "de l'adresse IP.");
         }
     }
 

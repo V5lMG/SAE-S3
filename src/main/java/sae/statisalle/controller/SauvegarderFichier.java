@@ -1,3 +1,7 @@
+/*
+ * SauvegarderFichier.java            13/11/2024
+ * IUT DE RODEZ                       Pas de copyrights
+ */
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
@@ -7,181 +11,180 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import sae.statisalle.Fichier;
 import sae.statisalle.Session;
 
 import java.io.File;
 
 import static sae.statisalle.controller.MainControleur.activerAccueil;
 
+/**
+ * Contrôleur pour la sauvegarde de fichiers dans l'application StatiSalle.
+ * Permet de sélectionner des répertoires de sauvegarde pour chaque fichier,
+ * de définir un nom de fichier, puis de sauvegarder le contenu
+ * dans un format CSV. Le nombre de fichiers est déterminé par le nombre de
+ * séparateurs "/EOF" dans le contenu.
+ * <p>
+ * Les boutons et champs de texte sont activés en fonction
+ * du nombre de fichiers.
+ * Chaque fichier peut être sauvegardé dans un dossier différent et les états
+ * sont actualisés pour guider l'utilisateur dans la complétion de ses actions.
+ */
 public class SauvegarderFichier {
 
     @FXML
-    private TextField text1;
+    private TextField text1, text2, text3, text4;
     @FXML
-    private TextField text2;
+    private Button btnFichier1, btnFichier2, btnFichier3, btnFichier4;
     @FXML
-    private TextField text3;
+    private Button btnEnregistrer;
     @FXML
-    private TextField text4;
-    @FXML
-    private Button btnFichier1;
-    @FXML
-    private Button btnFichier2;
-    @FXML
-    private Button btnFichier3;
-    @FXML
-    private Button btnFichier4;
-    @FXML
-    private Text fichier1;
-    @FXML
-    private Text fichier2;
-    @FXML
-    private Text fichier3;
-    @FXML
-    private Text fichier4;
+    private Text fichier1, fichier2, fichier3, fichier4;
 
     private int nombreDeFichiers;
-    private String chemin1;
-    private String chemin2;
-    private String chemin3;
-    private String chemin4;
+    private String chemin1, chemin2, chemin3, chemin4;
 
+    /**
+     * Initialise la page en comptant les fichiers et
+     * affichant les champs nécessaires.
+     */
     @FXML
     public void initialiserPage() {
         String contenuFichier = Session.getContenu();
-        nombreDeFichiers = compterMotif(contenuFichier, "/EOF");
+        nombreDeFichiers = Fichier.compterMotif(contenuFichier, "/EOF");
         afficherChamps(nombreDeFichiers);
+        mettreAJourEtatBoutonEnregistrer();
     }
 
-    private int compterMotif(String texte, String motif) {
-        int compteurFichier = 0;
-        int index = 0;
-        while ((index = texte.indexOf(motif, index)) != -1) {
-            compteurFichier++;
-            index += motif.length();
+    /**
+     * Active le bouton de sauvegarde si tous les chemins sont complets.
+     */
+    private void mettreAJourEtatBoutonEnregistrer() {
+        boolean tousLesCheminsComplets = true;
+        String[] chemins = {
+                chemin1,
+                chemin2,
+                chemin3,
+                chemin4};
+
+        for (int i = 0; i < nombreDeFichiers; i++) {
+            if (chemins[i] == null || chemins[i].isEmpty()) {
+                tousLesCheminsComplets = false;
+                break;
+            }
         }
-        return compteurFichier;
+
+        if (tousLesCheminsComplets) {
+            btnEnregistrer.setStyle("-fx-background-color: green;");
+        } else {
+            btnEnregistrer.setStyle("");
+        }
     }
 
+    /**
+     * Affiche les champs de saisie et boutons selon le nombre de fichiers.
+     *
+     * @param nombre Le nombre de fichiers à afficher.
+     */
     private void afficherChamps(int nombre) {
-        text1.setVisible(nombre >= 1);
-        btnFichier1.setVisible(nombre >= 1);
-        fichier1.setVisible(nombre >= 1);
+        TextField[] textFields = {
+                text1,
+                text2,
+                text3,
+                text4};
 
-        text2.setVisible(nombre >= 2);
-        btnFichier2.setVisible(nombre >= 2);
-        fichier2.setVisible(nombre >= 2);
+        Button[] boutons = {
+                btnFichier1,
+                btnFichier2,
+                btnFichier3,
+                btnFichier4};
 
-        text3.setVisible(nombre >= 3);
-        btnFichier3.setVisible(nombre >= 3);
-        fichier3.setVisible(nombre >= 3);
+        Text[] fichiers = {
+                fichier1,
+                fichier2,
+                fichier3,
+                fichier4};
 
-        text4.setVisible(nombre >= 4);
-        btnFichier4.setVisible(nombre >= 4);
-        fichier4.setVisible(nombre >= 4);
+        for (int i = 0; i < 4; i++) {
+            boolean visible = (i < nombre);
+            textFields[i].setVisible(visible);
+            boutons[i].setVisible(visible);
+            fichiers[i].setVisible(visible);
+        }
     }
 
+    /**
+     * Action de sauvegarde des fichiers en fonction des chemins
+     * et noms définis.
+     */
     @FXML
-    private void actionEnvoyer() {
+    private void actionEnregistrer() {
         sauvegarderFichiers();
     }
 
-    @FXML
+    /**
+     * Sauvegarde chaque fichier en fonction de son chemin et de son contenu.
+     */
     private void sauvegarderFichiers() {
+        String contenuFichier = Session.getContenu();
+        String[] chemins = {
+                chemin1,
+                chemin2,
+                chemin3,
+                chemin4};
+        TextField[] champsTexte = {
+                text1,
+                text2,
+                text3,
+                text4};
+
         try {
-            // récupération noms et chemins
-            if (nombreDeFichiers >= 1 && !text1.getText().isEmpty()) {
-                String chemin1 = btnFichier1.getText();
-                String nom1 = text1.getText();
+            for (int i = 0; i < nombreDeFichiers; i++) {
+                if (chemins[i] != null && !champsTexte[i].getText().isEmpty()) {
+                    String contenu = contenuFichier.split("/EOF")[i];
+                    Fichier.ecrireFichier(chemins[i]
+                                          + champsTexte[i].getText()
+                                          + ".csv", contenu);
 
-                // TODO créer un fichier CSV avec ce contenu
+                    Fichier.ouvrirDossier(chemins[i]
+                                          + champsTexte[i].getText() + ".csv");
+                }
             }
-            if (nombreDeFichiers >= 2 && !text2.getText().isEmpty()) {
-                String chemin2 = btnFichier2.getText();
-                String nom2 = text2.getText();
-
-                // TODO créer un fichier CSV avec ce contenu
-            }
-            if (nombreDeFichiers >= 3 && !text3.getText().isEmpty()) {
-                String chemin3 = btnFichier3.getText();
-                String nom3 = text3.getText();
-
-                // TODO créer un fichier CSV avec ce contenu
-            }
-            if (nombreDeFichiers >= 4 && !text4.getText().isEmpty()) {
-                String chemin4 = btnFichier4.getText();
-                String nom4 = text4.getText();
-
-                // TODO créer un fichier CSV avec ce contenu
-            }
-
-            showConfirmation("Enregistrement", "Tous les fichiers"
-                             + " ont été enregistrés avec succès.");
+            showConfirmation();
             activerAccueil();
         } catch (Exception ex) {
             MainControleur.showAlert("Erreur d'enregistrement",
-                    "Une erreur est survenue lors de la sauvegarde "
-                            + "des fichiers.");
+                    "Une erreur est survenue lors "
+                            + "de la sauvegarde des fichiers.");
         }
     }
 
-    private void showConfirmation(String title, String message) {
+    /**
+     * Affiche une boîte de dialogue de confirmation.
+     */
+    private void showConfirmation() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
+        alert.setTitle("Enregistrement");
+        alert.setContentText("Tous les fichiers ont été enregistrés "
+                             + "avec succès.");
         alert.showAndWait();
     }
 
-    @FXML
-    private void actionChoixDossier1() {
-        choisirDossier(fichier1, text1, 1);
-    }
-
-    @FXML
-    private void actionChoixDossier2() {
-        choisirDossier(fichier2, text2, 2);
-    }
-
-    @FXML
-    private void actionChoixDossier3() {
-        choisirDossier(fichier3, text3, 3);
-    }
-
-    @FXML
-    private void actionChoixDossier4() {
-        choisirDossier(fichier4, text4, 4);
-    }
-
-    @FXML
-    private void nomFichier1() {
-        String cheminVerifie = chemin1 == null ? "" : chemin1;
-        fichier1.setText("Fichier : " + cheminVerifie + text1.getText() + ".csv");
-    }
-
-    @FXML
-    private void nomFichier2() {
-        String cheminVerifie = chemin2 == null ? "" : chemin2;
-        fichier2.setText("Fichier : " + cheminVerifie + text2.getText() + ".csv");
-    }
-
-    @FXML
-    private void nomFichier3() {
-        String cheminVerifie = chemin3 == null ? "" : chemin3;
-        fichier3.setText("Fichier : " + cheminVerifie + text3.getText() + ".csv");
-    }
-
-    @FXML
-    private void nomFichier4() {
-        String cheminVerifie = chemin4 == null ? "" : chemin4;
-        fichier4.setText("Fichier : " + cheminVerifie + text4.getText() + ".csv");
-    }
-
+    /**
+     * Action pour choisir un dossier de sauvegarde pour un fichier.
+     *
+     * @param retour    Le texte où afficher le chemin.
+     * @param champNom  Le champ de texte pour le nom du fichier.
+     * @param nombre    Numéro du fichier.
+     */
     private void choisirDossier(Text retour, TextField champNom, int nombre) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File dossier = directoryChooser.showDialog(new Stage());
+
         if (dossier != null) {
             String chemin = dossier.getAbsolutePath() + File.separator;
-            String nomFichier = champNom.getText().isEmpty() ? "fichier_exporte.csv" : champNom.getText() + ".csv";
+            String nomFichier = champNom.getText().isEmpty() ?
+                    "fichier_exporte.csv" : champNom.getText() + ".csv";
             retour.setText("Fichier " + nombre + " : " + chemin + nomFichier);
 
             switch (nombre) {
@@ -190,16 +193,64 @@ public class SauvegarderFichier {
                 case 3 -> chemin3 = chemin;
                 case 4 -> chemin4 = chemin;
             }
+            mettreAJourEtatBoutonEnregistrer();
         }
     }
 
+    @FXML private void actionChoixDossier1() {
+        choisirDossier(fichier1, text1, 1);
+    }
+    @FXML private void actionChoixDossier2() {
+        choisirDossier(fichier2, text2, 2);
+    }
+    @FXML private void actionChoixDossier3() {
+        choisirDossier(fichier3, text3, 3);
+    }
+    @FXML private void actionChoixDossier4() {
+        choisirDossier(fichier4, text4, 4);
+    }
+
+    @FXML private void nomFichier1() {
+        afficherNomFichier(fichier1, chemin1, text1);
+    }
+    @FXML private void nomFichier2() {
+        afficherNomFichier(fichier2, chemin2, text2);
+    }
+    @FXML private void nomFichier3() {
+        afficherNomFichier(fichier3, chemin3, text3);
+    }
+    @FXML private void nomFichier4() {
+        afficherNomFichier(fichier4, chemin4, text4);
+    }
+
+    /**
+     * Met à jour le texte affiché pour le nom du fichier.
+     *
+     * @param fichier  Le texte à afficher
+     * @param chemin   Le chemin du fichier
+     * @param textField Le champ de texte contenant le nom du fichier
+     */
+    private void afficherNomFichier(Text fichier,
+                                    String chemin,
+                                    TextField textField) {
+        fichier.setText("Fichier : " + (chemin != null ? chemin : "")
+                        + textField.getText() + ".csv");
+        mettreAJourEtatBoutonEnregistrer();
+    }
+
+    /**
+     * Retourne à la page d'accueil.
+     */
     @FXML
     private void actionRetour() {
         activerAccueil();
     }
 
+    /**
+     * Affiche l'aide de l'application.
+     */
     @FXML
     private void actionAide() {
-        // Code pour afficher l'aide
+        // TODO
     }
 }
