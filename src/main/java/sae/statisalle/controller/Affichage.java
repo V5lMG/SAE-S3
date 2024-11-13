@@ -1,14 +1,11 @@
 package sae.statisalle.controller;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import sae.statisalle.Activite;
 import sae.statisalle.Employe;
 import sae.statisalle.Reservation;
