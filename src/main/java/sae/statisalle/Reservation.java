@@ -55,6 +55,8 @@ public class Reservation {
     /* Date de la réservation */
     String usage;
 
+
+
     //TODO Faire les modifications pour correspondre aux attentes
     //Ident;salle;employe;activite;date;heuredebut;heurefin;H;I;J;K;L
 //    Fichier des réservations
@@ -76,9 +78,9 @@ public class Reservation {
 //    Colonne I  et J  => nom et prénom de l'interlocuteur
 //    Colonne K        => numéro de téléphone de l'interlocuteur
 //    Colonne L        => usage qui sera fait de la salle, dans le cadre du prêt ou de la location
-    public Reservation(String salleR           , String employeR         , String activiteR  , String dateR,
+    public Reservation(String idReservation, String salleR           , String employeR         , String activiteR  , String dateR,
                        String heureDebut       , String heureFin         , String description, String nomIntervenant,
-                       String prenomIntervenant, String numTelIntervenant) {
+                       String prenomIntervenant, String numTelIntervenant, String usage) {
         this.idReservation = idReservation;
         this.salleR = salleR;
         this.employeR = employeR;
@@ -91,10 +93,101 @@ public class Reservation {
         this.prenomIntervenant = prenomIntervenant;
         this.numTelIntervenant = numTelIntervenant;
         this.usage = usage;
-
     }
 
+    public String getIdReservation() {
+        return idReservation;
+    }
 
+    public void setIdReservation(String idReservation) {
+        this.idReservation = idReservation;
+    }
 
+    public String getSalleR() {
+        return salleR;
+    }
 
+    public void setSalleR(String salleR) {
+        this.salleR = salleR;
+    }
+
+    public String getEmployeR() {
+        return employeR;
+    }
+
+    public void setEmployeR(String employeR) {
+        this.employeR = employeR;
+    }
+
+    public String getActiviteR() {
+        return activiteR;
+    }
+
+    public void setActiviteR(String activiteR) {
+        this.activiteR = activiteR;
+    }
+
+    public String getHeureDebut() {
+        return heureDebut;
+    }
+
+    public void setHeureDebut(String heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public String getDateR() {
+        return dateR;
+    }
+
+    public void setDateR(String dateR) {
+        this.dateR = dateR;
+    }
+
+    public String getHeureFin() {
+        return heureFin;
+    }
+
+    public void setHeureFin(String heureFin) {
+        this.heureFin = heureFin;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNomIntervenant() {
+        return nomIntervenant;
+    }
+
+    public void setNomIntervenant(String nomIntervenant) {
+        this.nomIntervenant = nomIntervenant;
+    }
+
+    public String getPrenomIntervenant() {
+        return prenomIntervenant;
+    }
+
+    public void setPrenomIntervenant(String prenomIntervenant) {
+        this.prenomIntervenant = prenomIntervenant;
+    }
+
+    public String getNumTelIntervenant() {
+        return numTelIntervenant;
+    }
+
+    public void setNumTelIntervenant(String numTelIntervenant) {
+        this.numTelIntervenant = numTelIntervenant;
+    }
+
+    public String getUsage() {
+        return usage;
+    }
+
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
 }

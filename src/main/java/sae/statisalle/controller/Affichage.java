@@ -145,14 +145,12 @@ public class Affichage {
             // Filtre pour obtenir uniquement les fichiers CSV dans le répertoire
             File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
 
-            System.out.println(dossier);
-            System.out.println(fichiers);
-
             for (File fichier : fichiers) {
                 Fichier fichierExploite = new Fichier(fichier.getPath());
 
                 List<List<String>> contenu = fichierExploite.recupererDonnees();
 
+                System.out.println(contenu);
                 switch (fichierExploite.getTypeFichier()) {
                     case "Employe":
                         listEmploye = FXCollections.observableArrayList();
@@ -161,6 +159,12 @@ public class Affichage {
                                 listEmploye.add(new Employe(ligne.get(0), ligne.get(1), ligne.get(2), ligne.get(3)));
                             }
                         }
+                        //TODO afficher le numéro de téléphone décoder sur 10 caractere et non 4 actuellement
+                        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+                        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+                        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+
                         tabEmploye.setItems(listEmploye);
                         break;
                     case "Salle":
@@ -171,6 +175,16 @@ public class Affichage {
                                         ligne.get(4), ligne.get(5), ligne.get(6), ligne.get(7), ligne.get(8)));
                             }
                         }
+                        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+                        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                        capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
+                        ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
+                        typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
+                        videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
+                        nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
+                        logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
+                        imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+
                         tabSalle.setItems(listSalle);
                         break;
                     case "Activite":
@@ -180,16 +194,33 @@ public class Affichage {
                                 listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
                             }
                         }
+                        idActivite.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
+                        activiteA.setCellValueFactory(new PropertyValueFactory<>("type"));
+
                         tabActivite.setItems(listActivite);
                         break;
                     case "Reservation":
                         listReservation = FXCollections.observableArrayList();
                         for (List<String> ligne : contenu) {
-                            if (ligne.size() >= 10) {
+                            if (ligne.size() >= 12) {
                                 listReservation.add(new Reservation(ligne.get(0), ligne.get(1), ligne.get(2), ligne.get(3),
-                                        ligne.get(4), ligne.get(5), ligne.get(6), ligne.get(7), ligne.get(8), ligne.get(9)));
+                                        ligne.get(4), ligne.get(5), ligne.get(6), ligne.get(7), ligne.get(8), ligne.get(9),
+                                        ligne.get(10),ligne.get(11)));
                             }
                         }
+                        idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+                        salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+                        employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+                        activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
+                        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+                        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+                        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
+                        descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
+                        nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
+                        prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
+                        numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
+                        usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
+
                         tabReservation.setItems(listReservation);
                         break;
                     default:
