@@ -5,6 +5,8 @@
 
 package sae.statisalle;
 
+import sae.statisalle.exception.ModuloNegatifException;
+
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -219,23 +221,66 @@ public class Chiffrement {
     }
 
     /**
-     * Méthode effectuant le calcule d'une exponentiation modulaire en fonction
+     * Calcule l'inverse modulaire de `a` modulo `m`, c'est-à-dire le nombre `x` tel que
+     * (a * x) % m == 1.
      *
-     * @param a c'est la base sur laquelle il faut appliquer l'exposant
-     * @param exposant exposant du calcul
-     * @param modulo cela représente la clé publique partagée entre les deux
-     *               utilisateurs autrement dit (p).
-     * @return le resultat de l'exponentielle modulaire.
+     * Cette méthode utilise une recherche exhaustive pour trouver l'inverse modulaire de `a` mod `m`.
+     * Si l'inverse n'existe, une exception `IllegalArgumentException` est levée.
+     *
+     * @param a Le nombre dont on veut calculer l'inverse modulaire. Doit être un entier positif.
+     * @param m Le modulo. Doit être un entier positif.
+     * @return L'inverse modulaire de `a` modulo `m`.
+     * @throws IllegalArgumentException Si l'inverse modulaire de `a` modulo `m` n'existe pas.
      */
-    public static int expoModulaire(int a, int exposant, int modulo){
+    public static int modInverse(int a, int m) {
+        a = a % m;  // Réduire 'a' modulo m
+        for (int x = 1; x < m; x++) {
+            if ((a * x) % m == 1) {
+                return x;  // L'inverse modulaire de 'a' modulo 'm'
+            }
+        }
+        throw new IllegalArgumentException("L'inverse modulaire n'existe pas pour " + a + " modulo " + m);
+    }
+
+    /**
+     * Calcule l'exponentiation modulaire : a^exposant mod modulo.
+     *
+     * Si l'exposant est négatif, cette méthode calcule d'abord l'inverse modulaire de la base `a`,
+     * puis élève cet inverse à la valeur absolue de l'exposant.
+     *
+     * @param a La base de l'exponentiation. Ce peut être un nombre positif ou négatif.
+     * @param exposant L'exposant. Peut être positif ou négatif.
+     * @param modulo Le module. Doit être un entier positif.
+     * @return Le résultat de a^exposant mod modulo.
+     * @throws ModuloNegatifException Si le modulo est inférieur ou égal à 0.
+     * @throws IllegalArgumentException Si l'inverse modulaire n'existe pas pour `a` et `modulo`.
+     */
+    public static int expoModulaire(int a, int exposant, int modulo) {
+        // Vérifier si le modulo est valide
+        if (modulo <= 0) {
+            throw new ModuloNegatifException("Le modulo doit être un nombre positif.");
+        }
+
+        //Il faut que a soit compris entre [1, m-1]
+        if (a <= 0 || a >= modulo) {
+            throw new IllegalArgumentException("La base 'a' doit être un entier strictement positif.");
+        }
+
+        if (exposant < 0) {
+            a = modInverse(a, modulo);
+            exposant = -exposant;
+        }
+
         int resultat = 1;
-        while(exposant > 0){
-            if(exposant % 2 == 1){
+
+        while (exposant > 0) {
+            if (exposant % 2 == 1) {
                 resultat = (resultat * a) % modulo;
             }
             a = (a * a) % modulo;
             exposant = exposant / 2;
         }
+
         return resultat;
     }
 
@@ -246,8 +291,13 @@ public class Chiffrement {
         int a = 0;
         int resultat = 0;
         int x = 5; // A déterminer par l'utilisateur
-        a = expoModulaire(g, x, p);
-        resultat = expoModulaire(b, x, p);
+        try{
+            a = expoModulaire(g, x, p);
+            resultat = expoModulaire(b, x, p);
+        } catch (ModuloNegatifException e){
+            System.out.println(e.getMessage());
+        }
+
         return resultat;
     }
 

@@ -5,6 +5,7 @@
 package sae.statisalle;
 
 import org.junit.jupiter.api.Test;
+import sae.statisalle.exception.ModuloNegatifException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +38,31 @@ public class TestChiffrement {
             70, 90, 900, 1000, 10000
     };
 
+    /*Liste de a pour le calcul de l'exponentiation modulaire*/
+    private int[] a = {
+            4, 67, 6190, -1234
+    };
+
+    /*Liste d'exposant pour calculer l'exponentiation modulaire*/
+    private int[] exposant = {
+            13, 88, 1290, -73
+    };
+
+    /*Liste de modulo pour calculer l'exponentiation modulaire*/
+    private int[] moduloValide = {
+            3, 8, 1021, 7
+    };
+
+    /*Liste de modulo invalide pour calculer l'exponentiation modulaire*/
+    private int[] moduloInvalide  = {
+            -2, -1000, -1021, -7
+    };
+
     /*Resultat d'exponentiation modulaire*/
     private int[] resultatExpo = {
-            11, 17, 6190
+            1, 1, 737, 5
     };
+
     /*
     public static void testGenererCleAleatoire() {
         Chiffrement.creerAlphabet();
@@ -100,19 +122,55 @@ public class TestChiffrement {
 
 
     @Test
-    void estPremier() {
-        for(int i = 0; i < entierPremier.length; i++){
-            assertTrue(Chiffrement.estPremier(entierPremier[i]));
-            assertFalse(Chiffrement.estPremier(entierNonPremier[i]));
+    void estPremierValide() {
+        for (int j : entierPremier) {
+            assertTrue(Chiffrement.estPremier(j));
         }
     }
 
     @Test
-    void expoModulaire() {
-        for (int i = 0; i < resultatExpo.length; i++) {
-            assertEquals(resultatExpo[i], Chiffrement.expoModulaire(11, 13, entierPremier[i]));
+    void estPremierNonValide() {
+        for(int i = 0; i < entierPremier.length; i++){
+            assertFalse(Chiffrement.estPremier(entierNonPremier[i]));
         }
     }
+
+    /* Test des cas valides pour expoModulaire */
+    @Test
+    void expoModulaireValide() {
+        assertEquals(4, Chiffrement.expoModulaire(4, 13, 6), "Le calcul doit retourner 4");
+        assertEquals(1, Chiffrement.expoModulaire(67, 88, 80), "Le calcul doit retourner 1");
+        assertEquals(284, Chiffrement.expoModulaire(999, 1290, 1021), "Le calcul doit retourner 284");
+        assertEquals(1000, Chiffrement.expoModulaire(1000, -73, 1001), "Le calcul doit retourner 1000");
+    }
+
+
+    /* Test des cas invalides pour modulo négatif */
+    @Test
+    void expoModulaireModuloNegatifException() {
+        assertThrows(ModuloNegatifException.class, () -> Chiffrement.expoModulaire(4, 13, -2),
+                "Un modulo négatif doit lever ModuloNegatifException");
+        assertThrows(ModuloNegatifException.class, () -> Chiffrement.expoModulaire(67, 88, -1000),
+                "Un modulo négatif doit lever ModuloNegatifException");
+        assertThrows(ModuloNegatifException.class, () -> Chiffrement.expoModulaire(6190, 1290, -1021),
+                "Un modulo négatif doit lever ModuloNegatifException");
+        assertThrows(ModuloNegatifException.class, () -> Chiffrement.expoModulaire(-1234, -73, -7),
+                "Un modulo négatif doit lever ModuloNegatifException");
+    }
+
+    /* Test des cas invalides pour IllegalArgumentException (a ou modulo non valides) */
+    @Test
+    void expoModulaireIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> Chiffrement.expoModulaire(-4, 13, 2),
+                "Un 'a' non valide doit lever IllegalArgumentException");
+        assertThrows(IllegalArgumentException.class, () -> Chiffrement.expoModulaire(0, 88, 5),
+                "Un 'a' non valide doit lever IllegalArgumentException");
+        assertThrows(IllegalArgumentException.class, () -> Chiffrement.expoModulaire(15, 1290, 10),
+                "Un 'a' non valide doit lever IllegalArgumentException");
+        assertThrows(IllegalArgumentException.class, () -> Chiffrement.expoModulaire(6191, -73, 1021),
+                "Un 'a' non valide doit lever IllegalArgumentException");
+    }
+
 
     public static void main(String[] args) {
         // Chemin vers le fichier que vous voulez tester
