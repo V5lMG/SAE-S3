@@ -40,7 +40,7 @@ public class Chiffrement {
      * @param fichier Fichier qui contient les données à crypter
      * @return Le message chiffré sous forme de String
      */
-    public static String chiffrementDonnees(Fichier fichier, String cle) {
+    public static String  chiffrementDonnees(Fichier fichier, String cle) {
         StringBuilder messChiffre = new StringBuilder();
 
         int codeDonnees,
@@ -53,9 +53,6 @@ public class Chiffrement {
         // Charger le contenu du fichier
         List<String> donnees = fichier.contenuFichier();
         tailleDonnees = donnees.size();
-
-        // Générer une clé pour les tests uniquement
-        cle = genererCleAleatoire(donnees); // uniquement pour les tests le temps d'avoir l'algo sur Diffie-Hellman
 
         // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
@@ -159,6 +156,7 @@ public class Chiffrement {
      * @return La clé ajustée à la taille des données
      */
     public static String defTailleClef(List<String> donnees, String cle) {
+
         tailleDonnees = 0;
         for (String ligne : donnees) {
             tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
@@ -179,6 +177,9 @@ public class Chiffrement {
      * @return La clé générée sous forme de String.
      */
     public static String genererCleAleatoire(List<String> donnees) {
+        if (alphabet == null || alphabet.isEmpty()) {
+            creerAlphabet();  // Initialiser l'alphabet si ce n'est pas déjà fait
+        }
         tailleDonnees = 0;
         for (String ligne : donnees) {
             tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
@@ -241,9 +242,13 @@ public class Chiffrement {
     /**
      * Création de la clé à partir de la méthode de Diffie-Hellman
      */
-    public static String cleDiffieHellman(int p, int b){
-        
-        return ""; //stub
+    public static int cleDiffieHellman(int p, int b, int g){
+        int a = 0;
+        int resultat = 0;
+        int x = 5; // A déterminer par l'utilisateur
+        a = expoModulaire(g, x, p);
+        resultat = expoModulaire(b, x, p);
+        return resultat;
     }
 
 
