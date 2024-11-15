@@ -196,5 +196,6 @@ public class TestChiffrement {
         } else {
             System.out.println("Test échoué : le contenu déchiffré diffère du contenu original.");
         }
+        // Remplacer par test unitaire JUnit pour terminer la classe TestChiffrement
     }
 }
