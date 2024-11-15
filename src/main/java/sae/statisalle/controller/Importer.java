@@ -86,7 +86,8 @@ public class Importer {
                                     + "_" + dateDuJour);
                 } else {
                     Fichier fichierExistant = new Fichier(nomFichier);
-                    fichierExistant.reecritureFichier(fichierImporter.contenuFichier());
+                    fichierExistant.reecritureFichier(
+                            fichierImporter.contenuFichier());
                 }
             }
             System.out.println("Le fichier ou les fichiers ont bien été importé(s)");

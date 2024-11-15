@@ -1,6 +1,7 @@
 module sae.statisalle {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
     opens sae.statisalle to javafx.fxml;
     exports sae.statisalle;

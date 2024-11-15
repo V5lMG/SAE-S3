@@ -8,7 +8,6 @@ import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.Files;
 import java.io.IOException;
 
 /**
@@ -123,8 +122,13 @@ public class Reseau {
      */
     public String traiterRequete(String requete) {
         System.out.println("Message reçu du client : " + requete);
-        return requete.replace("/R", "\r")
-                      .replace("/N", "\n");
+        if (requete == null) {
+            throw new IllegalArgumentException("Le traitement de la requete "
+                                               + "a échoué");
+        } else {
+            return requete.replace("/R", "\r")
+                    .replace("/N", "\n");
+        }
     }
 
     /**
@@ -192,33 +196,18 @@ public class Reseau {
 
     /**
      * Envoie le contenu d'un fichier au serveur en une seule ligne.
-     * @param cheminFichier le chemin du fichier à envoyer.
+     * @param donnees les données à envoyer.
      * @throws IllegalArgumentException si le fichier n'existe pas
      * ou n'est pas valide.
      */
-    public void envoyer(String cheminFichier) {
+    public void envoyer(String donnees) {
+        // remplacer les fins de lignes par des caractères
+        String contenu = donnees.replace("\n", "/N")
+                                .replace("\r", "/R");
 
-        File fichier = new File(cheminFichier);
-        if (!fichier.exists() || !fichier.isFile()) {
-            System.out.println("Le fichier spécifié n'existe pas.");
-            throw new IllegalArgumentException("Le fichier spécifié "
-                    + "n'existe pas.");
-        }
-
-        try {
-            // remplacer les fins de lignes par des caractères
-            String contenu = Files.readString(fichier.toPath())
-                                  .replace("\n", "/N")
-                                  .replace("\r", "/R");
-
-            // envoyer tous le contenue
-            fluxSortie.println(contenu);
-
-            System.out.println("Fichier envoyé avec succès.");
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture ou de "
-                    + "l'envoi du fichier : " + e.getMessage());
-        }
+        // envoyer tous le contenue
+        fluxSortie.println(contenu);
+        System.out.println("Fichier envoyé avec succès.");
     }
 
     /**
