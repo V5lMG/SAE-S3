@@ -36,7 +36,15 @@ public class Employe {
         this.idE = idE;
         this.nom = nom;
         this.prenom = prenom;
-        this.numTel = numTel;
+
+        // formatter le numéro de téléphone à 10 caractères
+        if (numTel.length() < 10) {
+            this.numTel = String.format("%10s", numTel).replace(' ', '0');
+            throw new IllegalArgumentException("Vérifier le numéro de "
+                                               + "téléphone : invialide.");
+        } else {
+            this.numTel = numTel;
+        }
     }
 
     public String getIdE() {

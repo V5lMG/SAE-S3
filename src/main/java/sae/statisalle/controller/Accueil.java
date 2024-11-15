@@ -1,3 +1,7 @@
+/*
+ * Accueil.java                 14/11/2024
+ * IUT DE RODEZ                 Pas de copyrights
+ */
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
@@ -6,23 +10,27 @@ import javafx.application.Platform;
 public class Accueil {
 
     @FXML
-    void actionImporter() { MainControleur.activerImporter(); }
+    void actionImporter() {
+        MainControleur.activerImporter();
+    }
 
     @FXML
-    void actionEnvoyer(){
+    void actionEnvoyer() {
         MainControleur.activerConnexion();
     }
 
     @FXML
-    void actionAfficher(){ MainControleur.activerAffichage(); }
+    void actionAfficher() {
+        MainControleur.activerAffichage();
+    }
 
     @FXML
-    void actionQuitter(){
+    void actionQuitter() {
         Platform.exit();
     }
 
     @FXML
-    void actionAide(){
+    void actionAide() {
         MainControleur.activerAideAccueil();
     }
 }
