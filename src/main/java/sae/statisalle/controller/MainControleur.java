@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
 import sae.statisalle.Session;
@@ -32,10 +33,12 @@ public class MainControleur extends Application {
     private static Scene AideAccueil;
     private static Scene AideConnexion;
     private static Scene AideEnvoyer;
+    private static Scene AideAffichage;
     private static Scene AideImporter;
     private static Scene Connexion;
     private static Scene Envoyer;
     private static Scene Importer;
+    private static Scene Visualiser;
     private static Scene Sauvegarder;
     private static Scene Affichage;
 
@@ -72,6 +75,13 @@ public class MainControleur extends Application {
      */
     public static void activerAideEnvoyer() {
         fenetrePrincipale.setScene(AideEnvoyer);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide pour l'importation de données.
+     */
+    public static void activerAideAffichage() {
+        fenetrePrincipale.setScene(AideAffichage);
     }
 
     /**
@@ -114,8 +124,9 @@ public class MainControleur extends Application {
      * Change la scène pour afficher l'écran d'affichage des données.
      */
     public static void activerAffichage() {
-        fenetrePrincipale.setScene(Affichage);
-    }
+        fenetrePrincipale.setX(250);
+        fenetrePrincipale.setY(150);
+        fenetrePrincipale.setScene(Visualiser); }
 
     /**
      * Renvoie la fenêtre principale de l'application.
@@ -188,13 +199,20 @@ public class MainControleur extends Application {
             Sauvegarder = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
-            chargeurFXMLImporter.setLocation(getClass()
+            chargeurFXMLAffichage.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/affichage.fxml"));
-            conteneur = chargeurFXMLImporter.load();
-            Affichage = new Scene(conteneur);
+            conteneur = chargeurFXMLAffichage.load();
+            Visualiser = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAideAffichage = new FXMLLoader();
+            chargeurFXMLAideAffichage.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aideAffichage.fxml"));
+            conteneur = chargeurFXMLAideAffichage.load();
+            AideAffichage = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
+            primaryStage.setResizable(false);
             primaryStage.show();
 
         } catch (Exception e) {
