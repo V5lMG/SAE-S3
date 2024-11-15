@@ -83,28 +83,32 @@ public class Fichier {
      * @param cheminFichier : Le chemin du fichier à lire.
      */
     public Fichier(String cheminFichier) {
-        if (!cheminFichier.isEmpty()) {
-            try {
-                this.fichierExploite = new File(cheminFichier);
-
-                if (!extensionValide()){
-                    err.println(ERREUR_EXTENSION_FICHIER);
-                }
-
-                if (!this.fichierExploite.canWrite()){
-                    err.println(ERREUR_CREATION_FICHIER +cheminFichier);
-                }
-
-                this.lecteurFichier = new FileReader(cheminFichier);
-                this.tamponFichier = new BufferedReader(this.lecteurFichier);
-
-            } catch (IOException pbOuverture) {
-                err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier);
-            }
-        } else {
+        if (cheminFichier == null || cheminFichier.isEmpty()) {
             err.println(ERREUR_FORMAT_PARAMETRE);
+            return;
+        }
+
+        this.fichierExploite = new File(cheminFichier);
+
+        if (!extensionValide()) {
+            err.println(ERREUR_EXTENSION_FICHIER);
+        }
+
+        try {
+            if (!fichierExploite.exists()) {
+                err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : Le fichier n'existe pas.");
+            } else if (!fichierExploite.canWrite()) {
+                err.println(ERREUR_CREATION_FICHIER + cheminFichier);
+            }
+
+            this.lecteurFichier = new FileReader(fichierExploite);
+            this.tamponFichier = new BufferedReader(this.lecteurFichier);
+
+        } catch (IOException e) {
+            err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : " + e.getMessage());
         }
     }
+
 
     /**
      * Vérifie si le fichier a une extension valide.

@@ -59,6 +59,7 @@ public class Chiffrement {
         // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
 
+        int ligneActuelle = 0;// Compteur de ligne
         for (String ligne : donnees) {
             for(int j = 0; j < ligne.length(); j++){
                 codeDonnees = alphabet.indexOf(ligne.charAt(j));
@@ -71,8 +72,10 @@ public class Chiffrement {
                     messChiffre.append(ligne.charAt(j));
                 }
             }
-            // Ajoute un retour à la ligne après chaque ligne de données chiffrée
-            messChiffre.append("\n");
+            ligneActuelle++;
+            if (ligneActuelle < donnees.size()) {
+                messChiffre.append("\n"); // Ajouter un retour sauf pour la dernière ligne
+            }
         }
         return messChiffre.toString();
     }
@@ -104,6 +107,7 @@ public class Chiffrement {
         // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
 
+        int ligneActuelle = 0; // Compteur de ligne
         for (String ligne : donnees) {
             for (int j = 0; j < ligne.length(); j++) {
                 codeDonnees = alphabet.indexOf(ligne.charAt(j));
@@ -118,8 +122,10 @@ public class Chiffrement {
                     messDechiffre.append(ligne.charAt(j));
                 }
             }
-            // Ajoute un retour à la ligne après chaque ligne de données déchiffrée
-            messDechiffre.append("\n");
+            if (ligneActuelle < donnees.size()) {
+                messDechiffre.append("\n"); // Ajouter un retour sauf pour la dernière ligne
+            }
+
         }
         return messDechiffre.toString();
     }
@@ -144,6 +150,14 @@ public class Chiffrement {
         };
         for (char c : accents) {
             alphabet.add(c);
+        }
+
+        // Ajoute les numéros de 0 à 9
+        char[] numeros = {
+                '0','1', '2', '3', '4', '5', '6', '7', '8', '9'
+        };
+        for (char n : numeros) {
+            alphabet.add(n);
         }
 
         //Ajout de l'espace de l'aphabet.
@@ -233,13 +247,28 @@ public class Chiffrement {
      * @throws IllegalArgumentException Si l'inverse modulaire de `a` modulo `m` n'existe pas.
      */
     public static int modInverse(int a, int m) {
-        a = a % m;  // Réduire 'a' modulo m
-        for (int x = 1; x < m; x++) {
-            if ((a * x) % m == 1) {
-                return x;  // L'inverse modulaire de 'a' modulo 'm'
-            }
+        int m0 = m, t, q;
+        int x0 = 0, x1 = 1;
+
+        if (m == 1) {
+            return 0;
         }
-        throw new IllegalArgumentException("L'inverse modulaire n'existe pas pour " + a + " modulo " + m);
+
+        while (a > 1) {
+            q = a / m;
+            t = m;
+            m = a % m;
+            a = t;
+            t = x0;
+            x0 = x1 - q * x0;
+            x1 = t;
+        }
+
+        if (x1 < 0) {
+            x1 += m0;
+        }
+
+        return x1;
     }
 
     /**
@@ -248,26 +277,31 @@ public class Chiffrement {
      * Si l'exposant est négatif, cette méthode calcule d'abord l'inverse modulaire de la base `a`,
      * puis élève cet inverse à la valeur absolue de l'exposant.
      *
-     * @param a La base de l'exponentiation. Ce peut être un nombre positif ou négatif.
+     * @param base La base de l'exponentiation. Ce peut être un nombre positif ou négatif.
      * @param exposant L'exposant. Peut être positif ou négatif.
      * @param modulo Le module. Doit être un entier positif.
      * @return Le résultat de a^exposant mod modulo.
      * @throws ModuloNegatifException Si le modulo est inférieur ou égal à 0.
      * @throws IllegalArgumentException Si l'inverse modulaire n'existe pas pour `a` et `modulo`.
      */
-    public static int expoModulaire(int a, int exposant, int modulo) {
+    public static int expoModulaire(int base, int exposant, int modulo) {
         // Vérifier si le modulo est valide
         if (modulo <= 0) {
             throw new ModuloNegatifException("Le modulo doit être un nombre positif.");
         }
 
-        //Il faut que a soit compris entre [1, m-1]
-        if (a <= 0 || a >= modulo) {
+        /*Vérification de la primalité du modulo*/
+        if (!estPremier(modulo)) {
+            throw new IllegalArgumentException("Le modulo 'm' doit être un nombre premier.");
+        }
+
+        //Il faut que la base soit compris entre [1, m-1]
+        if (base <= 0 || base >= modulo) {
             throw new IllegalArgumentException("La base 'a' doit être un entier strictement positif.");
         }
 
         if (exposant < 0) {
-            a = modInverse(a, modulo);
+            base = modInverse(base, modulo);
             exposant = -exposant;
         }
 
@@ -275,9 +309,9 @@ public class Chiffrement {
 
         while (exposant > 0) {
             if (exposant % 2 == 1) {
-                resultat = (resultat * a) % modulo;
+                resultat = (resultat * base) % modulo;
             }
-            a = (a * a) % modulo;
+            base = (base * base) % modulo;
             exposant = exposant / 2;
         }
 
@@ -285,21 +319,31 @@ public class Chiffrement {
     }
 
     /**
-     * Création de la clé à partir de la méthode de Diffie-Hellman
+     * Implémente l'échange de clés Diffie-Hellman pour générer une clé partagée
+     * entre deux parties (par exemple, A et B).
+     *
+     *
+     * <p>La méthode retourne la clé partagée calculée entre A et B après l'échange.</p>
+     *
+     * @param p Le nombre premier utilisé dans l'échange de clés.
+     * @param g La base utilisée dans l'échange de clés.
+     * @return La clé partagée calculée entre Alice et Bob.
+     * @throws IllegalArgumentException Si p n'est pas un nombre premier,
+     *                                  ou si g est supérieur ou égal à p.
      */
-    public static int cleDiffieHellman(int p, int b, int g){
-        int a = 0;
-        int resultat = 0;
-        int x = 5; // A déterminer par l'utilisateur
+    public static int cleDiffieHellman(int p, int g){
+        int clePubliqueA = 0;
+        int cleSecretePartagee = 0;
+        int a = 0; // à déterminer par l'utilisateur
         try{
-            a = expoModulaire(g, x, p);
-            resultat = expoModulaire(b, x, p);
+            clePubliqueA = expoModulaire(g, a, p);
+            //envoi de clePubliqueA via le réseau
+            //recevoir b via le réseau
+            int b = 0;
+            cleSecretePartagee = expoModulaire(b, a, p);
         } catch (ModuloNegatifException e){
             System.out.println(e.getMessage());
         }
-
-        return resultat;
+        return cleSecretePartagee;
     }
-
-
 }
