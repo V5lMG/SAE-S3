@@ -63,15 +63,28 @@ public class TestChiffrement {
             1, 1, 737, 5
     };
 
-    /*
-    public static void testGenererCleAleatoire() {
+    @Test
+    void testGenererCleAleatoire() {
+        // Initialisation de l'alphabet directement dans le test
         Chiffrement.creerAlphabet();
-        List<String> donnees = new ArrayList<>(); // Exemple de données
-        donnees.add("Ceci est un exemple de données");
+
+        String donnees = "Exemple de texte à chiffrer.";
         String cle = Chiffrement.genererCleAleatoire(donnees);
-        System.out.println("Clé générée : " + cle);
+
+        // Vérification que la clé générée n'est pas nulle
+        assertNotNull(cle, "La clé générée ne doit pas être null.");
+
+        // Vérification que la longueur de la clé est valide
+        assertTrue(cle.length() > 0 && cle.length() <= donnees.length(),
+                "La clé générée doit avoir une longueur comprise entre 1 et la longueur des données.");
+
+        // Vérification que la clé est composée uniquement de caractères de l'alphabet
+        for (char c : cle.toCharArray()) {
+            assertTrue(Chiffrement.alphabet.contains(c),
+                    "La clé doit contenir uniquement des caractères présents dans l'alphabet.");
+        }
     }
-    */
+
     /*
     public static void testDefTailleClef() {
        Chiffrement.creerAlphabet();
@@ -84,7 +97,7 @@ public class TestChiffrement {
        System.out.println("Clé adapter à la taille du texte : " + cle2);
     }
     */
-
+    /*
     public static boolean testChiffrementDechiffrementDonnees(String cheminFichier) {
         Fichier fichier = new Fichier(cheminFichier);
         List<String> contenuOriginal = fichier.contenuFichier();
@@ -130,7 +143,7 @@ public class TestChiffrement {
 
         return resultat;
     }
-
+    */
 
     @Test
     void estPremierValide() {
@@ -184,7 +197,7 @@ public class TestChiffrement {
     }
 
     public static void main(String[] args) {
-        // Chemin vers le fichier que vous voulez tester
+       /* // Chemin vers le fichier que vous voulez tester
         String cheminFichierTest = "C:\\Users\\mathi\\Documents\\BUTInfo2emeAnnee\\salles 26_08_24 13_40.csv";
 
         // Appel de la méthode de test pour vérifier le chiffrement et le déchiffrement
@@ -196,6 +209,6 @@ public class TestChiffrement {
         } else {
             System.out.println("Test échoué : le contenu déchiffré diffère du contenu original.");
         }
-        // Remplacer par test unitaire JUnit pour terminer la classe TestChiffrement
+        // Remplacer par test unitaire JUnit pour terminer la classe TestChiffrement */
     }
 }

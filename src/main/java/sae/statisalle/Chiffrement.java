@@ -30,7 +30,7 @@ public class Chiffrement {
     private static int tailleDonnees;
 
     /*Contient les caractères utilisés pour le chiffrement*/
-    private static List<Character> alphabet;
+    public static List<Character> alphabet;
 
     public static void main (String[] args) {
         String donnee = "test de chiffrement";
