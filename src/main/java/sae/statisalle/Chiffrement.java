@@ -22,6 +22,7 @@ import java.util.ArrayList;
  * @author Montes Robin
  * @author Xavier-Taborda Rodrigo
  * @author Cambon Mathias
+ * @author valentin.munier-genie
  */
 public class Chiffrement {
 
@@ -31,52 +32,56 @@ public class Chiffrement {
     /*Contient les caractères utilisés pour le chiffrement*/
     private static List<Character> alphabet;
 
+    public static void main (String[] args) {
+        String donnee = "test de chiffrement";
+        String cle = genererCleAleatoire(donnee);
+        System.out.println(cle);
+        System.out.println("donné non crypté : " + donnee);
+        String donneeCrypte = chiffrementDonnees(donnee, cle);
+        System.out.println("donné crypté : " + donneeCrypte);
+        String donneeDecrypte = dechiffrementDonnees(donneeCrypte, cle);
+        System.out.println("donné décrypté : " + donneeDecrypte);
+    }
 
     /**
      * Méthode de chiffrement des données,
      * en utilisant l'algorithme de Vigenère.
      * Pour cela, il faut utiliser une clé qui va nous permettre de chiffrer
      * et déchiffrer les données.
-     * @param cle Cle de chiffrement que nous utiliserons pour chiffre le
+     * @param cle Cle de chiffrement que nous utiliserons pour chiffrer le
      *            message
-     * @param fichier Fichier qui contient les données à crypter
+     * @param donnees Données à crypter sous forme de String
      * @return Le message chiffré sous forme de String
      */
-    public static String  chiffrementDonnees(Fichier fichier, String cle) {
+    public static String chiffrementDonnees(String donnees, String cle) {
         StringBuilder messChiffre = new StringBuilder();
 
         int codeDonnees,
                 codeCle,
                 codeCharChiffre;
 
-        // Initialisation de l'alphabet
+        // Initialisation de l'alphabet (par exemple : alphabet complet A-Z + a-z + chiffres, etc.)
         creerAlphabet();
-
-        // Charger le contenu du fichier
-        List<String> donnees = fichier.contenuFichier();
-        tailleDonnees = donnees.size();
 
         // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
 
-        int ligneActuelle = 0;// Compteur de ligne
-        for (String ligne : donnees) {
-            for(int j = 0; j < ligne.length(); j++){
-                codeDonnees = alphabet.indexOf(ligne.charAt(j));
-                codeCle = alphabet.indexOf(cle.charAt(j % cle.length()));
-                if (codeDonnees != -1 && codeCle != -1) {
-                    codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
-                    messChiffre.append(alphabet.get(codeCharChiffre));
-                } else {
-                    // Conserve le caractère si non trouvé
-                    messChiffre.append(ligne.charAt(j));
-                }
-            }
-            ligneActuelle++;
-            if (ligneActuelle < donnees.size()) {
-                messChiffre.append("\n"); // Ajouter un retour sauf pour la dernière ligne
+        // Parcours des caractères de la chaîne
+        for (int i = 0; i < donnees.length(); i++) {
+            char caractere = donnees.charAt(i);
+
+            codeDonnees = alphabet.indexOf(caractere);
+            codeCle = alphabet.indexOf(cle.charAt(i % cle.length()));
+
+            if (codeDonnees != -1 && codeCle != -1) {
+                codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
+                messChiffre.append(alphabet.get(codeCharChiffre));
+            } else {
+                // Conserve le caractère si non trouvé dans l'alphabet
+                messChiffre.append(caractere);
             }
         }
+
         return messChiffre.toString();
     }
 
@@ -85,12 +90,11 @@ public class Chiffrement {
      * en utilisant l'algorithme de Vigenère.
      * Cette méthode utilise la même clé que pour le chiffrement afin de décrypter
      * les données d'origine.
-     * @param cle cle de déchiffrement que nous utiliserons pour déchiffrer le
-     *            message
-     * @param fichier fichier qui contient les données à décrypter
+     * @param donnees Données à décrypter sous forme de String
+     * @param cle Clé de déchiffrement que nous utiliserons pour déchiffrer le message
      * @return Le message déchiffré sous forme de String
      */
-    public static String dechiffrementDonnees(Fichier fichier, String cle) {
+    public static String dechiffrementDonnees(String donnees, String cle) {
         StringBuilder messDechiffre = new StringBuilder();
 
         int codeDonnees,
@@ -100,33 +104,26 @@ public class Chiffrement {
         // Initialisation de l'alphabet
         creerAlphabet();
 
-        // Charger le contenu du fichier
-        List<String> donnees = fichier.contenuFichier();
-        tailleDonnees = donnees.size();
-
         // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
 
-        int ligneActuelle = 0; // Compteur de ligne
-        for (String ligne : donnees) {
-            for (int j = 0; j < ligne.length(); j++) {
-                codeDonnees = alphabet.indexOf(ligne.charAt(j));
-                codeCle = alphabet.indexOf(cle.charAt(j % cle.length()));
+        // Parcours des caractères de la chaîne
+        for (int i = 0; i < donnees.length(); i++) {
+            char caractere = donnees.charAt(i);
 
-                if (codeDonnees != -1 && codeCle != -1) {
-                    // Calculer l'index du caractère d'origine en utilisant la soustraction
-                    codeCharDechiffre = (codeDonnees - codeCle + alphabet.size()) % alphabet.size();
-                    messDechiffre.append(alphabet.get(codeCharDechiffre));
-                } else {
-                    // Conserve le caractère si non trouvé
-                    messDechiffre.append(ligne.charAt(j));
-                }
-            }
-            if (ligneActuelle < donnees.size()) {
-                messDechiffre.append("\n"); // Ajouter un retour sauf pour la dernière ligne
-            }
+            codeDonnees = alphabet.indexOf(caractere);
+            codeCle = alphabet.indexOf(cle.charAt(i % cle.length()));
 
+            if (codeDonnees != -1 && codeCle != -1) {
+                // Calculer l'index du caractère d'origine en utilisant la soustraction
+                codeCharDechiffre = (codeDonnees - codeCle + alphabet.size()) % alphabet.size();
+                messDechiffre.append(alphabet.get(codeCharDechiffre));
+            } else {
+                // Conserve le caractère si non trouvé dans l'alphabet
+                messDechiffre.append(caractere);
+            }
         }
+
         return messDechiffre.toString();
     }
 
@@ -167,19 +164,15 @@ public class Chiffrement {
 
     /**
      * Adapte la taille de la clé pour qu'elle corresponde à la taille du message entier.
-     * @param donnees Les données présentes dans le fichier
+     * @param donnees Les données sous forme de chaîne de caractères
      * @param cle La clé initiale
      * @return La clé ajustée à la taille des données
      */
-    public static String defTailleClef(List<String> donnees, String cle) {
-
-        tailleDonnees = 0;
-        for (String ligne : donnees) {
-            tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
-        }
-
+    public static String defTailleClef(String donnees, String cle) {
+        int tailleDonnees = donnees.length(); // Taille totale des données
         StringBuilder cleAjustee = new StringBuilder();
 
+        // Répéter la clé jusqu'à atteindre la taille des données
         while (cleAjustee.length() < tailleDonnees) {
             cleAjustee.append(cle);
         }
@@ -190,28 +183,28 @@ public class Chiffrement {
 
     /**
      * Génère une clé aléatoire de taille aléatoire entre 1 et la longueur des données.
+     * @param donnees Les données sous forme de chaîne de caractères
      * @return La clé générée sous forme de String.
      */
-    public static String genererCleAleatoire(List<String> donnees) {
+    public static String genererCleAleatoire(String donnees) {
         if (alphabet == null || alphabet.isEmpty()) {
             creerAlphabet();  // Initialiser l'alphabet si ce n'est pas déjà fait
         }
-        tailleDonnees = 0;
-        for (String ligne : donnees) {
-            tailleDonnees += ligne.length();  // Ajoute la longueur de chaque ligne
-        }
+
+        int tailleDonnees = donnees.length();  // Longueur totale des données
 
         if (tailleDonnees == 0) {
-            throw new IllegalArgumentException("La liste des données est vide. Impossible de générer une clé.");
+            throw new IllegalArgumentException("Les données sont vides. Impossible de générer une clé.");
         } else {
             Random random = new Random();
-            int longueurCle = random.nextInt(tailleDonnees) + 1;
+            int longueurCle = random.nextInt(tailleDonnees) + 1;  // Taille de la clé entre 1 et tailleDonnees
             StringBuilder cleBuilder = new StringBuilder();
 
             for (int i = 0; i < longueurCle; i++) {
                 char lettre = alphabet.get(random.nextInt(alphabet.size())); // Choisir une lettre aléatoire dans l'alphabet
                 cleBuilder.append(lettre);
             }
+
             return cleBuilder.toString();
         }
     }
@@ -237,7 +230,6 @@ public class Chiffrement {
     /**
      * Calcule l'inverse modulaire de `a` modulo `m`, c'est-à-dire le nombre `x` tel que
      * (a * x) % m == 1.
-     *
      * Cette méthode utilise une recherche exhaustive pour trouver l'inverse modulaire de `a` mod `m`.
      * Si l'inverse n'existe, une exception `IllegalArgumentException` est levée.
      *
@@ -273,7 +265,6 @@ public class Chiffrement {
 
     /**
      * Calcule l'exponentiation modulaire : a^exposant mod modulo.
-     *
      * Si l'exposant est négatif, cette méthode calcule d'abord l'inverse modulaire de la base `a`,
      * puis élève cet inverse à la valeur absolue de l'exposant.
      *

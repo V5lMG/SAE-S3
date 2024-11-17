@@ -9,6 +9,7 @@ import sae.statisalle.exception.MauvaiseConnexionServeur;
 import java.io.*;
 import java.net.*;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Classe responsable de la gestion des communications réseau.
@@ -114,21 +115,31 @@ public class Reseau {
     }
 
     /**
-     * Traite la requête reçue du client en remplaçant les marqueurs
-     * de fin de ligne par les caractères de saut de ligne.
-     * @param requete La requête reçue du client sous forme
-     *                de chaîne de caractères.
-     * @return Une chaîne de caractères formatée pour l'enregistrement.
+     * Traite la requête reçue du client en séparant la clé et les données chiffrées.
+     * Les marqueurs de fin de ligne sont également remplacés par les caractères correspondants.
+     * @param requete La requête reçue du client sous forme de chaîne de caractères.
+     * @return Une liste contenant deux éléments : [clé, données chiffrées formatées].
+     * @throws IllegalArgumentException si la requête est null ou mal formatée.
      */
-    public String traiterRequete(String requete) {
+    public List<String> traiterRequete(String requete) {
         System.out.println("Message reçu du client : " + requete);
+
         if (requete == null) {
-            throw new IllegalArgumentException("Le traitement de la requete "
-                                               + "a échoué");
-        } else {
-            return requete.replace("/R", "\r")
-                    .replace("/N", "\n");
+            throw new IllegalArgumentException("Le traitement de la requête a échoué : requête null.");
         }
+
+        // Séparer la clé et les données chiffrées à l'aide du délimiteur
+        String[] parties = requete.split("/DELIM/");
+        if (parties.length != 2) {
+            throw new IllegalArgumentException("Le format de la requête est incorrect. Délimiteur manquant ou mal utilisé.");
+        }
+
+        // Remplacer les marqueurs de fin de ligne dans les données chiffrées
+        String cle = parties[0];
+        String donneesChiffrees = parties[1]; //.replace("/R", "\r").replace("/N", "\n");
+
+        // Retourner une liste contenant la clé et les données chiffrées formatées
+        return List.of(cle, donneesChiffrees);
     }
 
     /**
@@ -205,9 +216,15 @@ public class Reseau {
         String contenu = donnees.replace("\n", "/N")
                                 .replace("\r", "/R");
 
-        // envoyer tous le contenue
-        fluxSortie.println(contenu);
-        System.out.println("Fichier envoyé avec succès.");
+        // généré une clé
+        String cle = Chiffrement.genererCleAleatoire(contenu);
+        // chiffrer les données
+        String donneesChiffrees = Chiffrement.chiffrementDonnees(contenu, cle);
+        String message = cle + "/DELIM/" + donneesChiffrees;
+
+        // Envoyer le message au serveur
+        fluxSortie.println(message);
+        System.out.println("Données et clé envoyées avec succès.");
     }
 
     /**
@@ -216,10 +233,11 @@ public class Reseau {
      */
     public String recevoirReponse() {
         try {
+            System.out.println(fluxEntree.readLine());
             return fluxEntree.readLine();
         } catch (IOException e) {
             System.out.println("Erreur lors de la réception de la réponse : "
-                    + e.getMessage());
+                               + e.getMessage());
         }
         return "Erreur lors de la réception de la réponse.";
     }

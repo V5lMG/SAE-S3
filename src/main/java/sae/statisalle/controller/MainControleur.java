@@ -18,6 +18,7 @@ import sae.statisalle.Session;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
@@ -242,12 +243,16 @@ public class MainControleur extends Application {
                     Reseau clientReseau = serveur.attendreConnexionClient();
 
                     // chaque client est géré dans un thread séparé
-                    Thread clientHandler = new Thread(() -> {
+                    Thread threadGestionClient = new Thread(() -> {
                         try {
                             String requete = clientReseau.recevoirDonnees();
-                            String contenuRequete = clientReseau
-                                                       .traiterRequete(requete);
-                            Session.setContenu(contenuRequete);
+                            List<String> contenuRequete = clientReseau.traiterRequete(requete);
+
+                            String cle = contenuRequete.get(0);
+                            String donneesChiffrees = contenuRequete.get(1);
+
+                            Session.setContenu(donneesChiffrees);
+                            Session.setCle(cle);
 
                             SauvegarderFichier controller =
                                     chargeurFXMLSauvegarder.getController();
@@ -262,7 +267,7 @@ public class MainControleur extends Application {
                         }
                     });
 
-                    clientHandler.start();
+                    threadGestionClient.start();
                 }
             } catch (IOException e) {
                 System.err.println("Erreur lors de l'initialisation "
