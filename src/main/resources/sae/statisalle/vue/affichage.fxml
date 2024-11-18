@@ -14,7 +14,7 @@
                     <Button fx:id="btnAfficherTableaux" layoutX="580" layoutY="237.5" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Charger les données" />
                   <Pane prefHeight="400.0" prefWidth="400.0">
                      <children>
-                        <TabPane fx:id="grandTableau" visible="false" prefHeight="350.0" prefWidth="1100.0" layoutX="50.0" layoutY="50.0" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="grandTableau" layoutX="50.0" layoutY="50.0" prefHeight="350.0" prefWidth="1100.0" tabClosingPolicy="UNAVAILABLE" visible="false">
                           <tabs>
                             <Tab text="Reservation">
                               <content>
@@ -143,7 +143,7 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                              <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" />
+                              <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
                      </children>
                         </AnchorPane>
                     </children>
