@@ -185,8 +185,9 @@ public class Envoyer {
 
             reseau.envoyer(contenuTotal.toString());
             String reponse = reseau.recevoirReponse();
+            Session.setContenu(reponse);
 
-            reseau.utiliserReponse(reponse);
+            reseau.traiterReponse(reponse);
             afficherConfirmationEtRetour();
 
         } catch (IllegalArgumentException e) {

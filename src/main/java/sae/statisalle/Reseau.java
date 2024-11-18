@@ -123,9 +123,7 @@ public class Reseau {
 
         String cle = parties[0];
         String donneesChiffrees = parties[1];
-        String donneesDechiffrees = Chiffrement.dechiffrementDonnees(donneesChiffrees, cle)
-                .replace("/R", "\r")
-                .replace("/N", "\n");
+        String donneesDechiffrees = Chiffrement.dechiffrementDonnees(donneesChiffrees, cle);
         System.out.println("[DEBUG] Données déchiffrées : " + donneesDechiffrees);
         return donneesDechiffrees;
     }
@@ -210,12 +208,13 @@ public class Reseau {
         System.out.println("[DEBUG] Données chiffrées : " + donneesChiffrees);
 
         String message = cle + "/DELIM/" + donneesChiffrees;
+
         fluxSortie.println(message);
         System.out.println("[DEBUG] Message envoyé au serveur : " + message);
     }
 
     /**
-     * Reçoit la réponse du serveur, avec ajout de messages de débogage.
+     * Reçoit la réponse du serveur.
      *
      * @return La réponse du serveur sous forme de chaîne, ou une erreur si elle est null.
      */
@@ -225,10 +224,12 @@ public class Reseau {
             String reponse = fluxEntree.readLine();
             if (reponse == null) {
                 System.out.println("[DEBUG] La réponse reçue est null.");
+                return null;
             } else {
                 System.out.println("[DEBUG] Réponse reçue : " + reponse);
+                return reponse.replace("/R", "\r")
+                              .replace("/N", "\n");
             }
-            return reponse;
         } catch (IOException e) {
             System.err.println("[DEBUG] Erreur lors de la réception de la réponse : " + e.getMessage());
             return "[DEBUG] Erreur lors de la réception de la réponse.";
@@ -240,7 +241,7 @@ public class Reseau {
      *
      * @param reponse La réponse à traiter.
      */
-    public void utiliserReponse(String reponse) {
+    public void traiterReponse(String reponse) {
         if (reponse == null || reponse.isEmpty()) {
             System.out.println("[DEBUG] La réponse est null ou vide. Rien à traiter.");
         } else {
