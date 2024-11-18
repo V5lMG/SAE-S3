@@ -2,7 +2,7 @@
  * Activite.java               24/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle;
+package sae.statisalle.modele.objet;
 
 /**
  * La classe Activite initialise les objets de type Activite.
@@ -16,14 +16,15 @@ package sae.statisalle;
  * @author robin.montes
  */
 public class Activite {
-    /*Identifiant de l'activité*/
+
+    /* Identifiant de l'activité */
     String idActivite;
 
-    /*Les différents types d'activité*/
+    /* Les différents types d'activité */
     String type;
 
     public Activite(String type, String idActivite) {
-        this.idActivite = idActivite;
+        this.idActivite = null;
         this.type = type;
     }
 

@@ -2,7 +2,7 @@
  * Reseau.java                21/10/2024
  * Pas de droits d'auteur ni de copyright
  */
-package sae.statisalle;
+package sae.statisalle.modele;
 
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 

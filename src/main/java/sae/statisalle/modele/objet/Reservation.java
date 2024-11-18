@@ -2,7 +2,7 @@
  * Reservation.java               24/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle;
+package sae.statisalle.modele.objet;
 
 /**
  * La classe Reservation initialise les objets de type Reservation.
@@ -16,7 +16,7 @@ package sae.statisalle;
  * <br>
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des reservations en fonction des contenus des fichier
- * @author robin.montes
+ * @author erwan.thierry
  */
 public class Reservation {
     /* Identifiant de la reservation */
@@ -57,27 +57,7 @@ public class Reservation {
 
 
 
-    //TODO Faire les modifications pour correspondre aux attentes
-    //Ident;salle;employe;activite;date;heuredebut;heurefin;H;I;J;K;L
-//    Fichier des réservations
-//    Signification des colonnes H à L
-//
-//    Colonne H :
-//    Si l'activité est une réunion  => objet de la réunion
-//    Si l'activité est un prêt ou une location  => organisme bénéfiaire du prêt ou auquel la salle est louée
-//    Si l'activité est une formation => la thématique de la formation
-//    Si l'activité est un entretien => nature de l'entretien
-//    Si l'activité est "autre"  => un texte libre de description de cette activité
-//
-//    Colonnes I à L :
-//    Elles sont présentes seulement si l'activité est un prêt ou une location
-//    Puisque le prêt ou la location concernent un organisme extérieur, il est intéressant
-//    de pouvoir enregistrer les coordonnées d'un interlocuteur (à contacter si besoin),
-//    donc une personne faisant partie de la structure bénéfiaire du prêt ou de la location
-//
-//    Colonne I  et J  => nom et prénom de l'interlocuteur
-//    Colonne K        => numéro de téléphone de l'interlocuteur
-//    Colonne L        => usage qui sera fait de la salle, dans le cadre du prêt ou de la location
+    //TODO Faire la documentation
     public Reservation(String idReservation, String salleR           , String employeR         , String activiteR  , String dateR,
                        String heureDebut       , String heureFin         , String description, String nomIntervenant,
                        String prenomIntervenant, String numTelIntervenant, String usage) {
@@ -99,56 +79,28 @@ public class Reservation {
         return idReservation;
     }
 
-    public void setIdReservation(String idReservation) {
-        this.idReservation = idReservation;
-    }
-
     public String getSalleR() {
         return salleR;
-    }
-
-    public void setSalleR(String salleR) {
-        this.salleR = salleR;
     }
 
     public String getEmployeR() {
         return employeR;
     }
 
-    public void setEmployeR(String employeR) {
-        this.employeR = employeR;
-    }
-
     public String getActiviteR() {
         return activiteR;
-    }
-
-    public void setActiviteR(String activiteR) {
-        this.activiteR = activiteR;
     }
 
     public String getHeureDebut() {
         return heureDebut;
     }
 
-    public void setHeureDebut(String heureDebut) {
-        this.heureDebut = heureDebut;
-    }
-
     public String getDateR() {
         return dateR;
     }
 
-    public void setDateR(String dateR) {
-        this.dateR = dateR;
-    }
-
     public String getHeureFin() {
         return heureFin;
-    }
-
-    public void setHeureFin(String heureFin) {
-        this.heureFin = heureFin;
     }
 
     public String getDescription() {
@@ -185,6 +137,34 @@ public class Reservation {
 
     public String getUsage() {
         return usage;
+    }
+
+    public void setIdReservation(String idReservation) {
+        this.idReservation = idReservation;
+    }
+
+    public void setSalleR(String salleR) {
+        this.salleR = salleR;
+    }
+
+    public void setEmployeR(String employeR) {
+        this.employeR = employeR;
+    }
+
+    public void setActiviteR(String activiteR) {
+        this.activiteR = activiteR;
+    }
+
+    public void setHeureDebut(String heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public void setDateR(String dateR) {
+        this.dateR = dateR;
+    }
+
+    public void setHeureFin(String heureFin) {
+        this.heureFin = heureFin;
     }
 
     public void setUsage(String usage) {

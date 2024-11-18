@@ -6,15 +6,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import sae.statisalle.Activite;
-import sae.statisalle.Employe;
-import sae.statisalle.Reservation;
-import sae.statisalle.Salle;
-import sae.statisalle.Fichier;
+import sae.statisalle.modele.objet.Activite;
+import sae.statisalle.modele.objet.Employe;
+import sae.statisalle.modele.objet.Reservation;
+import sae.statisalle.modele.objet.Salle;
+import sae.statisalle.modele.Fichier;
 
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Affichage {
@@ -119,13 +120,19 @@ public class Affichage {
         // Affiche les tableaux
         grandTableau.setVisible(true);
 
+        // Vider les tableaux pour éviter des doublons
+        tabEmploye.getItems().clear();
+        tabSalle.getItems().clear();
+        tabActivite.getItems().clear();
+        tabReservation.getItems().clear();
+
         // Récupère le chemin du répertoire "resources"
         ClassLoader classLoader = getClass().getClassLoader();
         URL ressourceURL = classLoader.getResource("csv");
 
         try {
             if (ressourceURL != null) {
-                File dossier = new File(URLDecoder.decode(ressourceURL.getPath(), "UTF-8"));
+                File dossier = new File(URLDecoder.decode(ressourceURL.getPath(), StandardCharsets.UTF_8));
 
                 // Vérifier si le répertoire contient des fichiers
                 if (!dossier.exists() || !dossier.isDirectory()) {
@@ -240,7 +247,7 @@ public class Affichage {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 }

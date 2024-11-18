@@ -5,6 +5,7 @@
 package sae.statisalle;
 
 import sae.statisalle.exception.MauvaiseConnexionServeur;
+import sae.statisalle.modele.Reseau;
 
 import java.io.IOException;
 import java.nio.file.Files;

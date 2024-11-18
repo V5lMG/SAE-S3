@@ -9,8 +9,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import sae.statisalle.Reseau;
-import sae.statisalle.Session;
+import sae.statisalle.modele.Reseau;
+import sae.statisalle.modele.Session;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.net.InetAddress;

@@ -2,9 +2,8 @@
  * Fichier.java               21/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle;
+package sae.statisalle.modele;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,55 +19,51 @@ import java.util.List;
 import static java.lang.System.err;
 
 /**
- * La classe Fichier gère les opérations de lecture
- * sur des fichiers Comma Separated Values (csv). Elle permet de lire le contenu
- * d'un fichier ligne par ligne
+ * La classe Fichier gère les opérations de lecture sur des fichiers
+ * Comma Separated Values (csv).
  * <br>
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * La classe gère également les erreurs courantes liées à l'ouverture,
  * la lecture et la fermeture des fichiers.
  * @author erwan.thierry
- * @author MathiasCambon
+ * @author mathias.cambon
  */
 public class Fichier {
 
-    private static final String ERREUR_ECRITURE_FICHIER =
-            "erreur : impossible d'écrire dans le fichier";
-
-    /* fichier courant de l'instance */
+    /* Fichier courant de l'instance */
     private File fichierExploite;
 
-    /* lecteur du fichier courant de l'instance */
+    /* Lecteur du fichier courant de l'instance */
     private FileReader lecteurFichier;
 
-    /* */
+    /* Tampon pour la lecture du fichier*/
     private BufferedReader tamponFichier;
 
-    /** impossible d'ouvrir le fichier renseigné */
+    /* Impossible d'ouvrir le fichier renseigné */
     private static final String ERREUR_OUVERTURE_FICHIER =
             "erreur : Impossible d'ouvrir le fichier au lien : ";
 
-    /** impossible de fermer le fichier renseigné */
-    private static final String ERREUR_FERMETURE_FICHIER =
-            "erreur : Impossible de fermer le fichier.";
-
-    /** impossible d'acceder au contenu du fichier **/
+    /* Impossible d'acceder au contenu du fichier **/
     private static final String ERREUR_CONTENU_FICHIER =
             "erreur : Impossible d'accéder au contenu du fichier.";
 
-    /** impossible de créer le fichier, droits insuffisants **/
+    /* Impossible de créer le fichier, droits insuffisants **/
     private static final String ERREUR_CREATION_FICHIER =
             "erreur : Impossible de créer le fichier, droits insuffisants. ";
 
-    /** le format du fichier n'est pas .txt ou .TXT **/
+    /* Le format du fichier n'est pas .txt ou .TXT **/
     private static final String ERREUR_EXTENSION_FICHIER =
             "erreur : Le format du fichier doit être .csv";
 
-    /** le format du paramètre est invalide **/
+    /* Le format du paramètre est invalide. */
     private static final String ERREUR_FORMAT_PARAMETRE =
             "erreur : Le format du paramètre renseigné invalide.";
 
-    /** Suffixe des fichiers pris en charge **/
+    /* L'écriture dans le fichier est impossible */
+    private static final String ERREUR_ECRITURE_FICHIER =
+            "erreur : L'écriture dans le fichier est impossible";
+
+    /* Suffixe des fichiers pris en charge */
     private static final String SUFFIXE_FICHIER = ".csv";
 
     /**
@@ -81,6 +76,7 @@ public class Fichier {
      * fichier a une extension correcte (.txt ou .bin).
      *
      * @param cheminFichier : Le chemin du fichier à lire.
+     * @author erwan.thierry
      */
     public Fichier(String cheminFichier) {
         if (cheminFichier == null || cheminFichier.isEmpty()) {
@@ -115,6 +111,7 @@ public class Fichier {
      *
      * @return true si l'extension du fichier est valide,
      * 	       false si l'extension du fichier n'est pas valide.
+     * @author erwan.thierry
      */
     public boolean extensionValide(){
         return this.fichierExploite.getName().endsWith(SUFFIXE_FICHIER);
@@ -129,6 +126,7 @@ public class Fichier {
      *
      * @return Une liste de chaînes de caractères contenant les lignes du fichier,
      *         ou Une liste vide si une erreur survient.
+     * @author erwan.thierry
      */
     public List<String> contenuFichier() {
         List<String> contenu = new ArrayList<>();
@@ -146,16 +144,21 @@ public class Fichier {
     }
 
     /**
-     * Stocke les données d'un fichier CSV sans l'en-tête dans une liste de listes.
-     * Chaque ligne du fichier CSV est transformée en une liste de chaînes de caractères.
+     * Stocke les données d'un fichier CSV sans l'en-tête dans une liste de
+     * listes. Chaque ligne du fichier CSV est transformée en une liste de
+     * chaînes de caractères.
      *
-     * La première ligne du fichier (l'en-tête) n'est pas pris en compte dans le traitement.
-     * Les lignes suivantes représentent les données du fichier, chaque cellule étant séparée par un point-virgule (';').
-     * Si la cellule est vide alors un espace est mis à sa place.
+     * La première ligne du fichier (l'en-tête) n'est pas pris en compte dans
+     * le traitement.
+     * Les lignes suivantes représentent les données du fichier, chaque cellule
+     * étant séparée par un point-virgule (';'). Si la cellule est vide alors
+     * un espace est mis à sa place.
      *
-     * @return une liste de listes de chaînes de caractères représentant les données du fichier CSV.
+     * @return une liste de listes de chaînes de caractères représentant les
+     *         données du fichier CSV.
      *         Chaque sous-liste suivante représente une ligne de données.
      *         Si le fichier est vide ou ne contient pas de données, une liste vide est retournée.
+     * @author erwan.thierry
      */
     public List<List<String>> recupererDonnees() {
         List<List<String>> tableau3D = new ArrayList<>();
@@ -166,11 +169,11 @@ public class Fichier {
         }
 
         // Récupérer les entêtes de colonnes pour déterminer la taille des lignes
-        String[] entetes = contenu.get(0).split(";");
+        String[] entetes = contenu.get(0).split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
 
         // Parcourt les lignes de données du fichier
         for (int i = 1; i < contenu.size(); i++) {
-            String[] ligne = contenu.get(i).split(";");
+            String[] ligne = contenu.get(i).split(";", -1); // Ajout de -1 ici également
             List<String> ligneTraitee = new ArrayList<>();
 
             // Traite chaque cellule de la ligne
@@ -225,7 +228,7 @@ public class Fichier {
      * Création d'un nouveau fichier.
      *
      * @param contenuFichier : La liste de chaînes de caractères à écrire dans
-     * le fichier.
+     *                         le fichier.
      * @param cheminFichier le chemin du fichier dans lequel il faut écrire.
      */
     public static void ecritureFichier(List<String> contenuFichier, String cheminFichier) {
@@ -244,6 +247,7 @@ public class Fichier {
     /**
      * Recupère le nom du fichier sans son extention
      * @return nom du fichier
+     * @author erwan.thierry
      */
     public String nomFichier(){
         String nomFichier = this.fichierExploite.getName();
@@ -265,6 +269,7 @@ public class Fichier {
      * Retourne l'objet File représentant le fichier exploité.
      *
      * @return fichier exploité.
+     * @author erwan.thierry
      */
     public File getFichierExploite() {
         return this.fichierExploite;
@@ -274,6 +279,7 @@ public class Fichier {
      * Prend la premiere ligne du contenu du fichier et renvoie le type en
      * fonction de ce qu'il contient.
      * @return typeFichier est soit Salle, Employe, Activite ou Reservation
+     * @author erwan.thierry
      */
     public String getTypeFichier() {
 
@@ -302,49 +308,31 @@ public class Fichier {
     }
 
     /**
-     * Ouvre le dossier contenant le fichier fournit en argument.
-     * @author valentin.munier-genie
+     * TODO
      *
-     * @param cheminFichier Le chemin du fichier.
-     */
-    public static void ouvrirDossier(String cheminFichier) {
-
-        File fichier = new File(cheminFichier);
-        File dossier = fichier.getParentFile();
-
-        if (dossier.exists() && dossier.isDirectory()) {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().open(dossier);
-                } catch (IOException e) {
-                    System.err.println("Erreur lors de l'ouverture du dossier : " + e.getMessage());
-                }
-            } else {
-                System.err.println("Ouverture de dossier non supportée "
-                                   + "sur ce système.");
-            }
-        } else {
-            System.err.println("Le dossier spécifié n'existe pas ou n'est "
-                               + "pas un répertoire.");
-        }
-    }
-
-    /**
-     * Compte le nombre d'occurrences d'un motif dans un texte.
+     * @param contenu
+     * @return
      * @author valentin.munier-genie
-     *
-     * @param texte Le texte à analyser.
-     * @param motif Le motif recherché.
-     * @return Le nombre d'occurrences du motif.
      */
-    public static int compterMotif(String texte, String motif) {
-        int compteur = 0;
-        int index = 0;
-
-        while ((index = texte.indexOf(motif, index)) != -1) {
-            compteur++;
-            index += motif.length();
+    public static String getTypeDepuisContenu(List<String> contenu) {
+        if (contenu.isEmpty()) {
+            return null;
         }
-        return compteur;
+
+        String premiereLigne = contenu.getFirst();
+
+        if (premiereLigne.contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante")) {
+            return "Salle";
+        }
+        if (premiereLigne.contains("Ident;Nom;Prenom;Telephone")) {
+            return "Employe";
+        }
+        if (premiereLigne.contains("Ident;Activité")) {
+            return "Activite";
+        }
+        if (premiereLigne.contains("Ident;salle;employe;activite;date;heuredebut;heurefin")) {
+            return "Reservation";
+        }
+        return null;
     }
 }

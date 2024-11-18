@@ -12,9 +12,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import sae.statisalle.Reseau;
+import sae.statisalle.modele.Fichier;
+import sae.statisalle.modele.Reseau;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,7 +32,7 @@ import java.util.Optional;
  */
 public class MainControleur extends Application {
 
-    /* Déclaration de l'ensemble des scenes */
+    /* déclaration de l'ensemble des scenes */
     private static Scene Accueil;
     private static Scene AideAccueil;
     private static Scene AideConnexion;
@@ -37,13 +43,9 @@ public class MainControleur extends Application {
     private static Scene Envoyer;
     private static Scene Importer;
     private static Scene Visualiser;
-    private static Scene Affichage;
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
-
-    /* Chargeur pour la page de sauvegarde */
-    static FXMLLoader chargeurFXMLSauvegarder = new FXMLLoader();
 
     /**
      * Change la scène de l'application principale
@@ -229,15 +231,10 @@ public class MainControleur extends Application {
                         try {
                             String requete = clientReseau.recevoirDonnees();
                             String reponse = clientReseau.traiterRequete(requete);
-                            String reponseAvecRetourLigne =
-                                reponse.replace("/N", "\n")
-                                       .replace("/R", "\r")
-                                       .replace("/EOF","\n\n");
-
                             clientReseau.envoyerReponse("Données bien reçu et traité.");
 
                             // thread javaFx pour la page de sauvegarde
-                            Platform.runLater(() -> afficherPopupFichierRecu(reponseAvecRetourLigne));
+                            Platform.runLater(() -> afficherPopupFichierRecu(reponse));
                         } finally {
                             clientReseau.fermerClient();
                         }
@@ -262,7 +259,7 @@ public class MainControleur extends Application {
     public static void afficherPopupFichierRecu(String donneeRecu) {
         Alert popup = new Alert(Alert.AlertType.CONFIRMATION);
         popup.setTitle("Fichier Reçu");
-        popup.setHeaderText("Vous avez reçu un fichier.");
+        popup.setHeaderText("Vous avez reçu un (ou plusieurs) fichier(s).");
         popup.setContentText("Que souhaitez-vous faire ?");
 
         ButtonType boutonCharger = new ButtonType("Charger dans l'application");
@@ -273,14 +270,45 @@ public class MainControleur extends Application {
 
         Optional<ButtonType> resultat = popup.showAndWait();
 
+        String reponseAvecRetourLigne = donneeRecu.replace("/N", "\n")
+                                                  .replace("/R", "\r");
+
+        String[] fichiers = reponseAvecRetourLigne.split("/EOF");
+
         if (resultat.isPresent()) {
             if (resultat.get() == boutonVisualiser) {
-                afficherPopupVisualiser(donneeRecu);
+                afficherPopupVisualiser(reponseAvecRetourLigne);
             } else if (resultat.get() == boutonCharger) {
-                System.out.println("Charger dans l'application");
-                // TODO charger dans l'application
+                String dateDuJour = new SimpleDateFormat("ddMMyyyy").format(new Date());
+
+                try {
+                    // Vérifier et créer le répertoire si nécessaire
+                    File dossier = new File("src/main/resources/csv/");
+                    if (!dossier.exists() && !dossier.mkdirs()) {
+                        throw new IOException("Erreur lors de la création du répertoire.");
+                    }
+
+                    // parcourir chaque fichier extrait et les sauvegarder
+                    for (String fichier : fichiers) {
+                        List<String> donneesEnListe = Arrays.asList(fichier.split("\n"));
+
+                        String nomFichier = Fichier.getTypeDepuisContenu(
+                                                        donneesEnListe
+                                            ) + "_" + dateDuJour + ".csv";
+
+                        // créer ou réécrire le fichier avec les données reçues
+                        Fichier.ecritureFichier(donneesEnListe, "src/main/resources/csv/" + nomFichier);
+                        System.out.println("Les données ont été sauvegardées dans : " + nomFichier);
+                    }
+
+                    // renvoie l'utilisateur vers l'affichage des données
+                    MainControleur.activerAffichage();
+                } catch (IOException e) {
+                    showAlert("Erreur d'importation", "Impossible de charger les données dans l'application : " + e.getMessage());
+                }
             } else {
                 System.out.println("Action annulée.");
+                popup.close();
             }
         }
     }
@@ -291,7 +319,8 @@ public class MainControleur extends Application {
         popupVisualiser.setHeaderText("Données reçues");
 
         // création du contenu de la popup
-        TextArea zoneTexte = new TextArea(donnees);
+        String contenu = donnees.replace("/EOF", "\n\n");
+        TextArea zoneTexte = new TextArea(contenu);
         zoneTexte.setEditable(false);
         zoneTexte.setWrapText(true);
 
@@ -300,7 +329,7 @@ public class MainControleur extends Application {
 
         popupVisualiser.getDialogPane().setContent(zoneTexte);
 
-        // Gestion du retour
+        // gestion du retour
         popupVisualiser.showAndWait().ifPresent(result -> {
             if (result == boutonRetour) {
                 afficherPopupFichierRecu(donnees);

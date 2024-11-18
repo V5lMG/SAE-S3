@@ -2,8 +2,7 @@
  * Salle.java               23/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle;
-import java.util.ArrayList;
+package sae.statisalle.modele.objet;
 
 /**
  * La classe Salle initialise les objets de type Salle.
@@ -21,7 +20,7 @@ import java.util.ArrayList;
  * <br>
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des salles en fonction des contenus des fichier
- * @author robin.montes
+ * @author erwan.thierry
  */
 public class Salle {
     /* Identifiant de la salle */

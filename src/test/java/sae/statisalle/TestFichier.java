@@ -3,6 +3,7 @@ package sae.statisalle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sae.statisalle.modele.Fichier;
 
 import java.io.File;
 import java.io.FileWriter;

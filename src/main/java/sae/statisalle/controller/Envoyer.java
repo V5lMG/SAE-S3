@@ -10,8 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import sae.statisalle.Reseau;
-import sae.statisalle.Session;
+import sae.statisalle.modele.Reseau;
+import sae.statisalle.modele.Session;
 
 import java.io.BufferedReader;
 import java.io.File;

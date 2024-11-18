@@ -2,7 +2,7 @@
  * Employe.java               23/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle;
+package sae.statisalle.modele.objet;
 
 /**
  * La classe Employe initialise les objets de type Employe.
@@ -16,7 +16,6 @@ package sae.statisalle;
  * <br>
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des Employés en fonction des contenus des fichiers
- * @author robin.montes
  * @author erwan.thierry
  */
 public class Employe {

@@ -6,10 +6,7 @@ package sae.statisalle;
 
 import org.junit.jupiter.api.Test;
 import sae.statisalle.exception.ModuloNegatifException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import sae.statisalle.modele.Chiffrement;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -142,6 +139,7 @@ public class TestChiffrement {
         }
 
         return resultat;
+
     }
     */
 

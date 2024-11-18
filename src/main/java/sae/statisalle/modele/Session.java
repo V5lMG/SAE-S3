@@ -2,7 +2,7 @@
  * Session.java               17/11/2024
  * IUT DE RODEZ,pas de copyrights
  */
-package sae.statisalle;
+package sae.statisalle.modele;
 
 /**
  * La classe Session gère les informations relatives à une session réseau

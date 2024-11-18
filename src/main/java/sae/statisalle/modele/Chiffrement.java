@@ -3,7 +3,7 @@
  * IUT DE RODEZ,pas de copyrights
  */
 
-package sae.statisalle;
+package sae.statisalle.modele;
 
 import sae.statisalle.exception.ModuloNegatifException;
 
