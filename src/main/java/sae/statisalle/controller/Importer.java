@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import sae.statisalle.Fichier;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,49 +63,46 @@ public class Importer {
 
     @FXML
     void actionImporter() {
-        Alert envoyer = new Alert (Alert.AlertType.CONFIRMATION);
-        envoyer.setTitle("Importer");
-        envoyer.setHeaderText(null);
-        envoyer.setContentText("Voulez vous vraiment importer ce/ces fichier(s) ?");
-        Optional<ButtonType> result = envoyer.showAndWait();
+        String dateDuJour = new SimpleDateFormat("ddMMyyyy")
+                .format(new Date());
 
-        if (result.get() == ButtonType.OK){
+        for (String chemin : cheminsDesFichiers) {
+            fichierImporter = new Fichier(chemin);
 
-            String dateDuJour = new SimpleDateFormat("ddMMyyyy")
-                                    .format(new Date());
+            String nomFichier = fichierImporter.getTypeFichier() + "_"
+                    + dateDuJour + ".csv";
 
-            for (String chemin : cheminsDesFichiers) {
-
-                fichierImporter = new Fichier(chemin);
-
-                String nomFichier = fichierImporter.getTypeFichier() + "_"
-                                    + dateDuJour + ".csv";
-
-                if (!Fichier.fichierExiste(nomFichier)) {
-                    Fichier.ecritureFichier(fichierImporter.contenuFichier(),
-                            "src/main/resources/csv/" + fichierImporter.getTypeFichier()
-                                    + "_" + dateDuJour + ".csv");
-                } else {
-                    Fichier fichierExistant = new Fichier(nomFichier);
-                    fichierExistant.reecritureFichier(
-                            fichierImporter.contenuFichier());
+            // Vérifier si le répertoire existe, sinon le créer
+            File dossier = new File("src/main/resources/csv/");
+            if (!dossier.exists()) {
+                boolean created = dossier.mkdirs(); // Crée les répertoires si nécessaires
+                if (!created) {
+                    System.out.println("Erreur : Impossible de créer le répertoire.");
+                    return;  // Arrêter si la création échoue
                 }
             }
-            System.out.println("Le fichier ou les fichiers ont bien été importé(s)");
-            MainControleur.activerAccueil();
 
-            Alert information = new Alert (Alert.AlertType.INFORMATION);
-            information.setTitle("Validation");
-            information.setHeaderText(null);
-            information.setContentText("Le/Les fichier(s) a/ont bien été importé(s)");
-            Optional<ButtonType> resultat = information.showAndWait();
-
-        } else if (result.get() == ButtonType.CANCEL){
-            envoyer.close();
-        } else {
-            System.out.println("Aucun fichier sélectionné.");
-            System.out.print("Erreur : le ou les fichiers n'ont pas pu être importé(s)");
+            // Si le fichier n'existe pas, on le crée. Sinon, on le réécrit.
+            if (!Fichier.fichierExiste(nomFichier)) {
+                Fichier.ecritureFichier(fichierImporter.contenuFichier(),
+                        "src/main/resources/csv/" + fichierImporter.getTypeFichier()
+                                + "_" + dateDuJour + ".csv");
+            } else {
+                Fichier fichierExistant = new Fichier(nomFichier);
+                fichierExistant.reecritureFichier(fichierImporter.contenuFichier());
+            }
         }
+
+        // Confirmation d'importation réussie
+        System.out.println("Le fichier ou les fichiers ont bien été importé(s)");
+        MainControleur.activerAccueil();
+
+        // Pop-up d'information pour confirmer l'importation réussie
+        Alert information = new Alert(Alert.AlertType.INFORMATION);
+        information.setTitle("Validation");
+        information.setHeaderText(null);
+        information.setContentText("Le/Les fichier(s) a/ont bien été importé(s)");
+        information.showAndWait();
     }
 
     @FXML
@@ -139,7 +137,7 @@ public class Importer {
             texteNomFichier.setStyle("-fx-fill: #000000;");
             cheminFichier.setStyle("-fx-fill: #000000;");
             nomFichier.setStyle("-fx-fill: #000000;");
-            btnImporter.setStyle("-fx-background-color: #4CAF50;");
+            btnImporter.setStyle("-fx-background-color: #4CAF50;-fx-text-fill: #000000;");
             btnImporter.setDisable(false);
 
             System.out.println("Fichiers sélectionnés : \n" + chemins);
