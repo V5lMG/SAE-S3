@@ -326,4 +326,37 @@ public class Chiffrement {
         }
         return cleSecretePartagee;
     }
+
+    /**
+     * Génère un générateur g pour le groupe multiplicatif (Z/pZ)*  .
+     *
+     * @param p Le nombre premier utilisé dans l'échange de clés.
+     * @return Un générateur g pour le groupe multiplicatif.
+     * @throws IllegalArgumentException Si p n'est pas un nombre premier.
+     */
+    public static int genererGenerateur(int p) {
+        if (!estPremier(p)) {
+            throw new IllegalArgumentException("Le nombre 'p' doit être un nombre premier.");
+        }
+
+        // Tester les candidats pour g
+        for (int g = 2; g < p; g++) {
+            boolean estGenerateur = true;
+
+            // Vérifier si g^k mod p produit des résultats distincts pour k dans [1, p-1]
+            for (int k = 1; k < p - 1; k++) {
+                int resultat = expoModulaire(g, k, p);
+                if (resultat == 1 && k < (p - 1)) {
+                    estGenerateur = false; // Si g^k mod p == 1 avant k = p-1, ce n'est pas un générateur
+                    break;
+                }
+            }
+
+            if (estGenerateur) {
+                return g; // Un générateur valide est trouvé
+            }
+        }
+
+        throw new RuntimeException("Aucun générateur valide trouvé.");
+    }
 }

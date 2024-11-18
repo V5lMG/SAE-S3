@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import sae.statisalle.modele.Fichier;
@@ -31,6 +33,10 @@ import java.util.Optional;
  * @author erwan.thierry
  */
 public class MainControleur extends Application {
+
+    /* config serveur */
+    private String ipServeur;
+    private int portServeur;
 
     /* déclaration de l'ensemble des scenes */
     private static Scene Accueil;
@@ -117,7 +123,8 @@ public class MainControleur extends Application {
     public static void activerAffichage() {
         fenetrePrincipale.setX(250);
         fenetrePrincipale.setY(150);
-        fenetrePrincipale.setScene(Visualiser); }
+        fenetrePrincipale.setScene(Visualiser);
+    }
 
     /**
      * Renvoie la fenêtre principale de l'application.
@@ -143,25 +150,25 @@ public class MainControleur extends Application {
 
             FXMLLoader chargeurFXMLAideAccueil = new FXMLLoader();
             chargeurFXMLAideAccueil.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideAccueil.fxml"));
+                    .getResource("/sae/statisalle/vue/aide/aideAccueil.fxml"));
             conteneur = chargeurFXMLAideAccueil.load();
             AideAccueil = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideConnexion = new FXMLLoader();
             chargeurFXMLAideConnexion.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideConnexion.fxml"));
+                    .getResource("/sae/statisalle/vue/aide/aideConnexion.fxml"));
             conteneur = chargeurFXMLAideConnexion.load();
             AideConnexion = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideEnvoyer = new FXMLLoader();
             chargeurFXMLAideEnvoyer.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideEnvoyer.fxml"));
+                    .getResource("/sae/statisalle/vue/aide/aideEnvoyer.fxml"));
             conteneur = chargeurFXMLAideEnvoyer.load();
             AideEnvoyer = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLAideImporter = new FXMLLoader();
             chargeurFXMLAideImporter.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideImporter.fxml"));
+                    .getResource("/sae/statisalle/vue/aide/aideImporter.fxml"));
             conteneur = chargeurFXMLAideImporter.load();
             AideImporter = new Scene(conteneur);
 
@@ -191,7 +198,7 @@ public class MainControleur extends Application {
 
             FXMLLoader chargeurFXMLAideAffichage = new FXMLLoader();
             chargeurFXMLAideAffichage.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aideAffichage.fxml"));
+                    .getResource("/sae/statisalle/vue/aide/aideAffichage.fxml"));
             conteneur = chargeurFXMLAideAffichage.load();
             AideAffichage = new Scene(conteneur);
 
@@ -217,7 +224,7 @@ public class MainControleur extends Application {
 
         Thread serveurThread = new Thread(() -> {
             try {
-                serveur.preparerServeur(54321);
+                serveur.preparerServeur();
                 System.out.println("[MAIN] Serveur démarré et en attente "
                                    + "de connexions...");
 

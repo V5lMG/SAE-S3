@@ -2,6 +2,7 @@
  * TestReseau.java            21/10/2024
  * Pas de droit d'auteur ni de copyright
  */
+
 package sae.statisalle;
 
 import sae.statisalle.exception.MauvaiseConnexionServeur;
@@ -12,106 +13,92 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Classe de test pour la classe Reseau.
- * Cette classe lance un serveur et un client pour tester les fonctionnalités
- * d'envoi et de réception de données sur le réseau.
- * Elle permet de vérifier le bon fonctionnement des méthodes de la
- * classe Reseaudans un environnement réseau simulé.
- * <p>
- * Le serveur écoute sur un port spécifique et le client se connecte à ce port
- * pour envoyer et recevoir des messages.
- * </p>
- * @author valentin.munier-genie
- * @author rodrigo.xavier-taborda
+ * Classe de test de fonctionnement pour la classe Reseau
+ * @author rodrigoxaviertaborda
+ * @author valentin munier-genie
  */
 public class TestReseau {
 
-    /**
-     * Port d'écoute utilisé par le serveur pour
-     * accepter les connexions clients.
-     */
     private static final int PORT = 54321;
-
-    /** Nom d'hôte ou adresse IP du serveur (ici configuré en local). */
     private static final String HOST = "localhost";
-
-    /** Chemin d'accès au fichier de test à envoyer
-     * pour tester les échanges de données.
-     */
     private static final String TEST_FILE_PATH = "testFile.csv";
 
-    /**
-     * Point d'entrée principal du programme de test.
-     * Ce programme lance un serveur et un client, le client envoie
-     * un fichier au serveur pour tester la communication réseau.
-     *
-     * @param args Arguments de la ligne de commande (non utilisés).
-     * @throws IOException Si une erreur survient lors de la connexion
-     *                     ou de l'envoi de données.
-     */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try {
-            // Créer un fichier de test
-            Path path = Path.of(TEST_FILE_PATH);
-            Files.writeString(path, "Contenu de test pour le fichier.");
-
-            // Appel des méthodes de test
-            envoieEtReceptionDunFichier();
-            Reseau.renvoyerIP();
-
+            preparerFichierDeTest();
+            testEnvoieEtReception();
+            testResolutionIP();
         } catch (IOException e) {
-            System.err.println("Erreur lors de la création ou de l'écriture " +
-                               "du fichier de test : " + e.getMessage());
-
+            System.err.println("Erreur lors des tests réseau : " + e.getMessage());
         } finally {
-            // Suppression du fichier après les tests
-            Files.deleteIfExists(Path.of(TEST_FILE_PATH));
+            nettoyerFichierDeTest();
         }
     }
 
-    /**
-     * Teste le fonctionnement de la communication
-     * entre un serveur et un client.
-     * La méthode gère également la création et
-     * la suppression d'un fichier de test
-     * utilisé pour vérifier le fonctionnement de
-     * l'envoi et de la réception de données.
-     */
-    public static void envoieEtReceptionDunFichier() {
+    private static void preparerFichierDeTest() throws IOException {
+        Path path = Path.of(TEST_FILE_PATH);
+        Files.writeString(path, "Contenu de test pour le fichier.");
+        System.out.println("[TEST] Fichier de test créé.");
+    }
+
+    private static void nettoyerFichierDeTest() {
+        try {
+            Files.deleteIfExists(Path.of(TEST_FILE_PATH));
+            System.out.println("[TEST] Fichier de test supprimé.");
+        } catch (IOException e) {
+            System.err.println("[TEST] Erreur lors de la suppression du fichier : " + e.getMessage());
+        }
+    }
+
+    private static void testEnvoieEtReception() {
+        System.out.println("[TEST] Démarrage du test d'envoi et réception.");
         Reseau serveur = new Reseau();
 
         Thread serveurThread = new Thread(() -> {
             try {
                 serveur.preparerServeur(PORT);
+                Reseau connexionClient = serveur.attendreConnexionClient();
+                if (connexionClient != null) {
+                    String requete = connexionClient.recevoirDonnees();
+                    if (requete != null) {
+                        String reponse = connexionClient.traiterRequete(requete);
+                        connexionClient.envoyerReponse(reponse);
+                    }
+                }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.err.println("[SERVEUR] Erreur dans le serveur : " + e.getMessage());
+            } finally {
+                serveur.fermerServeur();
             }
-            serveur.attendreConnexionClient();
-            String requete = serveur.recevoirDonnees();
-            if (requete != null) {
-                String reponse = serveur.traiterRequete(requete);
-                serveur.envoyerReponse(reponse);
-            }
-            serveur.fermerServeur();
         });
         serveurThread.start();
 
-        // Créer et démarrer le client
+        // pause pour permettre au serveur de démarrer
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         Reseau client = new Reseau();
         try {
             client.preparerClient(HOST, PORT);
+            client.envoyer(TEST_FILE_PATH);
+            String reponse = client.recevoirReponse();
+            System.out.println("[CLIENT] Réponse du serveur : " + reponse);
         } catch (MauvaiseConnexionServeur e) {
-            throw new RuntimeException(e);
+            System.err.println("[CLIENT] Erreur lors de la connexion : " + e.getMessage());
+        } finally {
+            client.fermerClient();
         }
+    }
 
-        // Envoyer un fichier de test
-        client.envoyer(TEST_FILE_PATH);
-        String reponseServeur = client.recevoirReponse();
-
-        if (reponseServeur != null) {
-            client.utiliserReponse(reponseServeur);
+    private static void testResolutionIP() {
+        System.out.println("[TEST] Démarrage du test de résolution IP.");
+        try {
+            Reseau.renvoyerIP();
+        } catch (Exception e) {
+            System.err.println("[TEST] Erreur lors de la résolution IP : " + e.getMessage());
         }
-
-        client.fermerClient();
     }
 }

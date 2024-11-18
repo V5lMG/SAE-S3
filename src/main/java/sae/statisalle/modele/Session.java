@@ -14,8 +14,9 @@ package sae.statisalle.modele;
  */
 public class Session {
     private static String adresseIp;
-    private static String contenu;
     private static Reseau reseau;
+    private static String ipServeur;
+    private static String portServeur;
 
     /**
      * Récupère l'adresse IP de la session.
@@ -42,10 +43,43 @@ public class Session {
     }
 
     /**
-     * Définit l'objet {@code Reseau} de la session.
-     * @param reseau l'objet {@code Reseau} à associer à la session.
+     * Définit l'objet Reseau de la session.
+     * @param reseau l'objet Reseau à associer à la session.
      */
     public static void setReseau(Reseau reseau) {
         Session.reseau = reseau;
+    }
+
+    /**
+     * Obtient l'adresse IP du serveur.
+     * @return l'adresse IP du serveur.
+     */
+    public static String getIpServeur() {
+        return ipServeur;
+    }
+
+    /**
+     * Définit l'adresse IP du serveur.
+     * @param ipServeur l'adresse IP du serveur à définir.
+     */
+    public static void setIpServeur(String ipServeur) {
+        Session.ipServeur = ipServeur;
+    }
+
+    /**
+     * Obtient le port du serveur.
+     * @return le port du serveur.
+     */
+    public static String getPortServeur() {
+        return portServeur;
+    }
+
+    /**
+     * Définit le port du serveur.
+     *
+     * @param portServeur le port du serveur à définir.
+     */
+    public static void setPortServeur(String portServeur) {
+        Session.portServeur = portServeur;
     }
 }

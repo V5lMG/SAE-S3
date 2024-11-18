@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.aides.AideAccueil">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.aides.AideAffichage">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
@@ -18,7 +18,7 @@
                         </Text>
                         <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../img/LogoStatisalle.jpg" />
+                                <Image url="@../../img/LogoStatisalle.jpg" />
                             </image></ImageView>
                     </children></AnchorPane>
                 <AnchorPane prefHeight="200.0" prefWidth="200.0" />
@@ -57,16 +57,20 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <ImageView fitHeight="35.0" fitWidth="40.0" layoutX="42.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="68.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../img/OIP-removebg-preview.png" />
+                        <Image url="@../../img/BoutonChargerDonnees.png" />
                      </image>
                   </ImageView>
-                  <Text layoutX="110.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Importer un fichier ou des fichiers de données concernant les salles, les employés, les activités possible dans les salles et les réservations pour pouvoir ensuite consulter les statistiques concernant ces données" wrappingWidth="439.1366958618164" />
-                  <Button layoutX="42.0" layoutY="87.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" style="-fx-background-color: #50DF80;" />
-                  <Text layoutX="108.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton vert permet d'accéder à notre site web pour avoir plus d'information sur la totalité de l'entreprise StatiSalle." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
-                  <Button layoutX="31.0" layoutY="143.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Quitter" textFill="WHITE" />
-                  <Text layoutX="107.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton quitter permet de quitter le logiciel et revenir au bureaux de votre ordinateur." textAlignment="JUSTIFY" wrappingWidth="445.13671875" />
+                  <Text layoutX="241.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de charger les données des fichiers CSV(point virgule) préalablement importés" wrappingWidth="331.1366958618164" />
+                  <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="28.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/OngletVisualisationTable.png" />
+                     </image>
+                  </ImageView>
+                  <Text layoutX="241.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Naviguer entre chaque tableau de façon simple et rapide à l'aide d'onglet nommé selon la table voulu" wrappingWidth="309.1366958618164" />
+                  <Button fx:id="btnRetour1" layoutX="91.0" layoutY="186.0" mnemonicParsing="false" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
+                  <Text layoutX="241.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de revenir à la fenètre précédente" wrappingWidth="309.1366958618164" />
                </children>
             </AnchorPane>
          </children></VBox>

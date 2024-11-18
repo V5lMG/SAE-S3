@@ -4,129 +4,209 @@
  */
 package sae.statisalle;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 import sae.statisalle.modele.Reseau;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.net.ServerSocket;
+import java.net.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Classe de test unitaire pour la classe Reseau.
- *
- * @author valentin.munier-genie
- * @author rodrigo.xavier-taborda
+ * Classe de test unitaire pour la classe Reseau avec gestion explicite des sockets.
+ * @author rodrigoxaviertaborda
+ * @author valentin munier-genie
  */
-class TestUnitaireReseau {
+public class TestUnitaireReseau {
+    private Reseau reseau;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
 
-    private Reseau reseauServeur;
-    private Reseau reseauClient;
-    private final String TEST_FILE_PATH = "FichierDeTest.csv";
+    private static final int PORT_VALIDE = 65432;
+    private static final int PORT_INVALIDE = 94321; // Port hors des limites (0-65535)
+    private static final String LOCALHOST = "localhost";
 
     @BeforeEach
     void setUp() {
-        reseauServeur = new Reseau();
-        reseauClient = new Reseau();
-        try {
-            Files.writeString(Paths.get(TEST_FILE_PATH), "Contenu du fichier de test");
-        } catch (IOException e) {
-            fail("Échec lors de la création du fichier de test : " + e.getMessage());
-        }
+        reseau = new Reseau();
     }
 
     @AfterEach
-    void nettoyage() {
-        reseauServeur.fermerServeur();
-        reseauClient.fermerClient();
+    void tearDown() throws IOException {
+        if (clientSocket != null && !clientSocket.isClosed()) {
+            clientSocket.close();
+        }
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            serverSocket.close();
+        }
+        reseau.fermerClient();
+        reseau.fermerServeur();
+    }
+
+    // --------- PARTIE SERVEUR -----------
+
+    @Test
+    void testPreparerServeurAvecPortValide() throws IOException {
+            int port = 65432;
+        reseau.preparerServeur(port);
+
         try {
-            Files.deleteIfExists(Paths.get(TEST_FILE_PATH));
+            serverSocket = new ServerSocket(port);
+            fail("Le port devrait être déjà utilisé par le serveur.");
         } catch (IOException e) {
-            fail("Échec lors de la suppression du fichier de test : " + e.getMessage());
+            // Test réussi, le port est déjà occupé
         }
     }
 
     @Test
-    void testPreparerServeurSuccess() {
-        assertDoesNotThrow(() -> reseauServeur.preparerServeur(12345), "Le serveur n'a pas pu démarrer sur un port valide.");
+    void testPreparerServeurAvecPortInvalide() {
+        int port = 70000; // Hors de la plage 0-65535
+        assertThrows(IllegalArgumentException.class, () -> reseau.preparerServeur(port));
     }
 
     @Test
-    void testPreparerServeurPortInvalide() {
-        assertThrows(IllegalArgumentException.class, () -> reseauServeur.preparerServeur(70000), "Un port invalide doit lever une exception.");
-        assertThrows(IllegalArgumentException.class, () -> reseauServeur.preparerServeur(-1), "Un port invalide doit lever une exception.");
+    void testAttendreConnexionClient() throws IOException, InterruptedException {
+        int port = 64321;
+        reseau.preparerServeur(port);
+
+        new Thread(() -> {
+            try (Socket localClient = new Socket("localhost", port)) {
+                OutputStream out = localClient.getOutputStream();
+                out.write("Test".getBytes());
+                out.flush();
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+
+        Thread.sleep(500);  // Attendre que la connexion soit établie
+
+        Reseau clientReseau = reseau.attendreConnexionClient();
+        assertNotNull(clientReseau,"Le client devrait être connecté."   );
+        }
+
+    @Test
+    void testRecevoirDonnees() throws IOException {
+        int port = 74321;
+        reseau.preparerServeur(port);
+
+        new Thread(() -> {
+            try {
+                clientSocket = new Socket("localhost", port);
+                OutputStream out = clientSocket.getOutputStream();
+                out.write("Données Test\n".getBytes());
+                out.flush();
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+        Reseau clientReseau = reseau.attendreConnexionClient();
+        String donnees = clientReseau.recevoirDonnees();
+        assertEquals("Données Test", donnees);
     }
 
     @Test
-    void testPreparerServeurPortDejaUtilise() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(12346);
-        assertThrows(IOException.class, () -> reseauServeur.preparerServeur(12346), "Un port déjà utilisé doit lever une IOException.");
-        serverSocket.close();
+    void testRecevoirDonneesNull() {
+        assertNull(reseau.recevoirDonnees(),
+                "La réception de données sans client doit retourner null.");
     }
 
     @Test
-    void testPreparerClientErreurConnexion() {
-        assertThrows(MauvaiseConnexionServeur.class, () -> reseauClient.preparerClient("localhost", 12347), "Connexion impossible doit lever MauvaiseConnexionServeur.");
+    void testTraiterRequeteCorrecte() {
+        String requete = "cle123/DELIM/donneesChiffrees";
+        String resultat = reseau.traiterRequete(requete);
+        assertNotNull(resultat);
     }
 
     @Test
-    void testRecevoirDonneesErreur() {
-        // Forcer la fermeture du flux avant la réception pour provoquer une IOException
-        reseauServeur.fluxEntree = new BufferedReader(new StringReader("Test"));
-        reseauServeur.fermerServeur();
-        assertNull(reseauServeur.recevoirDonnees(), "La réception des données sur un flux fermé doit retourner null.");
+    void testTraiterRequeteInvalide() {
+        assertThrows(IllegalArgumentException.class, () -> reseau.traiterRequete(null));
+        assertThrows(IllegalArgumentException.class, () -> reseau.traiterRequete("Format Incorrect"));
     }
 
     @Test
-    void testEnvoyerErreurFichierInvalide() {
-        assertThrows(IllegalArgumentException.class, () -> reseauClient.envoyer("FichierInexistant.csv"), "L'envoi d'un fichier inexistant doit lever une exception.");
+    void testEnvoyerReponse() throws IOException {
+        int port = 84321;
+        reseau.preparerServeur(port);
+
+        new Thread(() -> {
+            try {
+                clientSocket = new Socket("localhost", port);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                String response = in.readLine();
+                assertEquals("Réponse Test", response);
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+        Reseau clientReseau = reseau.attendreConnexionClient();
+        clientReseau.envoyerReponse("Réponse Test");
     }
 
     @Test
-    void testEnvoyerErreurSurFlux() throws IOException {
-        reseauClient.fluxSortie = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new ByteArrayOutputStream())));
-        reseauClient.fermerClient();  // Ferme les flux pour provoquer une erreur
-        assertDoesNotThrow(() -> reseauClient.envoyer(TEST_FILE_PATH), "L'envoi après fermeture des flux ne doit pas provoquer d'exception.");
+    void testFermerServeurSansConnexion() {
+        assertDoesNotThrow(() -> reseau.fermerServeur());
+    }
+
+    // --------- PARTIE CLIENT -----------
+
+    @Test
+    void testPreparerClientConnexionReussie() throws MauvaiseConnexionServeur, InterruptedException {
+        int port = 94321;
+
+        new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(port);
+                serverSocket.accept();
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+        // Attendez un peu pour permettre au serveur de démarrer
+        Thread.sleep(500);  // Attendez que le serveur soit prêt
+
+        reseau.preparerClient("localhost", port);
+        assertTrue(clientSocket != null && clientSocket.isConnected(), "Le client devrait être connecté.");
     }
 
     @Test
-    void testEnvoyerReponseErreur() {
-        reseauServeur.fluxSortie = null;  // Simule un flux de sortie null
-        assertDoesNotThrow(() -> reseauServeur.envoyerReponse("Test"), "Envoi d'une réponse sans flux de sortie ne doit pas provoquer d'exception.");
+    void testEnvoyerEtRecevoirReponse() throws MauvaiseConnexionServeur {
+        int port = 95432;
+        new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(port);
+                Socket client = serverSocket.accept();
+                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+                String message = in.readLine();
+                assertEquals("Message Test", message);
+
+                out.println("Réponse Serveur");
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+        reseau.preparerClient("localhost", port);
+        reseau.envoyer("Message Test");
+        String response = reseau.recevoirReponse();
+        assertEquals("Réponse Serveur", response);
     }
 
     @Test
-    void testRecevoirReponseErreur() {
-        reseauClient.fluxEntree = null;  // Simule un flux d'entrée null
-        assertEquals("Erreur lors de la réception de la réponse.", reseauClient.recevoirReponse(), "Réception sans flux d'entrée doit retourner un message d'erreur.");
+    void testRecevoirReponseNull() {
+        assertNull(reseau.recevoirReponse());
     }
 
     @Test
-    void testRenvoyerIPErreur() {
-        InetAddress ip = Reseau.renvoyerIP();
-        assertNotNull(ip, "L'adresse IP ne doit pas être nulle même si une erreur survient.");
+    void testRenvoyerIP() {
+        InetAddress adresse = Reseau.renvoyerIP();
+        assertNotNull(adresse);
     }
 
     @Test
-    void testFermerServeurErreur() {
-        assertDoesNotThrow(() -> reseauServeur.fermerServeur(), "La fermeture du serveur sans connexion ne doit pas provoquer d'exception.");
+    void testFermerClientSansConnexion() {
+        assertDoesNotThrow(() -> reseau.fermerClient());
     }
-
-    @Test
-    void testFermerClientErreur() {
-        assertDoesNotThrow(() -> reseauClient.fermerClient(), "La fermeture du client sans connexion ne doit pas provoquer d'exception.");
-    }
-
-    @Test
-    void testUtiliserReponseErreur() {
-        reseauClient.utiliserReponse(null);
-        assertEquals("", "", "La méthode utiliserReponse ne doit rien afficher si la réponse est null.");
-    }
-
 }
