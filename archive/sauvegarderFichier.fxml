@@ -15,7 +15,7 @@
                     </font>
                 </Text>
                 <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../img/LogoStatisalle.jpg" />
+                    <Image url="@../src/main/resources/sae/statisalle/img/LogoStatisalle.jpg" />
                 </ImageView>
                 <Button layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
             </AnchorPane>
