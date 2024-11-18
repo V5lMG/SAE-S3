@@ -12,13 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import sae.statisalle.Fichier;
 import sae.statisalle.Reseau;
-import sae.statisalle.Session;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
@@ -40,7 +37,6 @@ public class MainControleur extends Application {
     private static Scene Envoyer;
     private static Scene Importer;
     private static Scene Visualiser;
-    private static Scene Sauvegarder;
     private static Scene Affichage;
 
     /* Déclaration du stage */
@@ -111,14 +107,6 @@ public class MainControleur extends Application {
      */
     public static void activerImporter() {
         fenetrePrincipale.setScene(Importer);
-    }
-
-    /**
-     * Change la scène pour afficher l'écran de choix de dossier
-     * pour la réception de fichier csv.
-     */
-    public static void activerSauvegarder() {
-        fenetrePrincipale.setScene(Sauvegarder);
     }
 
     /**
@@ -193,12 +181,6 @@ public class MainControleur extends Application {
             conteneur = chargeurFXMLImporter.load();
             Importer = new Scene(conteneur);
 
-            chargeurFXMLSauvegarder.setLocation(getClass()
-                    .getResource( "/sae/statisalle/vue/" +
-                            "sauvegarderFichier.fxml"));
-            conteneur = chargeurFXMLSauvegarder.load();
-            Sauvegarder = new Scene(conteneur);
-
             FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
             chargeurFXMLAffichage.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/affichage.fxml"));
@@ -234,7 +216,7 @@ public class MainControleur extends Application {
         Thread serveurThread = new Thread(() -> {
             try {
                 serveur.preparerServeur(54321);
-                System.out.println("Serveur démarré et en attente "
+                System.out.println("[MAIN] Serveur démarré et en attente "
                                    + "de connexions...");
 
                 // boucle pour accepter plusieurs connexions
@@ -247,17 +229,15 @@ public class MainControleur extends Application {
                         try {
                             String requete = clientReseau.recevoirDonnees();
                             String reponse = clientReseau.traiterRequete(requete);
-                            clientReseau.envoyerReponse(reponse);
-                            Session.setContenu(reponse);
+                            String reponseAvecRetourLigne =
+                                reponse.replace("/N", "\n")
+                                       .replace("/R", "\r")
+                                       .replace("/EOF","\n\n");
 
-                            SauvegarderFichier controller =
-                                    chargeurFXMLSauvegarder.getController();
-                            controller.initialiserPage();
+                            clientReseau.envoyerReponse("Données bien reçu et traité.");
 
                             // thread javaFx pour la page de sauvegarde
-                            Platform.runLater(
-                                    MainControleur::afficherPopupSauvegarde);
-
+                            Platform.runLater(() -> afficherPopupFichierRecu(reponseAvecRetourLigne));
                         } finally {
                             clientReseau.fermerClient();
                         }
@@ -266,29 +246,66 @@ public class MainControleur extends Application {
                     threadGestionClient.start();
                 }
             } catch (IOException e) {
-                System.err.println("Erreur lors de l'initialisation "
+                System.err.println("[MAIN] Erreur lors de l'initialisation "
                                    + "du serveur : " + e.getMessage());
             }
         });
 
         serveurThread.start();
-        System.out.println("Serveur en cours d'exécution : "
+        System.out.println("[MAIN] Serveur alive : "
                            + serveurThread.isAlive());
     }
 
     /**
-     * Affiche automatiquement la scène de sauvegarde
-     * pour enregistrer les fichiers reçus.
+     * Affiche une popup avec des boutons d'action pour gérer un fichier reçu.
      */
-    public static void afficherPopupSauvegarde() {
-        try {
-            MainControleur.activerSauvegarder();
-        } catch (Exception e) {
-            System.err.println("Erreur lors de l'ouverture de la fenêtre "
-                    + "de sauvegarde : " + e.getMessage());
-            showAlert("Erreur d'ouverture",
-                    "Impossible de charger la fenêtre de sauvegarde.");
+    public static void afficherPopupFichierRecu(String donneeRecu) {
+        Alert popup = new Alert(Alert.AlertType.CONFIRMATION);
+        popup.setTitle("Fichier Reçu");
+        popup.setHeaderText("Vous avez reçu un fichier.");
+        popup.setContentText("Que souhaitez-vous faire ?");
+
+        ButtonType boutonCharger = new ButtonType("Charger dans l'application");
+        ButtonType boutonVisualiser = new ButtonType("Visualiser");
+        ButtonType boutonAnnuler = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        popup.getButtonTypes().setAll(boutonCharger, boutonVisualiser, boutonAnnuler);
+
+        Optional<ButtonType> resultat = popup.showAndWait();
+
+        if (resultat.isPresent()) {
+            if (resultat.get() == boutonVisualiser) {
+                afficherPopupVisualiser(donneeRecu);
+            } else if (resultat.get() == boutonCharger) {
+                System.out.println("Charger dans l'application");
+                // TODO charger dans l'application
+            } else {
+                System.out.println("Action annulée.");
+            }
         }
+    }
+
+    private static void afficherPopupVisualiser(String donnees) {
+        Dialog<ButtonType> popupVisualiser = new Dialog<>();
+        popupVisualiser.setTitle("Visualisation des données");
+        popupVisualiser.setHeaderText("Données reçues");
+
+        // création du contenu de la popup
+        TextArea zoneTexte = new TextArea(donnees);
+        zoneTexte.setEditable(false);
+        zoneTexte.setWrapText(true);
+
+        ButtonType boutonRetour = new ButtonType("Retour", ButtonBar.ButtonData.OK_DONE);
+        popupVisualiser.getDialogPane().getButtonTypes().add(boutonRetour);
+
+        popupVisualiser.getDialogPane().setContent(zoneTexte);
+
+        // Gestion du retour
+        popupVisualiser.showAndWait().ifPresent(result -> {
+            if (result == boutonRetour) {
+                afficherPopupFichierRecu(donnees);
+            }
+        });
     }
 
     /**

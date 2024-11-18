@@ -48,20 +48,4 @@ public class Session {
     public static void setReseau(Reseau reseau) {
         Session.reseau = reseau;
     }
-
-    /**
-     * Récupère le contenu de la session.
-     * @return le contenu de la session sous forme de chaîne de caractères.
-     */
-    public static String getContenu() {
-        return contenu;
-    }
-
-    /**
-     * Définit le contenu de la session.
-     * @param contenu le contenu à définir pour la session.
-     */
-    public static void setContenu(String contenu) {
-        Session.contenu = contenu;
-    }
 }

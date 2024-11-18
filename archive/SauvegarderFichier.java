@@ -78,7 +78,7 @@ public class SauvegarderFichier {
         }
 
         if (tousLesCheminsComplets) {
-            btnEnregistrer.setStyle("-fx-background-color: green;");
+            btnEnregistrer.setStyle("-fx-background-color: green;-fx-text-fill: black;");
         } else {
             btnEnregistrer.setStyle("");
         }
