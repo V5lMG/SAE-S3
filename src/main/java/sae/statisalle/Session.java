@@ -4,8 +4,6 @@
  */
 package sae.statisalle;
 
-import java.net.Socket;
-
 /**
  * La classe Session gère les informations relatives à une session réseau
  * telles que l'adresse IP, le contenu de la session, les objets réseau et la clé associée.
@@ -18,7 +16,6 @@ public class Session {
     private static String adresseIp;
     private static String contenu;
     private static Reseau reseau;
-    private static String cle;
 
     /**
      * Récupère l'adresse IP de la session.
@@ -66,21 +63,5 @@ public class Session {
      */
     public static void setContenu(String contenu) {
         Session.contenu = contenu;
-    }
-
-    /**
-     * Définit la clé associée à la session.
-     * @param cle la clé à définir pour la session.
-     */
-    public static void setCle(String cle) {
-        Session.cle = cle;
-    }
-
-    /**
-     * Récupère la clé de la session.
-     * @return la clé de la session sous forme de chaîne de caractères.
-     */
-    public static String getCle() {
-        return cle;
     }
 }

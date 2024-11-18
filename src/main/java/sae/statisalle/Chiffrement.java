@@ -32,17 +32,6 @@ public class Chiffrement {
     /*Contient les caractères utilisés pour le chiffrement*/
     public static List<Character> alphabet;
 
-    public static void main (String[] args) {
-        String donnee = "test de chiffrement";
-        String cle = genererCleAleatoire(donnee);
-        System.out.println(cle);
-        System.out.println("donné non crypté : " + donnee);
-        String donneeCrypte = chiffrementDonnees(donnee, cle);
-        System.out.println("donné crypté : " + donneeCrypte);
-        String donneeDecrypte = dechiffrementDonnees(donneeCrypte, cle);
-        System.out.println("donné décrypté : " + donneeDecrypte);
-    }
-
     /**
      * Méthode de chiffrement des données,
      * en utilisant l'algorithme de Vigenère.

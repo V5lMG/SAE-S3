@@ -53,10 +53,8 @@ public class SauvegarderFichier {
      */
     @FXML
     public void initialiserPage() {
-        String contenuFichierCrypte = Session.getContenu();
-        String cle = Session.getCle();
-        String contenuFichier = Chiffrement.dechiffrementDonnees(contenuFichierCrypte, cle);
-        nombreDeFichiers = Fichier.compterMotif(contenuFichier, "/EOF");
+        String contenuRequete = Session.getContenu();
+        nombreDeFichiers = Fichier.compterMotif(contenuRequete, "/EOF");
         afficherChamps(nombreDeFichiers);
         mettreAJourEtatBoutonEnregistrer();
     }
@@ -131,10 +129,6 @@ public class SauvegarderFichier {
      * Sauvegarde chaque fichier en fonction de son chemin et de son contenu.
      */
     private void sauvegarderFichiers() {
-        String contenuFichier = Session.getContenu();
-        String cle = Session.getCle();
-        String contenuDechiffre = Chiffrement.dechiffrementDonnees(contenuFichier, cle);
-
         String[] chemins = {
                 chemin1,
                 chemin2,
@@ -147,9 +141,10 @@ public class SauvegarderFichier {
                 text4};
 
         try {
+            String contenuRequete = Session.getContenu();
             for (int i = 0; i < nombreDeFichiers; i++) {
                 if (chemins[i] != null && !champsTexte[i].getText().isEmpty()) {
-                    String contenu = contenuDechiffre.split("/EOF")[i];
+                    String contenu = contenuRequete.split("/EOF")[i];
                     List<String> contenuListe = Arrays.asList(contenu.split("\n"));
 
                     Fichier.ecritureFichier(contenuListe, chemins[i]

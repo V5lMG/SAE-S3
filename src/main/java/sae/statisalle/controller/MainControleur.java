@@ -246,13 +246,9 @@ public class MainControleur extends Application {
                     Thread threadGestionClient = new Thread(() -> {
                         try {
                             String requete = clientReseau.recevoirDonnees();
-                            List<String> contenuRequete = clientReseau.traiterRequete(requete);
+                            String contenuRequete = clientReseau.traiterRequete(requete);
 
-                            String cle = contenuRequete.get(0);
-                            String donneesChiffrees = contenuRequete.get(1);
-
-                            Session.setContenu(donneesChiffrees);
-                            Session.setCle(cle);
+                            Session.setContenu(contenuRequete);
 
                             SauvegarderFichier controller =
                                     chargeurFXMLSauvegarder.getController();
