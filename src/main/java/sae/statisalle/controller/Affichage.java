@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,38 @@ public class Affichage {
     private TableColumn<Reservation, String> numTelR;
     @FXML
     private TableColumn<Reservation, String> usageR;
+    @FXML
+    private Tab feuilleReservation;
+    @FXML
+    private Tab feuilleSalle;
+    @FXML
+    private Tab feuilleActivite;
+    @FXML
+    private Tab feuilleEmploye;
+    @FXML
+    private ComboBox<String> filtreEmploye;
+    @FXML
+    private ComboBox<String> filtreActivite;
+    @FXML
+    private ComboBox<String> filtreSalle;
+    @FXML
+    private ComboBox<String> filtreJour;
+    @FXML
+    private ComboBox<String> filtreHeureD;
+    @FXML
+    private ComboBox<String> filtreHeureF;
+    @FXML
+    private Text textfiltreEmploye;
+    @FXML
+    private Text textfiltreActivite;
+    @FXML
+    private Text textfiltreSalle;
+    @FXML
+    private Text textfiltreJour;
+    @FXML
+    private Text textfiltreHeureD;
+    @FXML
+    private Text textfiltreHeureF;
 
     // Table des salles
     @FXML
@@ -99,6 +132,10 @@ public class Affichage {
     private TableColumn<Employe, String> prenomE;
     @FXML
     private TableColumn<Employe, String> numTelE;
+    @FXML
+    ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Activite> listActivite = FXCollections.observableArrayList();
 
     // Méthodes d'action pour les boutons
     @FXML
@@ -154,7 +191,6 @@ public class Affichage {
 
                     switch (fichierExploite.getTypeFichier()) {
                         case "Employe":
-                            ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 4) {
                                     listEmploye.add(new Employe(ligne.get(0),
@@ -163,6 +199,7 @@ public class Affichage {
                                             ligne.get(3)));
                                 }
                             }
+                            remplirComboBoxEmployes();
 
                             idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
                             nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -198,7 +235,6 @@ public class Affichage {
                             break;
 
                         case "Activite":
-                            ObservableList<Activite> listActivite = FXCollections.observableArrayList();
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() == 2) {
                                     listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
@@ -206,6 +242,7 @@ public class Affichage {
                                     System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
                                 }
                             }
+                            remplirComboBoxActivites();
 
                             idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
                             activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
@@ -288,4 +325,88 @@ public class Affichage {
             System.out.println("Erreur générale : " + e.getMessage());
         }
     }
+
+    @FXML
+    private void afficherFiltre(){
+        if (feuilleReservation.isSelected()) {
+            filtreEmploye.setVisible(true);
+            filtreSalle.setVisible(true);
+            filtreActivite.setVisible(true);
+            filtreJour.setVisible(true);
+            filtreHeureD.setVisible(true);
+            filtreHeureF.setVisible(true);
+            textfiltreEmploye.setVisible(true);
+            textfiltreSalle.setVisible(true);
+            textfiltreActivite.setVisible(true);
+            textfiltreJour.setVisible(true);
+            textfiltreHeureD.setVisible(true);
+            textfiltreHeureF.setVisible(true);
+
+        } else {
+            filtreEmploye.setVisible(false);
+            filtreSalle.setVisible(false);
+            filtreActivite.setVisible(false);
+            filtreJour.setVisible(false);
+            filtreHeureD.setVisible(false);
+            filtreHeureF.setVisible(false);
+            textfiltreEmploye.setVisible(false);
+            textfiltreSalle.setVisible(false);
+            textfiltreActivite.setVisible(false);
+            textfiltreJour.setVisible(false);
+            textfiltreHeureD.setVisible(false);
+            textfiltreHeureF.setVisible(false);
+        }
+    }
+
+    private void remplirComboBoxEmployes() {
+        ObservableList<String> nomsEmployes = FXCollections.observableArrayList();
+        nomsEmployes.add("Tous"); // Option par défaut
+        String nomPrenom = "";
+
+        // Utiliser un HashSet pour éviter les doublons
+        HashSet<String> nomsUniques = new HashSet<>();
+        for (Employe employe : listEmploye) {
+            nomPrenom = employe.getNom() + " " + employe.getPrenom();
+            nomsUniques.add(nomPrenom);
+        }
+        nomsEmployes.addAll(nomsUniques);
+
+        // Mettre à jour la ComboBox
+        filtreEmploye.setItems(nomsEmployes);
+        filtreEmploye.getSelectionModel().selectFirst(); // Sélectionner "Tous" par défaut
+    }
+
+    private void remplirComboBoxActivites() {
+        ObservableList<String> nomsActivite = FXCollections.observableArrayList();
+        nomsActivite.add("Tous"); // Option par défaut
+
+        // Utiliser un HashSet pour éviter les doublons
+        HashSet<String> typeUniques = new HashSet<>();
+        for (Activite activite : listActivite) {
+            typeUniques.add(activite.getType());
+        }
+        nomsActivite.addAll(typeUniques);
+
+        // Mettre à jour la ComboBox
+        filtreActivite.setItems(nomsActivite);
+        filtreActivite.getSelectionModel().selectFirst();
+    }
+
+//    private void appliquerFiltreReservation() {
+//        String filtreSelectionne = filtreEmploye.getSelectionModel().getSelectedItem();
+//
+//        if (filtreSelectionne != null && !filtreSelectionne.equals("Tous")) {
+//            ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+//            for (Reservation reservation : tabReservation.getItems()) {
+//                if (reservation.getEmployeR().equals(filtreSelectionne)) {
+//                    reservationsFiltrees.add(reservation);
+//                }
+//            }
+//            tabReservation.setItems(reservationsFiltrees);
+//        } else {
+//            // Réinitialiser la liste des réservations si "Tous" est sélectionné
+//            //tabReservation.setItems(FXCollections.observableArrayList(listReservation));
+//        }
+//    }
+
 }
