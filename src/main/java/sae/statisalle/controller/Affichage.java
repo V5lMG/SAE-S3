@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 public class Affichage {
 
@@ -144,108 +145,147 @@ public class Affichage {
                 return;
             }
 
+            StringBuilder fichiersInvalides = new StringBuilder();
+
             for (File fichier : fichiers) {
-                Fichier fichierExploite = new Fichier(fichier.getPath());
-                List<List<String>> contenu = fichierExploite.recupererDonnees();
+                try {
+                    Fichier fichierExploite = new Fichier(fichier.getPath());
+                    List<List<String>> contenu = fichierExploite.recupererDonnees();
 
-                switch (fichierExploite.getTypeFichier()) {
-                    case "Employe":
-                        ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
-                        for (List<String> ligne : contenu) {
-                            if (ligne.size() >= 4) {
-                                listEmploye.add(new Employe(ligne.get(0),
-                                        ligne.get(1),
-                                        ligne.get(2),
-                                        ligne.get(3)));
+                    switch (fichierExploite.getTypeFichier()) {
+                        case "Employe":
+                            ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
+                            for (List<String> ligne : contenu) {
+                                if (ligne.size() >= 4) {
+                                    listEmploye.add(new Employe(ligne.get(0),
+                                            ligne.get(1),
+                                            ligne.get(2),
+                                            ligne.get(3)));
+                                }
+                            }
+
+                            idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+                            nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                            prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+                            numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+
+                            tabEmploye.setItems(listEmploye);
+                            break;
+
+                        case "Salle":
+                            ObservableList<Salle> listSalle = FXCollections.observableArrayList();
+                            for (List<String> ligne : contenu) {
+                                if (ligne.size() >= 9) {
+                                    listSalle.add(new Salle(ligne.get(0),
+                                            ligne.get(1), ligne.get(2),
+                                            ligne.get(3), ligne.get(4),
+                                            ligne.get(5), ligne.get(6),
+                                            ligne.get(7), ligne.get(8)));
+                                }
+                            }
+
+                            idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+                            nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                            capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
+                            ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
+                            typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
+                            videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
+                            nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
+                            logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
+                            imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+
+                            tabSalle.setItems(listSalle);
+                            break;
+
+                        case "Activite":
+                            ObservableList<Activite> listActivite = FXCollections.observableArrayList();
+                            for (List<String> ligne : contenu) {
+                                if (ligne.size() == 2) {
+                                    listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
+                                } else {
+                                    System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
+                                }
+                            }
+
+                            idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
+                            activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
+
+                            tabActivite.setItems(listActivite);
+                            break;
+
+                        case "Reservation":
+                            ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+                            for (List<String> ligne : contenu) {
+                                if (ligne.size() >= 12) {
+                                    listReservation.add(new Reservation(
+                                            ligne.get(0), ligne.get(1),
+                                            ligne.get(2), ligne.get(3),
+                                            ligne.get(4), ligne.get(5),
+                                            ligne.get(6), ligne.get(7),
+                                            ligne.get(8), ligne.get(9),
+                                            ligne.get(10), ligne.get(11)));
+                                }
+                            }
+
+                            idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+                            salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+                            employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+                            activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
+                            dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+                            heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+                            heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
+                            descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
+                            nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
+                            prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
+                            numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
+                            usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
+
+                            tabReservation.setItems(listReservation);
+                            break;
+
+                        default:
+                            System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
+                    }
+                } catch (Exception e) {
+                    System.out.println("Erreur lors du traitement du fichier : " + fichier.getName() + " - " + e.getMessage());
+                    fichiersInvalides.append(fichier.getName()).append("\n");
+                }
+            }
+
+            // si des fichiers invalides ont été détectés, afficher une alerte
+            if (!fichiersInvalides.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Fichiers invalides");
+                alert.setHeaderText("Certains fichiers n'ont pas pu être chargés");
+                alert.setContentText("Les fichiers suivants sont invalides :\n" + fichiersInvalides);
+
+                // ajouter les boutons à l'alerte
+                ButtonType supprimerButton = new ButtonType("Supprimer");
+                ButtonType ignorerButton = new ButtonType("Ignorer", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(supprimerButton, ignorerButton);
+
+                // gérer la réponse de l'utilisateur
+                Optional<ButtonType> resultat = alert.showAndWait();
+                if (resultat.isPresent() && resultat.get() == supprimerButton) {
+                    try {
+                        // supprimer les fichiers invalides
+                        for (String nomFichier : fichiersInvalides.toString().split("\n")) {
+                            File fichierADelete = new File("src/main/resources/csv/" + nomFichier.trim());
+                            if (fichierADelete.exists() && fichierADelete.isFile()) {
+                                if (fichierADelete.delete()) {
+                                    System.out.println("Fichier supprimé : " + fichierADelete.getName());
+                                } else {
+                                    System.out.println("Impossible de supprimer : " + fichierADelete.getName());
+                                }
                             }
                         }
-
-                        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-                        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-                        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-
-                        tabEmploye.setItems(listEmploye);
-                        break;
-
-                    case "Salle":
-                        ObservableList<Salle> listSalle = FXCollections.observableArrayList();
-                        for (List<String> ligne : contenu) {
-                            if (ligne.size() >= 9) {
-                                listSalle.add(new Salle(ligne.get(0),
-                                        ligne.get(1), ligne.get(2),
-                                        ligne.get(3), ligne.get(4),
-                                        ligne.get(5), ligne.get(6),
-                                        ligne.get(7), ligne.get(8)));
-                            }
-                        }
-
-                        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-                        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                        capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-                        ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
-                        typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
-                        videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
-                        nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
-                        logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
-                        imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
-
-                        tabSalle.setItems(listSalle);
-                        break;
-
-                    case "Activite":
-                        ObservableList<Activite> listActivite = FXCollections.observableArrayList();
-                        for (List<String> ligne : contenu) {
-                            if (ligne.size() == 2) {
-                                listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
-                            } else {
-                                System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
-                            }
-                        }
-
-                        // les IDs sont inversés pour retrouver l'ordre dans le tableau
-                        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
-                        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-
-                        tabActivite.setItems(listActivite);
-                        break;
-
-                    case "Reservation":
-                        ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
-                        for (List<String> ligne : contenu) {
-                            if (ligne.size() >= 12) {
-                                listReservation.add(new Reservation(
-                                        ligne.get(0), ligne.get(1),
-                                        ligne.get(2), ligne.get(3),
-                                        ligne.get(4), ligne.get(5),
-                                        ligne.get(6), ligne.get(7),
-                                        ligne.get(8), ligne.get(9),
-                                        ligne.get(10), ligne.get(11)));
-                            }
-                        }
-
-                        idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
-                        salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
-                        employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-                        activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-                        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-                        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
-                        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
-                        descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
-                        nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
-                        prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
-                        numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
-                        usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
-
-                        tabReservation.setItems(listReservation);
-                        break;
-
-                    default:
-                        System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de la suppression des fichiers : " + e.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur générale : " + e.getMessage());
         }
     }
 }
