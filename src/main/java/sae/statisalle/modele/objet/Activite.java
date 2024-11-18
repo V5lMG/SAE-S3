@@ -24,7 +24,7 @@ public class Activite {
     String type;
 
     public Activite(String type, String idActivite) {
-        this.idActivite = null;
+        this.idActivite = idActivite;
         this.type = type;
     }
 

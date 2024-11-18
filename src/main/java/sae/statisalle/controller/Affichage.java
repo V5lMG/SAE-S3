@@ -126,124 +126,122 @@ public class Affichage {
         tabActivite.getItems().clear();
         tabReservation.getItems().clear();
 
-        // Récupère le chemin du répertoire "resources"
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL ressourceURL = classLoader.getResource("csv");
-
+        String URLDossier = "src/main/resources/csv";
         try {
-            if (ressourceURL != null) {
-                File dossier = new File(URLDecoder.decode(ressourceURL.getPath(), StandardCharsets.UTF_8));
+            File dossier = new File(URLDecoder.decode(URLDossier, StandardCharsets.UTF_8));
 
-                // Vérifier si le répertoire contient des fichiers
-                if (!dossier.exists() || !dossier.isDirectory()) {
-                    System.out.println("Le répertoire 'csv' n'existe pas ou n'est pas un dossier.");
-                    return;
-                }
+            // Vérifier si le répertoire contient des fichiers
+            if (!dossier.exists() || !dossier.isDirectory()) {
+                System.out.println("Le répertoire 'csv' n'existe pas ou n'est pas un dossier.");
+                return;
+            }
 
-                File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
+            File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
 
-                // Vérifier si des fichiers ont été trouvés
-                if (fichiers == null || fichiers.length == 0) {
-                    System.out.println("Aucun fichier CSV trouvé dans le répertoire.");
-                    return;
-                }
+            // Vérifier si des fichiers ont été trouvés
+            if (fichiers == null || fichiers.length == 0) {
+                System.out.println("Aucun fichier CSV trouvé dans le répertoire.");
+                return;
+            }
 
-                for (File fichier : fichiers) {
-                    Fichier fichierExploite = new Fichier(fichier.getPath());
-                    List<List<String>> contenu = fichierExploite.recupererDonnees();
+            for (File fichier : fichiers) {
+                Fichier fichierExploite = new Fichier(fichier.getPath());
+                List<List<String>> contenu = fichierExploite.recupererDonnees();
 
-                    switch (fichierExploite.getTypeFichier()) {
-                        case "Employe":
-                            ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 4) {
-                                    listEmploye.add(new Employe(ligne.get(0),
-                                            ligne.get(1),
-                                            ligne.get(2),
-                                            ligne.get(3)));
-                                }
+                switch (fichierExploite.getTypeFichier()) {
+                    case "Employe":
+                        ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 4) {
+                                listEmploye.add(new Employe(ligne.get(0),
+                                        ligne.get(1),
+                                        ligne.get(2),
+                                        ligne.get(3)));
                             }
+                        }
 
-                            idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-                            nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-                            numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+                        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+                        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+                        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
 
-                            tabEmploye.setItems(listEmploye);
-                            break;
+                        tabEmploye.setItems(listEmploye);
+                        break;
 
-                        case "Salle":
-                            ObservableList<Salle> listSalle = FXCollections.observableArrayList();
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 9) {
-                                    listSalle.add(new Salle(ligne.get(0),
-                                            ligne.get(1), ligne.get(2),
-                                            ligne.get(3), ligne.get(4),
-                                            ligne.get(5), ligne.get(6),
-                                            ligne.get(7), ligne.get(8)));
-                                }
+                    case "Salle":
+                        ObservableList<Salle> listSalle = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 9) {
+                                listSalle.add(new Salle(ligne.get(0),
+                                        ligne.get(1), ligne.get(2),
+                                        ligne.get(3), ligne.get(4),
+                                        ligne.get(5), ligne.get(6),
+                                        ligne.get(7), ligne.get(8)));
                             }
+                        }
 
-                            idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-                            nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-                            ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
-                            typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
-                            videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
-                            nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
-                            logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
-                            imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+                        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+                        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                        capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
+                        ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
+                        typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
+                        videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
+                        nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
+                        logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
+                        imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
 
-                            tabSalle.setItems(listSalle);
-                            break;
+                        tabSalle.setItems(listSalle);
+                        break;
 
-                        case "Activite":
-                            ObservableList<Activite> listActivite = FXCollections.observableArrayList();
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 2) {
-                                    listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
-                                }
+                    case "Activite":
+                        ObservableList<Activite> listActivite = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() == 2) {
+                                listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
+                            } else {
+                                System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
                             }
+                        }
 
-                            idActivite.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-                            activiteA.setCellValueFactory(new PropertyValueFactory<>("type"));
+                        // les IDs sont inversés pour retrouver l'ordre dans le tableau
+                        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
+                        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
 
-                            tabActivite.setItems(listActivite);
-                            break;
+                        tabActivite.setItems(listActivite);
+                        break;
 
-                        case "Reservation":
-                            ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 12) {
-                                    listReservation.add(new Reservation(
-                                            ligne.get(0), ligne.get(1),
-                                            ligne.get(2), ligne.get(3),
-                                            ligne.get(4), ligne.get(5),
-                                            ligne.get(6), ligne.get(7),
-                                            ligne.get(8), ligne.get(9),
-                                            ligne.get(10), ligne.get(11)));
-                                }
+                    case "Reservation":
+                        ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+                        for (List<String> ligne : contenu) {
+                            if (ligne.size() >= 12) {
+                                listReservation.add(new Reservation(
+                                        ligne.get(0), ligne.get(1),
+                                        ligne.get(2), ligne.get(3),
+                                        ligne.get(4), ligne.get(5),
+                                        ligne.get(6), ligne.get(7),
+                                        ligne.get(8), ligne.get(9),
+                                        ligne.get(10), ligne.get(11)));
                             }
+                        }
 
-                            idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
-                            salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
-                            employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-                            activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-                            dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-                            heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
-                            heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
-                            descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
-                            nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
-                            prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
-                            numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
-                            usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
+                        idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+                        salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+                        employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+                        activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
+                        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+                        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+                        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
+                        descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
+                        nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
+                        prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
+                        numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
+                        usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
 
-                            tabReservation.setItems(listReservation);
-                            break;
+                        tabReservation.setItems(listReservation);
+                        break;
 
-                        default:
-                            System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
-                    }
+                    default:
+                        System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
                 }
             }
         } catch (Exception e) {

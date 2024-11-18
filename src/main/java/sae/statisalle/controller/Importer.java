@@ -22,8 +22,9 @@ import java.util.List;
  * Classe du controller Importer,
  * Qui permet de faire le lien entre la vue Importer et son modèle
  * @author Mathias CAMBON
- *         Robin MONTES
- *         Erwan THIERRY
+ * @author Robin MONTES
+ * @author Erwan THIERRY
+ * @author Valentin MUNIER
  */
 public class Importer {
 
@@ -61,7 +62,7 @@ public class Importer {
     @FXML
     void actionImporter() {
         String dateDuJour = new SimpleDateFormat("ddMMyyyy")
-                .format(new Date());
+                            .format(new Date());
 
         for (String chemin : cheminsDesFichiers) {
             fichierImporter = new Fichier(chemin);

@@ -33,12 +33,6 @@ public class Fichier {
     /* Fichier courant de l'instance */
     private File fichierExploite;
 
-    /* Lecteur du fichier courant de l'instance */
-    private FileReader lecteurFichier;
-
-    /* Tampon pour la lecture du fichier*/
-    private BufferedReader tamponFichier;
-
     /* Impossible d'ouvrir le fichier renseigné */
     private static final String ERREUR_OUVERTURE_FICHIER =
             "erreur : Impossible d'ouvrir le fichier au lien : ";
@@ -90,19 +84,12 @@ public class Fichier {
             err.println(ERREUR_EXTENSION_FICHIER);
         }
 
-        try {
-            if (!fichierExploite.exists()) {
-                err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : Le fichier n'existe pas.");
-            } else if (!fichierExploite.canWrite()) {
-                err.println(ERREUR_CREATION_FICHIER + cheminFichier);
-            }
-
-            this.lecteurFichier = new FileReader(fichierExploite);
-            this.tamponFichier = new BufferedReader(this.lecteurFichier);
-
-        } catch (IOException e) {
-            err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : " + e.getMessage());
+        if (!fichierExploite.exists()) {
+            err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : Le fichier n'existe pas.");
+        } else if (!fichierExploite.canWrite()) {
+            err.println(ERREUR_CREATION_FICHIER + cheminFichier);
         }
+
     }
 
 
@@ -147,7 +134,6 @@ public class Fichier {
      * Stocke les données d'un fichier CSV sans l'en-tête dans une liste de
      * listes. Chaque ligne du fichier CSV est transformée en une liste de
      * chaînes de caractères.
-     *
      * La première ligne du fichier (l'en-tête) n'est pas pris en compte dans
      * le traitement.
      * Les lignes suivantes représentent les données du fichier, chaque cellule
@@ -169,7 +155,7 @@ public class Fichier {
         }
 
         // Récupérer les entêtes de colonnes pour déterminer la taille des lignes
-        String[] entetes = contenu.get(0).split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
+        String[] entetes = contenu.getFirst().split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
 
         // Parcourt les lignes de données du fichier
         for (int i = 1; i < contenu.size(); i++) {
@@ -308,10 +294,13 @@ public class Fichier {
     }
 
     /**
-     * TODO
+     * Détermine le type de contenu d'un fichier en fonction de la première ligne.
+     * Cette méthode analyse le contenu d'une liste de chaînes et renvoie un type correspondant
+     * si la première ligne contient une structure prédéfinie. Les types possibles sont :
+     * "Salle", "Employe", "Activite", ou "Reservation".
      *
-     * @param contenu
-     * @return
+     * @param contenu la liste des lignes d'un fichier
+     * @return une chaîne représentant le type du contenu
      * @author valentin.munier-genie
      */
     public static String getTypeDepuisContenu(List<String> contenu) {
