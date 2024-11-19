@@ -76,7 +76,8 @@ public class Reseau {
                 System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
             } else {
                 serverSocket = new ServerSocket(port);
-                System.out.println("[SERVEUR] Serveur démarré sur le port : " + port);
+                System.out.println("[SERVEUR] Aucune ip défini, " +
+                        "le serveur ce bind automatiquement.\n          Serveur démarré sur le port : " + port);
             }
         } catch (IOException e) {
             System.err.println("[SERVEUR] Erreur lors de la création du serveur : " + e.getMessage());

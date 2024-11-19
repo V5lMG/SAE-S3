@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,15 +209,16 @@ public class Envoyer {
 
     /**
      * Affiche une alerte de confirmation et
-     * redirige vers l'écran de connexion si l'IP n'est pas localhost.
+     * redirige vers l'écran de connexion si le client et le serveur
+     * ne sont pas exécutés sur la même machine.
      */
     private void afficherConfirmationEtRetour() {
-        // récup l'ip et enlever le port
-        String ipDestinataire = "localhost";
-        String ipSource = Session.getAdresseIp().split(":")[0];
+        // recuperer l'adresse IP du serveur et de la machine locale
+        String ipServeur = Session.getAdresseIp().split(":")[0];
+        String ipLocale = obtenirIpLocale();
 
-        // Si l'IP est localhost, ne pas quitter la page d'envoi
-        if (ipSource.equals(ipDestinataire)) {
+        // vérifie si les IP appartiennent a la même machine
+        if (ipLocale.equals(ipServeur) || ipServeur.equals("127.0.0.1") || ipServeur.equals("localhost")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
@@ -230,6 +232,24 @@ public class Envoyer {
 
             alert.setOnHidden(evt -> MainControleur.activerConnexion());
             alert.showAndWait();
+        }
+    }
+
+    /**
+     * Obtient l'adresse IP locale de la machine.
+     * Cette méthode identifie l'adresse utilisée par la machine
+     * pour se connecter à un réseau.
+     * @return L'adresse IP locale sous forme de chaîne.
+     */
+    private String obtenirIpLocale() {
+        try {
+            // 8.8.8.8 = DNS Google
+            try (Socket socket = new Socket("8.8.8.8", 53)) {
+                return socket.getLocalAddress().getHostAddress();
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la récupération de l'IP locale : " + e.getMessage());
+            return "127.0.0.1";
         }
     }
 }

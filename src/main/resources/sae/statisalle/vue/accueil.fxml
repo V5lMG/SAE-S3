@@ -19,10 +19,9 @@
             </Button>
             <Button layoutX="174.0" layoutY="64.0" mnemonicParsing="false" onAction="#actionEnvoyer" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Envoyer" textFill="#030303">
                <graphic>
-                  <ImageView fitHeight="33.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/télécharger-removebg-preview.png" />
-                     </image>
+                  <ImageView fitHeight="33.0" fitWidth="31.0"
+                             pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../img/télécharger-removebg-preview.png"/>
                   </ImageView>
                </graphic>
             </Button>
