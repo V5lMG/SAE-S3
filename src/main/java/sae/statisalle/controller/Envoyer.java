@@ -17,7 +17,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,12 +216,20 @@ public class Envoyer {
      * ne sont pas exécutés sur la même machine.
      */
     private void afficherConfirmationEtRetour() {
-        // recuperer l'adresse IP du serveur et de la machine locale
-        String ipServeur = Session.getAdresseIp().split(":")[0];
-        String ipLocale = obtenirIpLocale();
 
-        // vérifie si les IP appartiennent a la même machine
-        if (ipLocale.equals(ipServeur) || ipServeur.equals("127.0.0.1") || ipServeur.equals("localhost")) {
+        String ipServeur = Session.getAdresseIp().split(":")[0];
+        String hostServeurName;
+        try {
+            InetAddress address = InetAddress.getByName(ipServeur);
+            hostServeurName = address.getHostName();
+        } catch (UnknownHostException e) {
+            hostServeurName = ipServeur;
+        }
+
+        String hostLocale = obtenirNomMachineLocale();
+        System.out.println("Host local : " + hostLocale + "Serveur : " + hostServeurName);
+
+        if (hostLocale.equals(hostServeurName) || hostServeurName.equals("localhost") || hostServeurName.equals("127.0.0.1")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
@@ -229,27 +240,21 @@ public class Envoyer {
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
-
             alert.setOnHidden(evt -> MainControleur.activerConnexion());
             alert.showAndWait();
         }
     }
 
+
     /**
-     * Obtient l'adresse IP locale de la machine.
-     * Cette méthode identifie l'adresse utilisée par la machine
-     * pour se connecter à un réseau.
-     * @return L'adresse IP locale sous forme de chaîne.
+     * Méthode pour obtenir le nom de la machine locale
+     * @return Le nom de la machine locale
      */
-    private String obtenirIpLocale() {
+    private String obtenirNomMachineLocale() {
         try {
-            // 8.8.8.8 = DNS Google
-            try (Socket socket = new Socket("8.8.8.8", 53)) {
-                return socket.getLocalAddress().getHostAddress();
-            }
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la récupération de l'IP locale : " + e.getMessage());
-            return "127.0.0.1";
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "localhost";
         }
     }
 }
