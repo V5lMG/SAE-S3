@@ -39,23 +39,48 @@ public class Reseau {
     // --------- PARTIE SERVEUR -----------
 
     /**
-     * Initialise le serveur en créant un ServerSocket sur le port spécifié.
+     * Initialise le serveur en récupérant l'IP et le port depuis la session.
+     * Si l'IP ou le port n'est pas défini, une exception est levée.
+     * Si le port est `null`, le port par défaut est utilisé.
      *
-     * @param port Le numéro de port sur lequel le serveur doit écouter.
-     * @throws IllegalArgumentException Si le port spécifié n'est pas valide (0 - 65535).
+     * @param portParDefaut Port par défaut à utiliser si le port dans la session est `null`.
+     * @throws IllegalArgumentException Si le port spécifié n'est pas valide (0 - 65535) ou si l'IP est invalide.
      * @throws IOException Si une erreur survient lors de la création du ServerSocket.
      */
-    public void preparerServeur(int port) throws IOException {
+    public void preparerServeur(int portParDefaut) throws IOException {
         System.out.println("[SERVEUR] Initialisation du serveur...");
-        if (port < 0 || port > 65535) {
-            throw new IllegalArgumentException("[SERVEUR] Le port doit être compris entre 0 et 65535.");
+
+        String ip = Session.getIpServeur();
+        String portText = Session.getPortServeur();
+
+        int port;
+        if (portText == null) {
+            port = portParDefaut;
+            System.out.println("[SERVEUR] Aucun port défini dans la session. Utilisation du port par défaut : " + port);
+        } else {
+            try {
+                port = Integer.parseInt(portText);
+            } catch (NumberFormatException ex) {
+                throw new IllegalArgumentException("[SERVEUR] Le port doit être un nombre valide.");
+            }
+
+            if (port < 0 || port > 65535) {
+                throw new IllegalArgumentException("[SERVEUR] Le port doit être compris entre 0 et 65535.");
+            }
         }
+
         try {
-            serverSocket = new ServerSocket(port);
-            System.out.println("[SERVEUR] Serveur démarré sur le port : " + port);
+            if (ip != null && !ip.isEmpty()) {
+                // backlog : nombre maximal de connexions en attente (ici 50)
+                serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
+                System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
+            } else {
+                serverSocket = new ServerSocket(port);
+                System.out.println("[SERVEUR] Serveur démarré sur le port : " + port);
+            }
         } catch (IOException e) {
             System.err.println("[SERVEUR] Erreur lors de la création du serveur : " + e.getMessage());
-            throw new IOException("[SERVEUR] Erreur lors de la création du serveur.", e);
+            throw new IOException("[SERVEUR] Erreur lors de la création du serveur : " + e.getMessage());
         }
     }
 

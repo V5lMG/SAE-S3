@@ -18,6 +18,7 @@ public class Session {
     private static String ipServeur;
     private static String portServeur;
 
+
     /**
      * Récupère l'adresse IP de la session.
      * @return l'adresse IP de la session.
