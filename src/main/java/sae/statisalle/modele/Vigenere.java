@@ -117,38 +117,57 @@ public class Vigenere {
     }
 
     /**
-     * Création de notre alphabet avec l'ensemble des caractères que l'on peut
-     * retrouve à l'intérieur des fichiers csv
+     * Création de l'alphabet contenant tous les caractères imprimables
+     * disponibles sur un clavier standard.
      */
     public static void creerAlphabet() {
-        // Crée une nouvelle liste pour stocker les caractères
+
+        // -----------
+        // ATTENTION, ne pas MODIFIER l'aplhpabet sous peine de casser
+        //            tous les tests.
+        // -----------
+
         alphabet = new ArrayList<>();
 
-        // Ajoute les lettres de l'alphabet (minuscules et majuscules)
+        // lettres minuscules et majuscules
         for (char c = 'a'; c <= 'z'; c++) {
             alphabet.add(c);
             alphabet.add(Character.toUpperCase(c));
         }
 
-        // Ajoute les caractères accentués courants
+        // lettres accentuées courantes
         char[] accents = {
-                'à', 'â', 'ä', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'ö', 'ù', 'û', 'ü', 'ç', 'œ', 'æ'
+                'à', 'â', 'ä', 'é', 'è', 'ê', 'ë',
+                'î', 'ï', 'ô', 'ö', 'ù', 'û', 'ü',
+                'ç', 'À', 'Â', 'Ä', 'É', 'È', 'Ê',
+                'Ë', 'Î', 'Ï', 'Ô', 'Ö', 'Ù', 'Û',
+                'Ü', 'Ç'
         };
         for (char c : accents) {
             alphabet.add(c);
         }
 
-        // Ajoute les numéros de 0 à 9
-        char[] numeros = {
-                '0','1', '2', '3', '4', '5', '6', '7', '8', '9'
-        };
-        for (char n : numeros) {
-            alphabet.add(n);
+        // chiffres
+        for (char c = '0'; c <= '9'; c++) {
+            alphabet.add(c);
         }
 
-        //Ajout de l'espace de l'aphabet.
-        alphabet.add(' ');
+        // symboles courants et caractères de ponctuation
+        char[] symboles = {
+                '!', '@', '#', '$', '%', '^', '&',
+                '*', '(', ')', '-', '_', '=', '+',
+                '[', ']', '{', '}', '\\', '|', ':',
+                ';', '\'', '"', '<', '>', ',', '.',
+                '?', '/'
+        };
+        for (char c : symboles) {
+            alphabet.add(c);
+        }
 
+        // espace et autres caractères spécifiques
+        alphabet.add(' ');
+        alphabet.add('`');
+        alphabet.add('~');
     }
 
     /**
@@ -158,15 +177,15 @@ public class Vigenere {
      * @return La clé ajustée à la taille des données
      */
     public static String defTailleClef(String donnees, String cle) {
-        int tailleDonnees = donnees.length(); // Taille totale des données
+        int tailleDonnees = donnees.length();
         StringBuilder cleAjustee = new StringBuilder();
 
-        // Répéter la clé jusqu'à atteindre la taille des données
+        // répéter la clé jusqu'à atteindre la taille des données
         while (cleAjustee.length() < tailleDonnees) {
             cleAjustee.append(cle);
         }
 
-        // Tronquer la clé à la taille exacte nécessaire
+        // tronquer la clé à la taille exacte nécessaire
         return cleAjustee.substring(0, tailleDonnees);
     }
 
@@ -177,20 +196,20 @@ public class Vigenere {
      */
     public static String genererCleAleatoire(String donnees) {
         if (alphabet == null || alphabet.isEmpty()) {
-            creerAlphabet();  // Initialiser l'alphabet si ce n'est pas déjà fait
+            creerAlphabet();
         }
 
-        int tailleDonnees = donnees.length();  // Longueur totale des données
+        int tailleDonnees = donnees.length();
 
         if (tailleDonnees == 0) {
             throw new IllegalArgumentException("Les données sont vides. Impossible de générer une clé.");
         } else {
             Random random = new Random();
-            int longueurCle = random.nextInt(tailleDonnees) + 1;  // Taille de la clé entre 1 et tailleDonnees
+            int longueurCle = random.nextInt(tailleDonnees) + 1;
             StringBuilder cleBuilder = new StringBuilder();
 
             for (int i = 0; i < longueurCle; i++) {
-                char lettre = alphabet.get(random.nextInt(alphabet.size())); // Choisir une lettre aléatoire dans l'alphabet
+                char lettre = alphabet.get(random.nextInt(alphabet.size()));
                 cleBuilder.append(lettre);
             }
 
@@ -328,8 +347,7 @@ public class Vigenere {
     }
 
     /**
-     * Génère un générateur g pour le groupe multiplicatif (Z/pZ)*  .
-     *
+     * Génère un générateur g pour le groupe multiplicatif (Z/pZ)*
      * @param p Le nombre premier utilisé dans l'échange de clés.
      * @return Un générateur g pour le groupe multiplicatif.
      * @throws IllegalArgumentException Si p n'est pas un nombre premier.
@@ -337,6 +355,11 @@ public class Vigenere {
     public static int genererGenerateur(int p) {
         if (!estPremier(p)) {
             throw new IllegalArgumentException("Le nombre 'p' doit être un nombre premier.");
+        }
+
+        // Cas trivial pour p = 2
+        if (p == 2) {
+            return 1; // Le seul élément du groupe est 1
         }
 
         // Tester les candidats pour g

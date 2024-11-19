@@ -35,6 +35,15 @@ public class Reseau {
     /** Flux d'entrée pour recevoir des données. */
     protected BufferedReader fluxEntree;
 
+    /**
+     * Renvoie le flux d'entrée utilisé pour recevoir des données.
+     * Ce flux peut être utilisé pour lire directement les messages entrants.
+     * @return Le flux d'entrée (BufferedReader).
+     */
+    public BufferedReader getFluxEntree() {
+        return fluxEntree;
+    }
+
     // --------- PARTIE SERVEUR -----------
 
     /**
@@ -298,15 +307,4 @@ public class Reseau {
             return null; // retourne null pour éviter les erreurs
         }
     }
-
-    /**
-     * Renvoie le flux d'entrée utilisé pour recevoir des données.
-     * Ce flux peut être utilisé pour lire directement les messages entrants.
-     *
-     * @return Le flux d'entrée (BufferedReader).
-     */
-    public BufferedReader getFluxEntree() {
-        return fluxEntree;
-    }
-
 }

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * </ul>
  * @author erwan.thierry
  */
-class TestFichier {
+class TestUnitaireFichier {
 
     private Fichier fichierEmploye;
 

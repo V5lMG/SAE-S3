@@ -4,44 +4,38 @@
  */
 package sae.statisalle;
 
-import org.junit.jupiter.api.Test;
-import sae.statisalle.exception.ModuloNegatifException;
 import sae.statisalle.modele.Vigenere;
 import sae.statisalle.modele.Fichier;
 
-
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * CLasse qui teste chaque méthode de la classe Chiffrement
  * @author Robin Montes
  * @author Mathias Cambon
  * @author rodrigoxaviertaborda
+ * @author valentin.munier-genie
  */
 public class TestVigenere {
 
-    /*
-    public static void testDefTailleClef() {
-       Vigenere.creerAlphabet();
-       List<String> donnees = new ArrayList<>(); // Exemple de données
-       donnees.add("Ceci");
-       donnees.add("Salut");
-       String cle = Vigenere.genererCleAleatoire(donnees);
-       System.out.println("cle générer : " + cle);
-       String cle2 = Vigenere.defTailleClef(donnees,cle);
-       System.out.println("Clé adapter à la taille du texte : " + cle2);
-    }
-    */
-
+    /**
+     * Teste les processus de chiffrement et de déchiffrement des données à l'aide
+     * d'une clé générée aléatoirement pour un fichier donné.
+     * La méthode lit le contenu du fichier, le chiffre avec une clé générée,
+     * puis le déchiffre pour vérifier si le contenu déchiffré correspond
+     * au contenu original.
+     * @param cheminFichier le chemin du fichier à tester, qui contient les
+     *                      données à chiffrer et à déchiffrer
+     * @return {@code true} si le contenu déchiffré est identique au contenu
+     *         original, {@code false} sinon.
+     */
     public static boolean testChiffrementDechiffrementDonnees(String cheminFichier) {
         Fichier fichier = new Fichier(cheminFichier);
         List<String> contenuOriginalList = fichier.contenuFichier(); // Assurez-vous que cette méthode retourne le contenu du fichier en String
         String contenuOriginal = String.join("\n", contenuOriginalList);
 
-        if (contenuOriginal == null || contenuOriginal.isEmpty()) {
+        if (contenuOriginal.isEmpty()) {
             System.err.println("Erreur : Le fichier est vide ou introuvable.");
             return false;
         }
@@ -60,7 +54,7 @@ public class TestVigenere {
         System.out.println(contenuChiffre);
 
         // Créer un nouveau fichier temporaire avec le contenu chiffré
-        Fichier fichierTemp = new Fichier("/Users/rodrigoxaviertaborda/Documents/SAE/temp.csv");
+        Fichier fichierTemp = new Fichier("src/test/java/fichierTest/temp.csv");
         fichierTemp.reecritureFichier(Arrays.asList(contenuChiffre.split("\n")));
 
         // Déchiffrer le contenu chiffré en utilisant la même clé
@@ -82,20 +76,16 @@ public class TestVigenere {
         return resultat;
     }
 
-
     public static void main(String[] args) {
-        // Chemin vers le fichier que vous voulez tester
-        String cheminFichierTest = "/Users/rodrigoxaviertaborda/Documents/SAE/salles 26_08_24 13_40.csv";
+        // chemin du fichier de test
+        String cheminFichierTest = "src/test/java/fichierTest/reservations.csv";
 
         // Appel de la méthode de test pour vérifier le chiffrement et le déchiffrement
         boolean estReussi = testChiffrementDechiffrementDonnees(cheminFichierTest);
-
-        // Afficher le résultat du test dans la console
         if (estReussi) {
             System.out.println("Test réussi : le contenu déchiffré est identique au contenu original.");
         } else {
             System.out.println("Test échoué : le contenu déchiffré diffère du contenu original.");
         }
-
     }
 }
