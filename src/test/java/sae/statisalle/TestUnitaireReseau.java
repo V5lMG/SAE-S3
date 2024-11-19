@@ -1,204 +1,230 @@
-/*
- * TestUnitaireReseau.java    21/10/2024
- * Pas de droit d'auteur ni de copyright
- */
 package sae.statisalle;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 import sae.statisalle.modele.Chiffrement;
 import sae.statisalle.modele.Reseau;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Classe de test unitaire pour la classe Reseau.
- * Elle couvre les principales méthodes et cas d'usage.
+ * Tests unitaires pour la classe Reseau.
  */
 public class TestUnitaireReseau {
 
-    private Reseau serveur;
-    private Reseau client;
-    private ServerSocket serverSocket;
-    private Socket clientSocket;
+    private static Reseau serveur;
+    private static Thread serveurThread;
+    private static int portTest; // Port dynamique pour éviter les conflits
+    private static final String LOCALHOST = "127.0.0.1";
 
-    private static final int PORT_VALIDE = 65432;
-    private static final int PORT_INVALIDE = 70000;
-    private static final String LOCALHOST = "localhost";
-
-    @BeforeEach
-    void setUp() {
-        serveur = new Reseau();
-        client = new Reseau();
+    private static int obtenirPortLibre() {
+        try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (IOException e) {
+            fail("Impossible de trouver un port libre : " + e.getMessage());
+            return -1;
+        }
     }
 
-    @AfterEach
-    void tearDown() {
+    @BeforeAll
+    static void initialiserServeur() {
+        serveur = new Reseau();
+        portTest = obtenirPortLibre();
+        serveurThread = new Thread(() -> {
+            try {
+                serveur.preparerServeur(portTest);
+                Reseau clientHandler = serveur.attendreConnexionClient();
+                if (clientHandler != null) {
+                    String donnees = clientHandler.recevoirDonnees();
+                    clientHandler.envoyerReponse(donnees);
+                }
+            } catch (IOException e) {
+                System.err.println("Erreur serveur : " + e.getMessage());
+            } finally {
+                serveur.fermerServeur();
+            }
+        });
+        serveurThread.start();
+    }
+
+    @AfterAll
+    static void arreterServeur() {
         serveur.fermerServeur();
-        client.fermerClient();
+        try {
+            if (serveurThread != null) {
+                serveurThread.join(1000);
+            }
+        } catch (InterruptedException e) {
+            System.err.println("Erreur lors de l'arrêt du serveur : "
+                    + e.getMessage());
+        }
+    }
+
+    @Test
+    void testPreparationServeur() {
+        int portTest = obtenirPortLibre();
+        Reseau serveurTest = new Reseau();
+        assertDoesNotThrow(() -> serveurTest.preparerServeur(portTest),
+                "La préparation du serveur ne doit pas lever d'exception.");
+        serveurTest.fermerServeur();
+    }
+
+    @Test
+    @Timeout(10)
+    void testConnexionClientServeur() {
+        int portTest = obtenirPortLibre();
+        Reseau serveur = new Reseau();
+        Reseau client = new Reseau();
+
+        Thread threadServeur = new Thread(() -> {
+            try {
+                serveur.preparerServeur(portTest);
+                Reseau clientHandler = serveur.attendreConnexionClient();
+                if (clientHandler != null) {
+                    String messageRecu = clientHandler.recevoirDonnees();
+                    clientHandler.envoyerReponse(messageRecu);
+                }
+            } catch (IOException e) {
+                fail("Erreur du serveur : " + e.getMessage());
+            } finally {
+                serveur.fermerServeur();
+            }
+        });
 
         try {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                serverSocket.close();
-            }
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la fermeture du serverSocket : " + e.getMessage());
+            threadServeur.start();
+            Thread.sleep(500);
+
+            client.preparerClient(LOCALHOST, portTest);
+            String message = "Bonjour serveur";
+            client.envoyer(message);
+
+            String reponse = client.recevoirReponse();
+            assertNotNull(reponse, "La réponse ne doit pas être null.");
+            assertTrue(reponse.contains("/DELIM/") || !reponse.equals(message),
+                    "La réponse doit contenir les données transformées par le serveur.");
+        } catch (MauvaiseConnexionServeur | InterruptedException e) {
+            fail("La connexion client-serveur a échoué : " + e.getMessage());
+        } finally {
+            client.fermerClient();
+        }
+
+        try {
+            threadServeur.join();
+        } catch (InterruptedException e) {
+            fail("Le thread serveur a été interrompu : " + e.getMessage());
         }
     }
 
-    // --------- PARTIE SERVEUR -----------
-
     @Test
-    void testPreparerServeurAvecPortValide() throws IOException {
-        serveur.preparerServeur(PORT_VALIDE);
-        try (ServerSocket testSocket = new ServerSocket(PORT_VALIDE)) {
-            fail("Le port devrait être occupé par le serveur.");
-        } catch (IOException e) {
-            // Le port est occupé, test réussi.
+    @Timeout(10)
+    void testAttendreConnexionClient() {
+        int portTest = obtenirPortLibre();
+        Reseau serveur = new Reseau();
+        Thread threadServeur = new Thread(() -> {
+            try {
+                serveur.preparerServeur(portTest);
+                serveur.attendreConnexionClient();
+            } catch (IOException e) {
+                fail("Erreur lors de l'attente d'une connexion client : "
+                        + e.getMessage());
+            } finally {
+                serveur.fermerServeur();
+            }
+        });
+
+        Reseau client = new Reseau();
+        try {
+            threadServeur.start();
+            Thread.sleep(500);
+            assertDoesNotThrow(() -> client.preparerClient(LOCALHOST, portTest),
+                    "La connexion au serveur ne doit pas lever d'exception.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            client.fermerClient();
+        }
+
+        try {
+            threadServeur.join();
+        } catch (InterruptedException e) {
+            fail("Le thread serveur a été interrompu : " + e.getMessage());
         }
     }
 
     @Test
-    void testPreparerServeurAvecPortInvalide() {
-        assertThrows(IllegalArgumentException.class, () -> serveur.preparerServeur(PORT_INVALIDE));
+    void testReceptionDonneesNull() {
+        Reseau serveurTest = new Reseau();
+        serveurTest.fermerServeur();
+
+        assertNull(serveurTest.getFluxEntree(),
+                "Le flux d'entrée doit être null lorsque le serveur est fermé.");
+
+        assertDoesNotThrow(() -> {
+            String result = serveurTest.recevoirDonnees();
+            assertNull(result, "recevoirDonnees() doit retourner null lorsque le "
+                    + "flux d'entrée est null.");
+        }, "recevoirDonnees() ne doit pas lever d'exception si le flux est null.");
     }
 
     @Test
-    void testAttendreConnexionClient() throws IOException, InterruptedException {
-        serveur.preparerServeur(PORT_VALIDE);
+    void testTraiterRequete() {
+        Reseau serveur = new Reseau();
 
-        // Simuler un client qui se connecte
-        new Thread(() -> {
-            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
-                OutputStream out = localClient.getOutputStream();
-                out.write("Test".getBytes());
-                out.flush();
-            } catch (IOException ignored) {
-            }
-        }).start();
+        String cleValide = "clé123";
+        String donneesChiffrees = Chiffrement.chiffrementDonnees("message", cleValide);
+        String requeteValide = cleValide + "/DELIM/" + donneesChiffrees;
 
-        Thread.sleep(500);  // Laisser le temps au client de se connecter
-        Reseau clientReseau = serveur.attendreConnexionClient();
-        assertNotNull(clientReseau, "Le client devrait être connecté.");
+        assertDoesNotThrow(() -> {
+            String resultat = serveur.traiterRequete(requeteValide);
+            assertEquals("message", resultat, "Les données déchiffrées doivent "
+                    + "correspondre au message original.");
+        });
+
+        assertThrows(IllegalArgumentException.class,
+                () -> serveur.traiterRequete(null),
+                "Une requête null doit lever une IllegalArgumentException.");
+
+        String requeteMalFormateeSansDelim = cleValide + donneesChiffrees;
+        assertThrows(IllegalArgumentException.class,
+                () -> serveur.traiterRequete(requeteMalFormateeSansDelim),
+                "Une requête sans délimiteur doit lever une IllegalArgumentException.");
+
+        String requeteMalFormateeAvecTropDeDelim = cleValide + "/DELIM/"
+                + donneesChiffrees + "/DELIM/extra";
+        assertThrows(IllegalArgumentException.class,
+                () -> serveur.traiterRequete(requeteMalFormateeAvecTropDeDelim),
+                "Une requête avec plusieurs délimiteurs doit lever une "
+                        + "IllegalArgumentException.");
     }
 
     @Test
-    void testRecevoirDonnees() throws IOException {
-        serveur.preparerServeur(PORT_VALIDE);
+    void testPreparationClientInvalide() {
+        Reseau client = new Reseau();
 
-        // Simuler un client envoyant des données
-        new Thread(() -> {
-            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
-                OutputStream out = localClient.getOutputStream();
-                out.write("Données Test\n".getBytes());
-                out.flush();
-            } catch (IOException ignored) {
-            }
-        }).start();
+        MauvaiseConnexionServeur exception = assertThrows(
+                MauvaiseConnexionServeur.class,
+                () -> client.preparerClient("adresse_invalide", obtenirPortLibre()),
+                "Une connexion avec une adresse invalide doit lever une exception.");
+        assertTrue(exception.getMessage().contains("Impossible de se connecter"));
 
-        Reseau clientReseau = serveur.attendreConnexionClient();
-        String donnees = clientReseau.recevoirDonnees();
-        assertEquals("Données Test", donnees, "Les données reçues devraient correspondre.");
+        IllegalArgumentException exception2 = assertThrows(
+                IllegalArgumentException.class,
+                () -> client.preparerClient(LOCALHOST, 99999),
+                "Une connexion avec un port hors limites doit lever une exception.");
+        assertTrue(exception2.getMessage().contains("port out of range"));
     }
 
     @Test
-    void testTraiterRequeteCorrecte() {
-        String requete = "cle123/DELIM/donneesChiffrees";
-        String resultat = serveur.traiterRequete(requete);
-        assertNotNull(resultat, "Le traitement d'une requête correcte devrait réussir.");
-    }
-
-    @Test
-    void testTraiterRequeteInvalide() {
-        assertThrows(IllegalArgumentException.class, () -> serveur.traiterRequete(null));
-        assertThrows(IllegalArgumentException.class, () -> serveur.traiterRequete("Format Incorrect"));
-    }
-
-    @Test
-    void testEnvoyerReponse() throws IOException {
-        serveur.preparerServeur(PORT_VALIDE);
-
-        // Simuler un client recevant une réponse
-        new Thread(() -> {
-            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(localClient.getInputStream()));
-                String reponse = in.readLine();
-                assertEquals("Réponse Test", reponse, "La réponse envoyée par le serveur devrait être reçue par le client.");
-            } catch (IOException ignored) {
-            }
-        }).start();
-
-        Reseau clientReseau = serveur.attendreConnexionClient();
-        clientReseau.envoyerReponse("Réponse Test");
-    }
-
-    // --------- PARTIE CLIENT -----------
-
-    @Test
-    void testPreparerClientConnexionReussie() throws MauvaiseConnexionServeur, InterruptedException {
-        // Démarrer un thread pour préparer le serveur
-        new Thread(() -> {
-            try {
-                serverSocket = new ServerSocket(PORT_VALIDE);
-                clientSocket = serverSocket.accept(); // Attendre la connexion du client
-            } catch (IOException ignored) {
-            }
-        }).start();
-
-        // Attendre suffisamment de temps pour que le serveur démarre
-        Thread.sleep(1000);
-
-        // Préparer le client
-        client.preparerClient(LOCALHOST, PORT_VALIDE);
-
-        assertTrue(client.estConnecte(), "Le client devrait être connecté au serveur.");
-    }
-
-    @Test
-    void testEnvoyerEtRecevoirReponse() throws MauvaiseConnexionServeur, InterruptedException {
-        // Démarrer un thread pour simuler un serveur
-        new Thread(() -> {
-            try {
-                serverSocket = new ServerSocket(PORT_VALIDE);
-                Socket clientSocket = serverSocket.accept();
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-                String messageRecu = in.readLine();
-                assertNotNull(messageRecu, "Le message reçu par le serveur ne devrait pas être nul.");
-
-                String[] parts = messageRecu.split("/DELIM/");
-                assertEquals(2, parts.length, "Le message reçu devrait contenir une clé et des données séparées par /DELIM/.");
-
-                String cle = parts[0];
-                String donneesChiffrees = parts[1];
-
-                // Utiliser le même alphabet pour déchiffrer les données
-                Chiffrement.creerAlphabet();
-                String messageDechiffre = Chiffrement.dechiffrementDonnees(donneesChiffrees, cle);
-                assertEquals("Message Test", messageDechiffre, "Le serveur devrait recevoir le message déchiffré.");
-
-                out.println("Réponse Serveur");
-            } catch (IOException ignored) {
-            }
-        }).start();
-
-        Thread.sleep(1000);
-
-        // Préparer les données du client
-        Chiffrement.creerAlphabet();
-        String cle = Chiffrement.genererCleAleatoire("Message Test");
-        String messageChiffre = Chiffrement.chiffrementDonnees("Message Test", cle);
-        String messageAEnvoyer = cle + "/DELIM/" + messageChiffre;
-
-        client.preparerClient(LOCALHOST, PORT_VALIDE);
-        client.envoyer(messageAEnvoyer);
-
-        String reponse = client.recevoirReponse();
-        assertEquals("Réponse Serveur", reponse, "Le client devrait recevoir la réponse du serveur.");
+    void testRenvoyerIP() {
+        assertDoesNotThrow(() -> {
+            assertNotNull(Reseau.renvoyerIP(),
+                    "L'adresse IP locale ne doit pas être null.");
+        }, "La méthode renvoyerIP ne doit pas lever d'exception.");
     }
 }

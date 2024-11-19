@@ -107,6 +107,10 @@ public class Reseau {
      */
     public String recevoirDonnees() {
         System.out.println("[SERVEUR] Réception des données...");
+        if (fluxEntree == null) {
+            // Flux non initialisé ou fermé
+            return null;
+        }
         try {
             String donnees = fluxEntree.readLine();
             System.out.println("[SERVEUR] Données reçues : " + donnees);
@@ -295,8 +299,14 @@ public class Reseau {
         }
     }
 
-    public boolean estConnecte() {
-        return clientSocket != null && clientSocket.isConnected();
+    /**
+     * Renvoie le flux d'entrée utilisé pour recevoir des données.
+     * Ce flux peut être utilisé pour lire directement les messages entrants.
+     *
+     * @return Le flux d'entrée (BufferedReader).
+     */
+    public BufferedReader getFluxEntree() {
+        return fluxEntree;
     }
 
 }
