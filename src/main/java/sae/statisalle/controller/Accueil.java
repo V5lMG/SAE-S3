@@ -16,7 +16,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
 
 import java.net.InetAddress;

@@ -223,39 +223,50 @@ public class MainControleur extends Application {
             try {
                 serveur = new Reseau();
                 serveur.preparerServeur(54321);
-                System.out.println("[MAIN] Serveur démarré et en attente "
-                                   + "de connexions...");
+                System.out.println("[MAIN] Serveur démarré et en attente de connexions...");
 
-                // boucle pour accepter plusieurs connexions
-                while (true) {
-                    // attendre une nouvelle connexion client
-                    Reseau clientReseau = serveur.attendreConnexionClient();
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        Reseau clientReseau = serveur.attendreConnexionClient();
 
-                    // chaque client est géré dans un thread séparé
-                    Thread threadGestionClient = new Thread(() -> {
-                        try {
-                            String requete = clientReseau.recevoirDonnees();
-                            String reponse = clientReseau.traiterRequete(requete);
-                            clientReseau.envoyerReponse("Données bien reçu et traité.");
+                        Thread threadGestionClient = new Thread(() -> {
+                            try {
+                                if (clientReseau != null) {
+                                    String requete = clientReseau.recevoirDonnees();
+                                    String reponse = clientReseau.traiterRequete(requete);
+                                    clientReseau.envoyerReponse("Données bien reçues et traitées.");
 
-                            // thread javaFx pour la page de sauvegarde
-                            Platform.runLater(() -> afficherPopupFichierRecu(reponse));
-                        } finally {
-                            clientReseau.fermerClient();
+                                    Platform.runLater(() -> afficherPopupFichierRecu(reponse));
+                                }
+                            } catch (Exception e) {
+                                System.err.println("[SERVEUR] Erreur client : " + e.getMessage());
+                            } finally {
+                                if (clientReseau != null) {
+                                    clientReseau.fermerClient();
+                                }
+                            }
+                        });
+
+                        threadGestionClient.start();
+                    } catch (Exception e) {
+                        if (!Thread.currentThread().isInterrupted()) {
+                            System.err.println("[SERVEUR] Erreur lors de l'attente d'un client : " + e.getMessage());
                         }
-                    });
-
-                    threadGestionClient.start();
+                    }
                 }
             } catch (IOException e) {
-                System.err.println("[MAIN] Erreur lors de l'initialisation "
-                                   + "du serveur : " + e.getMessage());
+                System.err.println("[MAIN] Erreur lors de l'initialisation du serveur : " + e.getMessage());
+            } finally {
+                if (serveur != null) {
+                    serveur.fermerServeur();
+                }
+                System.out.println("[MAIN] Serveur arrêté proprement.");
             }
         });
 
+        serveurThread.setDaemon(true);
         serveurThread.start();
-        System.out.println("[MAIN] Serveur alive : "
-                           + serveurThread.isAlive());
+        System.out.println("[MAIN] Serveur alive : " + serveurThread.isAlive());
     }
 
     /**

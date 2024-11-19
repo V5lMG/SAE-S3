@@ -14,7 +14,6 @@ import java.io.IOException;
  * Classe responsable de la gestion des communications réseau.
  * Elle permet l'envoi et la réception de données entre deux
  * différentes machines via des sockets.
- * <p>
  * La classe fournit des méthodes pour initialiser un serveur,
  * accepter des connexions de clients, envoyer et recevoir des données,
  * ainsi que pour gérer la fermeture des connexions.
@@ -41,11 +40,15 @@ public class Reseau {
     /**
      * Initialise le serveur en récupérant l'IP et le port depuis la session.
      * Si l'IP ou le port n'est pas défini, une exception est levée.
-     * Si le port est `null`, le port par défaut est utilisé.
+     * Si le port est null, le port par défaut est utilisé.
      *
-     * @param portParDefaut Port par défaut à utiliser si le port dans la session est `null`.
-     * @throws IllegalArgumentException Si le port spécifié n'est pas valide (0 - 65535) ou si l'IP est invalide.
-     * @throws IOException Si une erreur survient lors de la création du ServerSocket.
+     * @param portParDefaut Port par défaut à utiliser si le port dans
+     *                      la session est null.
+     * @throws IllegalArgumentException Si le port spécifié n'est pas
+     *                                  valide (0 - 65535) ou si l'IP
+     *                                  est invalide.
+     * @throws IOException Si une erreur survient lors de la création
+     *                     du ServerSocket.
      */
     public void preparerServeur(int portParDefaut) throws IOException {
         System.out.println("[SERVEUR] Initialisation du serveur...");
@@ -71,30 +74,35 @@ public class Reseau {
 
         try {
             if (ip != null && !ip.isEmpty()) {
-                // backlog : nombre maximal de connexions en attente (ici 50)
                 serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
                 System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
             } else {
                 serverSocket = new ServerSocket(port);
-                System.out.println("[SERVEUR] Aucune ip défini, " +
-                        "le serveur ce bind automatiquement.\n          Serveur démarré sur le port : " + port);
+                System.out.println("[SERVEUR] Aucune ip définie, le serveur se bind automatiquement. Serveur démarré sur le port : " + port);
             }
         } catch (IOException e) {
-            System.err.println("[SERVEUR] Erreur lors de la création du serveur : " + e.getMessage());
-            throw new IOException("[SERVEUR] Erreur lors de la création du serveur : " + e.getMessage());
+            throw new IOException("Erreur lors de la création du serveur : " + e.getMessage());
+        } finally {
+            if (serverSocket == null) {
+                System.err.println("[SERVEUR] Impossible de créer le serveur.");
+            }
         }
     }
 
     /**
      * Attendre une connexion d'un client et renvoyer un objet Reseau
      * configuré pour ce client.
-     *
      * @return Un objet Reseau représentant la connexion au client, ou null en cas d'erreur.
      */
     public Reseau attendreConnexionClient() {
         System.out.println("[SERVEUR] Attente d'une connexion client...");
         try {
-            clientSocket = serverSocket.accept();
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                clientSocket = serverSocket.accept();
+            } else {
+                return null;
+            }
+
             Reseau clientReseau = new Reseau();
             clientReseau.clientSocket = clientSocket;
             clientReseau.fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -105,6 +113,8 @@ public class Reseau {
             System.out.println("[SERVEUR] Client connecté : " + clientNomMachine + " (" + clientIP + ")");
 
             return clientReseau;
+        } catch (SocketException e) {
+            return null;
         } catch (IOException e) {
             System.err.println("[SERVEUR] Erreur lors de l'attente d'un client : " + e.getMessage());
             return null;
@@ -259,7 +269,6 @@ public class Reseau {
 
     /**
      * Utilise la réponse du serveur, avec suivi des étapes pour le débogage.
-     *
      * @param reponse La réponse à traiter.
      */
     public void traiterReponse(String reponse) {
