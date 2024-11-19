@@ -37,7 +37,7 @@
                             <image>
                                 <Image url="@../img/LogoStatisalle.jpg" />
                             </image></ImageView>
-                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" textFill="WHITE" text="Besoin d'aide ?" />
                     </children></AnchorPane>
                 <AnchorPane prefHeight="100.0" prefWidth="419.0">
                     <children>

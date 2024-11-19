@@ -12,7 +12,7 @@
                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <Text layoutX="44.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selectionnez le/les fichier(s) .csv à importer : " />
-                  <Button fx:id="btnFichier" layoutX="323.0" layoutY="40.0" mnemonicParsing="false" onAction="#actionChoixFichier" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le fichier " />
+                  <Button fx:id="btnFichier" layoutX="323.0" layoutY="40.0" mnemonicParsing="false" onAction="#actionChoixFichier" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color: #60BCFB;" text="Choisir le/les fichier(s) " />
                   <Text fx:id="cheminFichier" fill="#9a9999" layoutX="44.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin du fichier choisi :" />
                   <Text fx:id="nomFichier" fill="#9a9999" layoutX="44.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier :" />
                   <Text fx:id="texteCheminFichier" fill="#9a9999" layoutX="187.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="..." />
@@ -35,7 +35,7 @@
                             <image>
                                 <Image url="@../img/LogoStatisalle.jpg" />
                             </image></ImageView>
-                          <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                        <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" textFill="WHITE" />
                     </children></AnchorPane>
                 <AnchorPane prefHeight="100.0" prefWidth="400.0">
                <children>
@@ -65,10 +65,10 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                              <Button fx:id="btnImporter" layoutX="54.0" layoutY="42.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Importer" textFill="#9a9999" />
+                              <Button fx:id="btnImporter" layoutX="54.0" layoutY="42.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="132.0" style="-fx-background-color: #D3D3D3;" text="Importer"   textFill="#000000" />
                               <ImageView fitHeight="29.0" fitWidth="32.0" layoutX="63.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@../img/télécharger-removebg-preview.png" />
+                                      <Image url="@../img/OIP-removebg-preview.png" />
                                   </image>
                               </ImageView>
                      </children>
