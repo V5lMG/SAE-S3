@@ -3,6 +3,7 @@ package sae.statisalle.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
@@ -13,9 +14,9 @@ import sae.statisalle.modele.objet.Salle;
 import sae.statisalle.modele.Fichier;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -60,12 +61,7 @@ public class Affichage {
     private TableColumn<Reservation, String> usageR;
     @FXML
     private Tab feuilleReservation;
-    @FXML
-    private Tab feuilleSalle;
-    @FXML
-    private Tab feuilleActivite;
-    @FXML
-    private Tab feuilleEmploye;
+
     @FXML
     private ComboBox<String> filtreEmploye;
     @FXML
@@ -73,7 +69,7 @@ public class Affichage {
     @FXML
     private ComboBox<String> filtreSalle;
     @FXML
-    private ComboBox<String> filtreJour;
+    private ComboBox<String> filtreDate;
     @FXML
     private ComboBox<String> filtreHeureD;
     @FXML
@@ -85,7 +81,7 @@ public class Affichage {
     @FXML
     private Text textfiltreSalle;
     @FXML
-    private Text textfiltreJour;
+    private Text textfiltreDate;
     @FXML
     private Text textfiltreHeureD;
     @FXML
@@ -136,6 +132,11 @@ public class Affichage {
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
     ObservableList<Activite> listActivite = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Salle> listSalle = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+
 
     // Méthodes d'action pour les boutons
     @FXML
@@ -210,7 +211,6 @@ public class Affichage {
                             break;
 
                         case "Salle":
-                            ObservableList<Salle> listSalle = FXCollections.observableArrayList();
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 9) {
                                     listSalle.add(new Salle(ligne.get(0),
@@ -220,6 +220,8 @@ public class Affichage {
                                             ligne.get(7), ligne.get(8)));
                                 }
                             }
+
+                            remplirComboBoxSalle();
 
                             idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
                             nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -251,7 +253,6 @@ public class Affichage {
                             break;
 
                         case "Reservation":
-                            ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 12) {
                                     listReservation.add(new Reservation(
@@ -263,6 +264,7 @@ public class Affichage {
                                             ligne.get(10), ligne.get(11)));
                                 }
                             }
+                            remplirComboBoxDate();
 
                             idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
                             salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
@@ -326,37 +328,33 @@ public class Affichage {
         }
     }
 
-    @FXML
-    private void afficherFiltre(){
-        if (feuilleReservation.isSelected()) {
-            filtreEmploye.setVisible(true);
-            filtreSalle.setVisible(true);
-            filtreActivite.setVisible(true);
-            filtreJour.setVisible(true);
-            filtreHeureD.setVisible(true);
-            filtreHeureF.setVisible(true);
-            textfiltreEmploye.setVisible(true);
-            textfiltreSalle.setVisible(true);
-            textfiltreActivite.setVisible(true);
-            textfiltreJour.setVisible(true);
-            textfiltreHeureD.setVisible(true);
-            textfiltreHeureF.setVisible(true);
 
-        } else {
-            filtreEmploye.setVisible(false);
-            filtreSalle.setVisible(false);
-            filtreActivite.setVisible(false);
-            filtreJour.setVisible(false);
-            filtreHeureD.setVisible(false);
-            filtreHeureF.setVisible(false);
-            textfiltreEmploye.setVisible(false);
-            textfiltreSalle.setVisible(false);
-            textfiltreActivite.setVisible(false);
-            textfiltreJour.setVisible(false);
-            textfiltreHeureD.setVisible(false);
-            textfiltreHeureF.setVisible(false);
-        }
+    @FXML
+    private void afficherFiltre() {
+        // création d'une liste contenant tous les filtres
+        List<Node> filtres = Arrays.asList(
+                filtreEmploye, filtreSalle, filtreActivite, filtreDate, filtreHeureD, filtreHeureF,
+                textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDate, textfiltreHeureD, textfiltreHeureF
+        );
+
+//        filtreEmploye.setOnAction(new EventHandler<ActionEvent>(){
+//            @Override
+//            public void handle(ActionEvent event) {}
+//        });
+
+        // Détermine la visibilité en fonction de l'état de la checkbox
+        boolean visible = feuilleReservation.isSelected();
+
+        // Applique la visibilité à chaque composant si celui-ci n'est pas null
+        filtres.forEach(composantFiltre -> {
+            //Vérification
+            if (composantFiltre != null) {
+                composantFiltre.setVisible(visible);
+            }
+        });
     }
+
+
 
     private void remplirComboBoxEmployes() {
         ObservableList<String> nomsEmployes = FXCollections.observableArrayList();
@@ -383,7 +381,7 @@ public class Affichage {
         // Utiliser un HashSet pour éviter les doublons
         HashSet<String> typeUniques = new HashSet<>();
         for (Activite activite : listActivite) {
-            typeUniques.add(activite.getType());
+            typeUniques.add(activite.getIdActivite());
         }
         nomsActivite.addAll(typeUniques);
 
@@ -392,21 +390,110 @@ public class Affichage {
         filtreActivite.getSelectionModel().selectFirst();
     }
 
-//    private void appliquerFiltreReservation() {
-//        String filtreSelectionne = filtreEmploye.getSelectionModel().getSelectedItem();
+    private void remplirComboBoxSalle() {
+        ObservableList<String> nomsSalle = FXCollections.observableArrayList();
+        nomsSalle.add("Tous"); // Option par défaut
+
+        // Utiliser un HashSet pour éviter les doublons
+        HashSet<String> nomsUniques = new HashSet<>();
+        for (Salle salle : listSalle) {
+            nomsUniques.add(salle.getNom());
+        }
+        nomsSalle.addAll(nomsUniques);
+
+        // Mettre à jour la ComboBox
+        filtreSalle.setItems(nomsSalle);
+        filtreSalle.getSelectionModel().selectFirst();
+    }
+
+    private void remplirComboBoxDate() {
+        ObservableList<String> dateJour = FXCollections.observableArrayList();
+        dateJour.add("Tous"); // Option par défaut
+
+        // Utiliser un HashSet pour éviter les doublons
+        HashSet<String> dateUniques = new HashSet<>();
+        for (Reservation date : listReservation) {
+            dateUniques.add(date.getDateR());
+        }
+        dateJour.addAll(dateUniques);
+
+        // Mettre à jour la ComboBox
+        filtreDate.setItems(dateJour);
+        filtreDate.getSelectionModel().selectFirst();
+    }
+
+
+    // A modifier car ne fonctionne pas
+//    @FXML
+//    private void initialize() {
+//        // Lier les ComboBox avec leur valueProperty pour appliquer les filtres
+//        filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//        filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//        filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//        filtreDate.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//        filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//        filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+//    }
 //
-//        if (filtreSelectionne != null && !filtreSelectionne.equals("Tous")) {
-//            ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
-//            for (Reservation reservation : tabReservation.getItems()) {
-//                if (reservation.getEmployeR().equals(filtreSelectionne)) {
-//                    reservationsFiltrees.add(reservation);
-//                }
+//    private void appliquerFiltres() {
+//        // Récupérer les filtres sélectionnés
+//        String employeFiltre = filtreEmploye.getValue();
+//        String activiteFiltre = filtreActivite.getValue();
+//        String salleFiltre = filtreSalle.getValue();
+//        String dateFiltre = filtreDate.getValue();
+//        String heureDebutFiltre = filtreHeureD.getValue();
+//        String heureFinFiltre = filtreHeureF.getValue();
+//
+//        // Appliquer les filtres sur les réservations
+//        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+//
+//        for (Reservation reservation : listReservation) {
+//            boolean matchesFiltre = true;
+//
+//            // Liste des filtres et leurs critères
+//            Map<String, String> filtres = new HashMap<>();
+//            filtres.put("employe", employeFiltre);
+//            filtres.put("activite", activiteFiltre);
+//            filtres.put("salle", salleFiltre);
+//            filtres.put("date", dateFiltre);
+//            filtres.put("heureDebut", heureDebutFiltre);
+//            filtres.put("heureFin", heureFinFiltre);
+//
+//            // Appliquer les filtres un par un
+//            matchesFiltre = filtres.entrySet().stream()
+//                    .allMatch(entry -> {
+//                        String filterKey = entry.getKey();
+//                        String filterValue = entry.getValue();
+//                        String reservationValue = getReservationValue(reservation, filterKey);
+//
+//                        // Appliquer le filtre correspondant
+//                        return appliquerFiltre(reservation, filterValue, reservationValue);
+//                    });
+//
+//            // Si la réservation correspond à tous les filtres, l'ajouter à la liste filtrée
+//            if (matchesFiltre) {
+//                reservationsFiltrees.add(reservation);
 //            }
-//            tabReservation.setItems(reservationsFiltrees);
-//        } else {
-//            // Réinitialiser la liste des réservations si "Tous" est sélectionné
-//            //tabReservation.setItems(FXCollections.observableArrayList(listReservation));
+//        }
+//
+//        // Mettre à jour la table avec les résultats filtrés
+//        tabReservation.setItems(reservationsFiltrees);
+//    }
+//
+//    private String getReservationValue(Reservation reservation, String filterKey) {
+//        // Retourner la valeur de la réservation en fonction du filtre
+//        switch (filterKey) {
+//            case "employe": return reservation.getEmployeR();
+//            case "activite": return reservation.getActiviteR();
+//            case "salle": return reservation.getSalleR();
+//            case "date": return reservation.getDateR();
+//            case "heureDebut": return reservation.getHeureDebut();
+//            case "heureFin": return reservation.getHeureFin();
+//            default: return null;
 //        }
 //    }
+
+
+
 
 }
