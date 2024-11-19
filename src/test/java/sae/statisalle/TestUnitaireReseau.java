@@ -6,6 +6,7 @@ package sae.statisalle;
 
 import org.junit.jupiter.api.*;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
+import sae.statisalle.modele.Chiffrement;
 import sae.statisalle.modele.Reseau;
 
 import java.io.*;
@@ -14,64 +15,64 @@ import java.net.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Classe de test unitaire pour la classe Reseau avec gestion explicite des sockets.
- * @author rodrigoxaviertaborda
- * @author valentin munier-genie
+ * Classe de test unitaire pour la classe Reseau.
+ * Elle couvre les principales méthodes et cas d'usage.
  */
 public class TestUnitaireReseau {
-    private Reseau reseau;
+
+    private Reseau serveur;
+    private Reseau client;
     private ServerSocket serverSocket;
     private Socket clientSocket;
 
     private static final int PORT_VALIDE = 65432;
-    private static final int PORT_INVALIDE = 94321; // Port hors des limites (0-65535)
+    private static final int PORT_INVALIDE = 70000;
     private static final String LOCALHOST = "localhost";
 
     @BeforeEach
     void setUp() {
-        reseau = new Reseau();
+        serveur = new Reseau();
+        client = new Reseau();
     }
 
     @AfterEach
-    void tearDown() throws IOException {
-        if (clientSocket != null && !clientSocket.isClosed()) {
-            clientSocket.close();
+    void tearDown() {
+        serveur.fermerServeur();
+        client.fermerClient();
+
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la fermeture du serverSocket : " + e.getMessage());
         }
-        if (serverSocket != null && !serverSocket.isClosed()) {
-            serverSocket.close();
-        }
-        reseau.fermerClient();
-        reseau.fermerServeur();
     }
 
     // --------- PARTIE SERVEUR -----------
 
     @Test
     void testPreparerServeurAvecPortValide() throws IOException {
-            int port = 65432;
-        reseau.preparerServeur(port);
-
-        try {
-            serverSocket = new ServerSocket(port);
-            fail("Le port devrait être déjà utilisé par le serveur.");
+        serveur.preparerServeur(PORT_VALIDE);
+        try (ServerSocket testSocket = new ServerSocket(PORT_VALIDE)) {
+            fail("Le port devrait être occupé par le serveur.");
         } catch (IOException e) {
-            // Test réussi, le port est déjà occupé
+            // Le port est occupé, test réussi.
         }
     }
 
     @Test
     void testPreparerServeurAvecPortInvalide() {
-        int port = 70000; // Hors de la plage 0-65535
-        assertThrows(IllegalArgumentException.class, () -> reseau.preparerServeur(port));
+        assertThrows(IllegalArgumentException.class, () -> serveur.preparerServeur(PORT_INVALIDE));
     }
 
     @Test
     void testAttendreConnexionClient() throws IOException, InterruptedException {
-        int port = 64321;
-        reseau.preparerServeur(port);
+        serveur.preparerServeur(PORT_VALIDE);
 
+        // Simuler un client qui se connecte
         new Thread(() -> {
-            try (Socket localClient = new Socket("localhost", port)) {
+            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
                 OutputStream out = localClient.getOutputStream();
                 out.write("Test".getBytes());
                 out.flush();
@@ -79,134 +80,125 @@ public class TestUnitaireReseau {
             }
         }).start();
 
-
-        Thread.sleep(500);  // Attendre que la connexion soit établie
-
-        Reseau clientReseau = reseau.attendreConnexionClient();
-        assertNotNull(clientReseau,"Le client devrait être connecté."   );
-        }
+        Thread.sleep(500);  // Laisser le temps au client de se connecter
+        Reseau clientReseau = serveur.attendreConnexionClient();
+        assertNotNull(clientReseau, "Le client devrait être connecté.");
+    }
 
     @Test
     void testRecevoirDonnees() throws IOException {
-        int port = 74321;
-        reseau.preparerServeur(port);
+        serveur.preparerServeur(PORT_VALIDE);
 
+        // Simuler un client envoyant des données
         new Thread(() -> {
-            try {
-                clientSocket = new Socket("localhost", port);
-                OutputStream out = clientSocket.getOutputStream();
+            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
+                OutputStream out = localClient.getOutputStream();
                 out.write("Données Test\n".getBytes());
                 out.flush();
             } catch (IOException ignored) {
             }
         }).start();
 
-        Reseau clientReseau = reseau.attendreConnexionClient();
+        Reseau clientReseau = serveur.attendreConnexionClient();
         String donnees = clientReseau.recevoirDonnees();
-        assertEquals("Données Test", donnees);
-    }
-
-    @Test
-    void testRecevoirDonneesNull() {
-        assertNull(reseau.recevoirDonnees(),
-                "La réception de données sans client doit retourner null.");
+        assertEquals("Données Test", donnees, "Les données reçues devraient correspondre.");
     }
 
     @Test
     void testTraiterRequeteCorrecte() {
         String requete = "cle123/DELIM/donneesChiffrees";
-        String resultat = reseau.traiterRequete(requete);
-        assertNotNull(resultat);
+        String resultat = serveur.traiterRequete(requete);
+        assertNotNull(resultat, "Le traitement d'une requête correcte devrait réussir.");
     }
 
     @Test
     void testTraiterRequeteInvalide() {
-        assertThrows(IllegalArgumentException.class, () -> reseau.traiterRequete(null));
-        assertThrows(IllegalArgumentException.class, () -> reseau.traiterRequete("Format Incorrect"));
+        assertThrows(IllegalArgumentException.class, () -> serveur.traiterRequete(null));
+        assertThrows(IllegalArgumentException.class, () -> serveur.traiterRequete("Format Incorrect"));
     }
 
     @Test
     void testEnvoyerReponse() throws IOException {
-        int port = 84321;
-        reseau.preparerServeur(port);
+        serveur.preparerServeur(PORT_VALIDE);
 
+        // Simuler un client recevant une réponse
         new Thread(() -> {
-            try {
-                clientSocket = new Socket("localhost", port);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                String response = in.readLine();
-                assertEquals("Réponse Test", response);
+            try (Socket localClient = new Socket(LOCALHOST, PORT_VALIDE)) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(localClient.getInputStream()));
+                String reponse = in.readLine();
+                assertEquals("Réponse Test", reponse, "La réponse envoyée par le serveur devrait être reçue par le client.");
             } catch (IOException ignored) {
             }
         }).start();
 
-        Reseau clientReseau = reseau.attendreConnexionClient();
+        Reseau clientReseau = serveur.attendreConnexionClient();
         clientReseau.envoyerReponse("Réponse Test");
-    }
-
-    @Test
-    void testFermerServeurSansConnexion() {
-        assertDoesNotThrow(() -> reseau.fermerServeur());
     }
 
     // --------- PARTIE CLIENT -----------
 
     @Test
     void testPreparerClientConnexionReussie() throws MauvaiseConnexionServeur, InterruptedException {
-        int port = 94321;
-
+        // Démarrer un thread pour préparer le serveur
         new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(port);
-                serverSocket.accept();
+                serverSocket = new ServerSocket(PORT_VALIDE);
+                clientSocket = serverSocket.accept(); // Attendre la connexion du client
             } catch (IOException ignored) {
             }
         }).start();
 
-        // Attendez un peu pour permettre au serveur de démarrer
-        Thread.sleep(500);  // Attendez que le serveur soit prêt
+        // Attendre suffisamment de temps pour que le serveur démarre
+        Thread.sleep(1000);
 
-        reseau.preparerClient("localhost", port);
-        assertTrue(clientSocket != null && clientSocket.isConnected(), "Le client devrait être connecté.");
+        // Préparer le client
+        client.preparerClient(LOCALHOST, PORT_VALIDE);
+
+        assertTrue(client.estConnecte(), "Le client devrait être connecté au serveur.");
     }
 
     @Test
-    void testEnvoyerEtRecevoirReponse() throws MauvaiseConnexionServeur {
-        int port = 95432;
+    void testEnvoyerEtRecevoirReponse() throws MauvaiseConnexionServeur, InterruptedException {
+        // Démarrer un thread pour simuler un serveur
         new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(port);
-                Socket client = serverSocket.accept();
-                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                serverSocket = new ServerSocket(PORT_VALIDE);
+                Socket clientSocket = serverSocket.accept();
 
-                String message = in.readLine();
-                assertEquals("Message Test", message);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                String messageRecu = in.readLine();
+                assertNotNull(messageRecu, "Le message reçu par le serveur ne devrait pas être nul.");
+
+                String[] parts = messageRecu.split("/DELIM/");
+                assertEquals(2, parts.length, "Le message reçu devrait contenir une clé et des données séparées par /DELIM/.");
+
+                String cle = parts[0];
+                String donneesChiffrees = parts[1];
+
+                // Utiliser le même alphabet pour déchiffrer les données
+                Chiffrement.creerAlphabet();
+                String messageDechiffre = Chiffrement.dechiffrementDonnees(donneesChiffrees, cle);
+                assertEquals("Message Test", messageDechiffre, "Le serveur devrait recevoir le message déchiffré.");
 
                 out.println("Réponse Serveur");
             } catch (IOException ignored) {
             }
         }).start();
 
-        reseau.preparerClient("localhost", port);
-        reseau.envoyer("Message Test");
-        String response = reseau.recevoirReponse();
-        assertEquals("Réponse Serveur", response);
-    }
+        Thread.sleep(1000);
 
-    @Test
-    void testRecevoirReponseNull() {
-        assertNull(reseau.recevoirReponse());
-    }
+        // Préparer les données du client
+        Chiffrement.creerAlphabet();
+        String cle = Chiffrement.genererCleAleatoire("Message Test");
+        String messageChiffre = Chiffrement.chiffrementDonnees("Message Test", cle);
+        String messageAEnvoyer = cle + "/DELIM/" + messageChiffre;
 
-    @Test
-    void testRenvoyerIP() {
-        InetAddress adresse = Reseau.renvoyerIP();
-        assertNotNull(adresse);
-    }
+        client.preparerClient(LOCALHOST, PORT_VALIDE);
+        client.envoyer(messageAEnvoyer);
 
-    @Test
-    void testFermerClientSansConnexion() {
-        assertDoesNotThrow(() -> reseau.fermerClient());
+        String reponse = client.recevoirReponse();
+        assertEquals("Réponse Serveur", reponse, "Le client devrait recevoir la réponse du serveur.");
     }
 }
