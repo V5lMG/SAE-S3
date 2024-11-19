@@ -64,9 +64,7 @@ public class Salle {
         this.imprimante = imprimante;
     }
 
-    public String getIdentifiant() {
-        return identifiant;
-    }
+    public String getIdentifiant() { return identifiant; }
 
     public String getNom() {
         return nom;

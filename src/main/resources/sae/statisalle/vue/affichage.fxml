@@ -13,10 +13,10 @@
             <children>
                 <AnchorPane prefHeight="400.0" prefWidth="400.0">
                     <children>
-                        <Button fx:id="btnAfficherTableaux" layoutX="580" layoutY="237.5" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Charger les données" visible="false" />
+                        <Button fx:id="btnAfficherTableaux" layoutX="580" layoutY="237.5" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Charger les données" visible="true" />
                         <Pane prefHeight="400.0" prefWidth="400.0">
                             <children>
-                                <TabPane fx:id="grandTableau" layoutX="50.0" layoutY="50.0" prefHeight="350.0" prefWidth="1100.0" tabClosingPolicy="UNAVAILABLE" visible="true">
+                                <TabPane fx:id="grandTableau" layoutX="50.0" layoutY="50.0" prefHeight="350.0" prefWidth="1100.0" tabClosingPolicy="UNAVAILABLE" visible="false">
                                     <tabs>
                                         <Tab fx:id="feuilleReservation" onSelectionChanged="#afficherFiltre" text="Reservation">
                                             <content>
@@ -104,10 +104,10 @@
                                         </Tab>
                                     </tabs>
                                 </TabPane>
-                                <ComboBox fx:id="filtreEmploye" editable="true" layoutX="50.0" layoutY="14.0" prefWidth="150.0" promptText="Tous"/>
-                                <Text fx:id="textfiltreEmploye" layoutX="50.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employé :" />
-                                <ComboBox fx:id="filtreSalle" editable="true" layoutX="228.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" />
-                                <Text fx:id="textfiltreSalle" layoutX="228.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle :" />
+                                <ComboBox fx:id="filtreEmploye" editable="true" layoutX="50.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                                <Text fx:id="textfiltreEmploye" layoutX="50.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employé :" visible="false"/>
+                                <ComboBox fx:id="filtreSalle" editable="true" layoutX="228.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                                <Text fx:id="textfiltreSalle" layoutX="228.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle :" visible="false"/>
                             </children>
                         </Pane>
                         <ComboBox fx:id="filtreActivite" editable="true" layoutX="400.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
@@ -119,7 +119,6 @@
                         <Text fx:id="textfiltreHeureD" layoutX="753.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de début :" visible="false"/>
                         <Text fx:id="textfiltreHeureF" layoutX="923.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de fin :" visible="false"/>
                     </children>
-
                 </AnchorPane>
             </children></VBox>
     </center>

@@ -189,6 +189,7 @@ public class Affichage {
 
                     switch (fichierExploite.getTypeFichier()) {
                         case "Employe":
+                            System.out.println("Exec 0");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 4) {
                                     listEmploye.add(new Employe(ligne.get(0),
@@ -206,6 +207,7 @@ public class Affichage {
                             break;
 
                         case "Salle":
+                            System.out.println("Exec 1 DEBUG");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 9) {
                                     listSalle.add(new Salle(ligne.get(0),
@@ -229,6 +231,7 @@ public class Affichage {
                             break;
 
                         case "Activite":
+                            System.out.println("Exec -1");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() == 2) {
                                     listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
@@ -342,6 +345,11 @@ public class Affichage {
             }
         } catch (Exception e) {
             System.out.println("Erreur générale : " + e.getMessage());
+        }
+
+        // Vérifiez si l'onglet actif est Réservation et affichez les filtres
+        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleReservation) {
+            afficherFiltre();
         }
     }
 
