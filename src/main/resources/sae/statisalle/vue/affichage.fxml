@@ -110,14 +110,14 @@
                                 <Text fx:id="textfiltreSalle" layoutX="228.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle :" />
                             </children>
                         </Pane>
-                        <ComboBox fx:id="filtreActivite" editable="true" layoutX="400.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" />
-                        <ComboBox fx:id="filtreDate" editable="true" layoutX="580.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" />
-                        <ComboBox fx:id="filtreHeureD" layoutX="753.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" />
-                        <ComboBox fx:id="filtreHeureF" layoutX="923.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" />
-                        <Text fx:id="textfiltreDate" layoutX="580.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date :" />
-                        <Text fx:id="textfiltreActivite" layoutX="400.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Activité :" />
-                        <Text fx:id="textfiltreHeureD" layoutX="753.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de début :" />
-                        <Text fx:id="textfiltreHeureF" layoutX="923.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de fin :" />
+                        <ComboBox fx:id="filtreActivite" editable="true" layoutX="400.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                        <ComboBox fx:id="filtreDate" editable="true" layoutX="580.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                        <ComboBox fx:id="filtreHeureD" layoutX="753.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                        <ComboBox fx:id="filtreHeureF" layoutX="923.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false"/>
+                        <Text fx:id="textfiltreDate" layoutX="580.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date :" visible="false"/>
+                        <Text fx:id="textfiltreActivite" layoutX="400.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Activité :" visible="false"/>
+                        <Text fx:id="textfiltreHeureD" layoutX="753.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de début :" visible="false"/>
+                        <Text fx:id="textfiltreHeureF" layoutX="923.0" layoutY="4.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heure de fin :" visible="false"/>
                     </children>
 
                 </AnchorPane>

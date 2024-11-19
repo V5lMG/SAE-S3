@@ -16,10 +16,7 @@ import sae.statisalle.modele.Fichier;
 import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Affichage {
 
@@ -200,8 +197,6 @@ public class Affichage {
                                             ligne.get(3)));
                                 }
                             }
-                            remplirComboBoxEmployes();
-
                             idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
                             nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
                             prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
@@ -220,9 +215,6 @@ public class Affichage {
                                             ligne.get(7), ligne.get(8)));
                                 }
                             }
-
-                            remplirComboBoxSalle();
-
                             idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
                             nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
                             capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
@@ -244,27 +236,48 @@ public class Affichage {
                                     System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
                                 }
                             }
-                            remplirComboBoxActivites();
 
                             idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
                             activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
 
                             tabActivite.setItems(listActivite);
                             break;
-
                         case "Reservation":
+                            System.out.println("Exec 2");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 12) {
-                                    listReservation.add(new Reservation(
+                                    // Créer une réservation
+                                    Reservation reservation = new Reservation(
                                             ligne.get(0), ligne.get(1),
                                             ligne.get(2), ligne.get(3),
                                             ligne.get(4), ligne.get(5),
                                             ligne.get(6), ligne.get(7),
                                             ligne.get(8), ligne.get(9),
-                                            ligne.get(10), ligne.get(11)));
+                                            ligne.get(10), ligne.get(11)
+                                    );
+
+                                    // Trouver le nom de l'employé
+                                    for (Employe employe : listEmploye) {
+                                        if (employe.getIdE().equals(reservation.getEmployeR())) {
+                                            reservation.setEmployeR(employe.getNom() + " " + employe.getPrenom());
+                                            break;
+                                        }
+                                    }
+
+                                    // Associer les noms depuis les listes avec des boucles
+                                    // Trouver le nom de la salle
+                                    for (Salle salle : listSalle) {
+                                        System.out.println("coucou");
+                                        if (salle.getIdentifiant().equals(reservation.getSalleR())) {
+                                            reservation.setSalleR(salle.getNom());
+                                            break;
+                                        }
+                                    }
+
+                                    // Ajouter la réservation à la liste
+                                    listReservation.add(reservation);
                                 }
                             }
-                            remplirComboBoxDate();
 
                             idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
                             salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
@@ -285,6 +298,10 @@ public class Affichage {
                         default:
                             System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
                     }
+                    remplirComboBoxSalles();
+                    remplirComboBoxEmployes();
+                    remplirComboBoxDates();
+                    remplirComboBoxActivites();
                 } catch (Exception e) {
                     System.out.println("Erreur lors du traitement du fichier : " + fichier.getName() + " - " + e.getMessage());
                     fichiersInvalides.append(fichier.getName()).append("\n");
@@ -337,11 +354,6 @@ public class Affichage {
                 textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDate, textfiltreHeureD, textfiltreHeureF
         );
 
-//        filtreEmploye.setOnAction(new EventHandler<ActionEvent>(){
-//            @Override
-//            public void handle(ActionEvent event) {}
-//        });
-
         // Détermine la visibilité en fonction de l'état de la checkbox
         boolean visible = feuilleReservation.isSelected();
 
@@ -354,146 +366,121 @@ public class Affichage {
         });
     }
 
-
+    private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs, String optionParDefaut) {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        items.add(optionParDefaut);
+        items.addAll(valeurs);
+        comboBox.setItems(items);
+        comboBox.getSelectionModel().selectFirst();
+    }
 
     private void remplirComboBoxEmployes() {
-        ObservableList<String> nomsEmployes = FXCollections.observableArrayList();
-        nomsEmployes.add("Tous"); // Option par défaut
-        String nomPrenom = "";
-
-        // Utiliser un HashSet pour éviter les doublons
-        HashSet<String> nomsUniques = new HashSet<>();
-        for (Employe employe : listEmploye) {
-            nomPrenom = employe.getNom() + " " + employe.getPrenom();
-            nomsUniques.add(nomPrenom);
+        Set<String> nomsUniques = new HashSet<>();
+        if (!listEmploye.isEmpty()){
+            for (Employe employe : listEmploye) {
+                nomsUniques.add(employe.getNom() + " " + employe.getPrenom());
+            }
+        } else {
+            for (Reservation employe : listReservation) {
+                nomsUniques.add(employe.getEmployeR());
+            }
         }
-        nomsEmployes.addAll(nomsUniques);
 
-        // Mettre à jour la ComboBox
-        filtreEmploye.setItems(nomsEmployes);
-        filtreEmploye.getSelectionModel().selectFirst(); // Sélectionner "Tous" par défaut
+        remplirComboBox(filtreEmploye, nomsUniques, "Tous");
     }
 
     private void remplirComboBoxActivites() {
-        ObservableList<String> nomsActivite = FXCollections.observableArrayList();
-        nomsActivite.add("Tous"); // Option par défaut
-
-        // Utiliser un HashSet pour éviter les doublons
-        HashSet<String> typeUniques = new HashSet<>();
-        for (Activite activite : listActivite) {
-            typeUniques.add(activite.getIdActivite());
+        Set<String> typesUniques = new HashSet<>();
+        for (Reservation activite : listReservation) {
+            typesUniques.add(activite.getActiviteR());
         }
-        nomsActivite.addAll(typeUniques);
 
-        // Mettre à jour la ComboBox
-        filtreActivite.setItems(nomsActivite);
-        filtreActivite.getSelectionModel().selectFirst();
+        remplirComboBox(filtreActivite, typesUniques, "Tous");
     }
 
-    private void remplirComboBoxSalle() {
-        ObservableList<String> nomsSalle = FXCollections.observableArrayList();
-        nomsSalle.add("Tous"); // Option par défaut
-
-        // Utiliser un HashSet pour éviter les doublons
-        HashSet<String> nomsUniques = new HashSet<>();
-        for (Salle salle : listSalle) {
-            nomsUniques.add(salle.getNom());
+    private void remplirComboBoxSalles() {
+        Set<String> nomsUniques = new HashSet<>();
+        if(!listSalle.isEmpty()) {
+            for (Salle salle : listSalle) {
+                nomsUniques.add(salle.getNom());
+            }
+        } else {
+            for (Reservation salle : listReservation) {
+                nomsUniques.add(salle.getSalleR());
+            }
         }
-        nomsSalle.addAll(nomsUniques);
-
-        // Mettre à jour la ComboBox
-        filtreSalle.setItems(nomsSalle);
-        filtreSalle.getSelectionModel().selectFirst();
+        remplirComboBox(filtreSalle, nomsUniques, "Tous");
     }
 
-    private void remplirComboBoxDate() {
-        ObservableList<String> dateJour = FXCollections.observableArrayList();
-        dateJour.add("Tous"); // Option par défaut
-
-        // Utiliser un HashSet pour éviter les doublons
-        HashSet<String> dateUniques = new HashSet<>();
+    private void remplirComboBoxDates() {
+        Set<String> datesUniques = new HashSet<>();
         for (Reservation date : listReservation) {
-            dateUniques.add(date.getDateR());
+            datesUniques.add(date.getDateR());
         }
-        dateJour.addAll(dateUniques);
-
-        // Mettre à jour la ComboBox
-        filtreDate.setItems(dateJour);
-        filtreDate.getSelectionModel().selectFirst();
+        remplirComboBox(filtreDate, datesUniques, "Tous");
     }
 
+    @FXML
+    private void initialize() {
 
-    // A modifier car ne fonctionne pas
-//    @FXML
-//    private void initialize() {
-//        // Lier les ComboBox avec leur valueProperty pour appliquer les filtres
-//        filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//        filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//        filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//        filtreDate.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//        filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//        filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-//    }
-//
-//    private void appliquerFiltres() {
-//        // Récupérer les filtres sélectionnés
-//        String employeFiltre = filtreEmploye.getValue();
-//        String activiteFiltre = filtreActivite.getValue();
-//        String salleFiltre = filtreSalle.getValue();
-//        String dateFiltre = filtreDate.getValue();
-//        String heureDebutFiltre = filtreHeureD.getValue();
-//        String heureFinFiltre = filtreHeureF.getValue();
-//
-//        // Appliquer les filtres sur les réservations
-//        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
-//
-//        for (Reservation reservation : listReservation) {
-//            boolean matchesFiltre = true;
-//
-//            // Liste des filtres et leurs critères
-//            Map<String, String> filtres = new HashMap<>();
-//            filtres.put("employe", employeFiltre);
-//            filtres.put("activite", activiteFiltre);
-//            filtres.put("salle", salleFiltre);
-//            filtres.put("date", dateFiltre);
-//            filtres.put("heureDebut", heureDebutFiltre);
-//            filtres.put("heureFin", heureFinFiltre);
-//
-//            // Appliquer les filtres un par un
-//            matchesFiltre = filtres.entrySet().stream()
-//                    .allMatch(entry -> {
-//                        String filterKey = entry.getKey();
-//                        String filterValue = entry.getValue();
-//                        String reservationValue = getReservationValue(reservation, filterKey);
-//
-//                        // Appliquer le filtre correspondant
-//                        return appliquerFiltre(reservation, filterValue, reservationValue);
-//                    });
-//
-//            // Si la réservation correspond à tous les filtres, l'ajouter à la liste filtrée
-//            if (matchesFiltre) {
-//                reservationsFiltrees.add(reservation);
-//            }
-//        }
-//
-//        // Mettre à jour la table avec les résultats filtrés
-//        tabReservation.setItems(reservationsFiltrees);
-//    }
-//
-//    private String getReservationValue(Reservation reservation, String filterKey) {
-//        // Retourner la valeur de la réservation en fonction du filtre
-//        switch (filterKey) {
-//            case "employe": return reservation.getEmployeR();
-//            case "activite": return reservation.getActiviteR();
-//            case "salle": return reservation.getSalleR();
-//            case "date": return reservation.getDateR();
-//            case "heureDebut": return reservation.getHeureDebut();
-//            case "heureFin": return reservation.getHeureFin();
-//            default: return null;
-//        }
-//    }
+        // Lier les ComboBox avec leur valueProperty pour appliquer les filtres
+        filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreDate.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+    }
 
+    private void appliquerFiltres() {
+        // Récupérer les filtres sélectionnés
+        String employeFiltre = filtreEmploye.getValue();
+        String activiteFiltre = filtreActivite.getValue();
+        String salleFiltre = filtreSalle.getValue();
+        String dateFiltre = filtreDate.getValue();
+        String heureDebutFiltre = filtreHeureD.getValue();
+        String heureFinFiltre = filtreHeureF.getValue();
 
+        // Appliquer les filtres sur les réservations
+        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
+        for (Reservation reservation : listReservation) {
+            boolean matchesFiltre = true;
+
+            // Vérifier chaque filtre
+            if (employeFiltre != null && !employeFiltre.equals("Tous") &&
+                    !reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) {
+                matchesFiltre = false;
+            }
+            if (activiteFiltre != null && !activiteFiltre.equals("Tous") &&
+                    !reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) {
+                matchesFiltre = false;
+            }
+            if (salleFiltre != null && !salleFiltre.equals("Tous") &&
+                    !reservation.getSalleR().equalsIgnoreCase(salleFiltre)) {
+                matchesFiltre = false;
+            }
+            if (dateFiltre != null && !dateFiltre.equals("Tous") &&
+                    !reservation.getDateR().equals(dateFiltre)) {
+                matchesFiltre = false;
+            }
+            if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous") &&
+                    !reservation.getHeureDebut().equals(heureDebutFiltre)) {
+                matchesFiltre = false;
+            }
+            if (heureFinFiltre != null && !heureFinFiltre.equals("Tous") &&
+                    !reservation.getHeureFin().equals(heureFinFiltre)) {
+                matchesFiltre = false;
+            }
+
+            // Ajouter la réservation si elle correspond aux filtres
+            if (matchesFiltre) {
+                reservationsFiltrees.add(reservation);
+            }
+        }
+
+        // Mettre à jour la table avec les résultats filtrés
+        tabReservation.setItems(reservationsFiltrees);
+    }
 
 }
