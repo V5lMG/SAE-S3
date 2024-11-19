@@ -212,24 +212,14 @@ public class Envoyer {
 
     /**
      * Affiche une alerte de confirmation et
-     * redirige vers l'écran de connexion si le client et le serveur
-     * ne sont pas exécutés sur la même machine.
+     * redirige vers l'écran de connexion si l'IP n'est pas localhost.
      */
     private void afficherConfirmationEtRetour() {
+        // récup l'ip et enlever le port
+        String ipSource = Session.getAdresseIp().split(":")[0];
 
-        String ipServeur = Session.getAdresseIp().split(":")[0];
-        String hostServeurName;
-        try {
-            InetAddress address = InetAddress.getByName(ipServeur);
-            hostServeurName = address.getHostName();
-        } catch (UnknownHostException e) {
-            hostServeurName = ipServeur;
-        }
-
-        String hostLocale = obtenirNomMachineLocale();
-        System.out.println("Host local : " + hostLocale + "Serveur : " + hostServeurName);
-
-        if (hostLocale.equals(hostServeurName) || hostServeurName.equals("localhost") || hostServeurName.equals("127.0.0.1")) {
+        // Si l'IP est localhost, ne pas quitter la page d'envoi
+        if (ipSource.equals("localhost") || ipSource.equals("127.0.0.1 ")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
@@ -240,21 +230,9 @@ public class Envoyer {
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
+
             alert.setOnHidden(evt -> MainControleur.activerConnexion());
             alert.showAndWait();
-        }
-    }
-
-
-    /**
-     * Méthode pour obtenir le nom de la machine locale
-     * @return Le nom de la machine locale
-     */
-    private String obtenirNomMachineLocale() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            return "localhost";
         }
     }
 }

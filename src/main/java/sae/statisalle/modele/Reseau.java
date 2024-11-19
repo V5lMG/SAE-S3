@@ -53,40 +53,26 @@ public class Reseau {
     public void preparerServeur(int portParDefaut) throws IOException {
         System.out.println("[SERVEUR] Initialisation du serveur...");
 
+        // Récupération de l'IP et du port depuis la session
         String ip = Session.getIpServeur();
         String portText = Session.getPortServeur();
 
-        int port;
-        if (portText == null) {
-            port = portParDefaut;
-            System.out.println("[SERVEUR] Aucun port défini dans la session. Utilisation du port par défaut : " + port);
+        // Validation et conversion du port
+        int port = (portText == null) ? portParDefaut : Integer.parseInt(portText);
+        if (port < 0 || port > 65535) {
+            throw new IllegalArgumentException("[SERVEUR] Le port doit être compris entre 0 et 65535.");
+        }
+
+        // Création du ServerSocket en fonction de l'IP
+        if (ip != null && !ip.isEmpty()) {
+            System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
+            serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
         } else {
-            try {
-                port = Integer.parseInt(portText);
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("[SERVEUR] Le port doit être un nombre valide.");
-            }
-
-            if (port < 0 || port > 65535) {
-                throw new IllegalArgumentException("[SERVEUR] Le port doit être compris entre 0 et 65535.");
-            }
+            System.out.println("[SERVEUR] Aucune IP définie. Serveur démarré automatiquement sur le port : " + port);
+            serverSocket = new ServerSocket(port);
         }
 
-        try {
-            if (ip != null && !ip.isEmpty()) {
-                serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
-                System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
-            } else {
-                serverSocket = new ServerSocket(port);
-                System.out.println("[SERVEUR] Aucune ip définie, le serveur se bind automatiquement. Serveur démarré sur le port : " + port);
-            }
-        } catch (IOException e) {
-            throw new IOException("Erreur lors de la création du serveur : " + e.getMessage());
-        } finally {
-            if (serverSocket == null) {
-                System.err.println("[SERVEUR] Impossible de créer le serveur.");
-            }
-        }
+        System.out.println("[SERVEUR] Démarré avec succès.");
     }
 
     /**
@@ -97,12 +83,7 @@ public class Reseau {
     public Reseau attendreConnexionClient() {
         System.out.println("[SERVEUR] Attente d'une connexion client...");
         try {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                clientSocket = serverSocket.accept();
-            } else {
-                return null;
-            }
-
+            clientSocket = serverSocket.accept();
             Reseau clientReseau = new Reseau();
             clientReseau.clientSocket = clientSocket;
             clientReseau.fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -111,10 +92,8 @@ public class Reseau {
             String clientIP = clientSocket.getInetAddress().getHostAddress();
             String clientNomMachine = clientSocket.getInetAddress().getHostName();
             System.out.println("[SERVEUR] Client connecté : " + clientNomMachine + " (" + clientIP + ")");
-
             return clientReseau;
-        } catch (SocketException e) {
-            return null;
+
         } catch (IOException e) {
             System.err.println("[SERVEUR] Erreur lors de l'attente d'un client : " + e.getMessage());
             return null;
@@ -166,7 +145,7 @@ public class Reseau {
     /**
      * Envoie une réponse au client.
      *
-     * @param reponse La réponse à envoyer au client sous forme de chaîne de caractères.
+     * @param reponse La réponse a envoyé au client sous forme de chaîne de caractères.
      */
     public void envoyerReponse(String reponse) {
         System.out.println("[SERVEUR] Envoi de la réponse.");
@@ -197,7 +176,7 @@ public class Reseau {
 
     /**
      * Préparation du client en établissant la connexion au serveur.
-     * Cette méthode tente de créer une socket pour se connecter à un serveur
+     * Cette méthode tente de créer un socket pour se connecter à un serveur
      * spécifié par son adresse IP et son port.
      * Si la connexion échoue, une exception {@link MauvaiseConnexionServeur}
      * est levée avec un message d'erreur approprié.
@@ -307,8 +286,8 @@ public class Reseau {
         // 8.8.8.8 correspond au DNS de google
         try (Socket socket = new Socket("8.8.8.8", 53)) {
             InetAddress ipLocale = socket.getLocalAddress();
-            System.out.println("[CLIENT] IP locale : " + ipLocale.getHostAddress());
-            System.out.println("[CLIENT] Nom de la machine : " + ipLocale.getHostName());
+            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
+            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
             return ipLocale;
         } catch (IOException e) {
             System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
