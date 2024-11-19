@@ -162,7 +162,7 @@ public class Reseau {
 
         String cle = parties[0];
         String donneesChiffrees = parties[1];
-        String donneesDechiffrees = Chiffrement.dechiffrementDonnees(donneesChiffrees, cle);
+        String donneesDechiffrees = Vigenere.dechiffrementDonnees(donneesChiffrees, cle);
         System.out.println("[SERVEUR] Données déchiffrées avec succès.");
         return donneesDechiffrees;
     }
@@ -237,10 +237,10 @@ public class Reseau {
         }
 
         String contenu = donnees.replace("\n", "/N").replace("\r", "/R");
-        String cle = Chiffrement.genererCleAleatoire(contenu);
+        String cle = Vigenere.genererCleAleatoire(contenu);
         System.out.println("[CLIENT] Clé générée : " + cle);
 
-        String donneesChiffrees = Chiffrement.chiffrementDonnees(contenu, cle);
+        String donneesChiffrees = Vigenere.chiffrementDonnees(contenu, cle);
         System.out.println("[CLIENT] Données chiffrées : " + donneesChiffrees);
 
         String message = cle + "/DELIM/" + donneesChiffrees;

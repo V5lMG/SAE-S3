@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author Cambon Mathias
  * @author valentin.munier-genie
  */
-public class Chiffrement {
+public class Vigenere {
 
     /* Nombre de caractere dans les données*/
     private static int tailleDonnees;
