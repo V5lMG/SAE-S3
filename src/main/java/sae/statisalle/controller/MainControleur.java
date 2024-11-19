@@ -36,6 +36,7 @@ public class MainControleur extends Application {
 
     /* config serveur */
     private static Reseau serveur;
+    private static Thread serveurThread;
 
     /* déclaration de l'ensemble des scenes */
     private static Scene Accueil;
@@ -219,7 +220,7 @@ public class MainControleur extends Application {
      * connexions successives.
      */
     public static void initServeur() {
-        Thread serveurThread = new Thread(() -> {
+        serveurThread = new Thread(() -> {
             try {
                 serveur = new Reseau();
                 serveur.preparerServeur(54321);
@@ -260,7 +261,6 @@ public class MainControleur extends Application {
                 if (serveur != null) {
                     serveur.fermerServeur();
                 }
-                System.out.println("[MAIN] Serveur arrêté proprement.");
             }
         });
 
@@ -272,12 +272,12 @@ public class MainControleur extends Application {
     /**
      * TODO
      */
-    public static void stopServeur() {
+    public static void stopThreadServeur() {
         if (serveur != null) {
-            serveur.fermerServeur();
-            System.out.println("[MAIN] Serveur arrêté.");
+            serveurThread.interrupt();
+            System.out.println("[MAIN] Thread serveur arrêté.");
         } else {
-            System.out.println("[MAIN] Aucun serveur en cours d'exécution.");
+            System.out.println("[MAIN] Aucun thread en cours d'exécution.");
         }
     }
 
