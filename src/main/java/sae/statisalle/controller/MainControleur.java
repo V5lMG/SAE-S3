@@ -224,7 +224,7 @@ public class MainControleur extends Application {
 
         Thread serveurThread = new Thread(() -> {
             try {
-                serveur.preparerServeur();
+                serveur.preparerServeur(54321);
                 System.out.println("[MAIN] Serveur démarré et en attente "
                                    + "de connexions...");
 

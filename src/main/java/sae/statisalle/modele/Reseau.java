@@ -280,4 +280,9 @@ public class Reseau {
             return null; // retourne null pour éviter les erreurs
         }
     }
+
+    public boolean estConnecte() {
+        return clientSocket != null && clientSocket.isConnected();
+    }
+
 }
