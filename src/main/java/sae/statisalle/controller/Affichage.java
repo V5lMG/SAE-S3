@@ -180,6 +180,17 @@ public class Affichage {
                 return;
             }
 
+            // Trier les fichiers pour donner la priorité à "Salle"
+            Arrays.sort(fichiers, (f1, f2) -> {
+                if (f1.getName().contains("Salle") && !f2.getName().contains("Salle")) {
+                    return -1;
+                } else if (!f1.getName().contains("Salle") && f2.getName().contains("Salle")) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
             StringBuilder fichiersInvalides = new StringBuilder();
 
             for (File fichier : fichiers) {
@@ -189,7 +200,6 @@ public class Affichage {
 
                     switch (fichierExploite.getTypeFichier()) {
                         case "Employe":
-                            System.out.println("Exec 0");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 4) {
                                     listEmploye.add(new Employe(ligne.get(0),
@@ -207,7 +217,6 @@ public class Affichage {
                             break;
 
                         case "Salle":
-                            System.out.println("Exec 1 DEBUG");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 9) {
                                     listSalle.add(new Salle(ligne.get(0),
@@ -231,7 +240,6 @@ public class Affichage {
                             break;
 
                         case "Activite":
-                            System.out.println("Exec -1");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() == 2) {
                                     listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
@@ -246,7 +254,6 @@ public class Affichage {
                             tabActivite.setItems(listActivite);
                             break;
                         case "Reservation":
-                            System.out.println("Exec 2");
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 12) {
                                     // Créer une réservation
@@ -270,7 +277,6 @@ public class Affichage {
                                     // Associer les noms depuis les listes avec des boucles
                                     // Trouver le nom de la salle
                                     for (Salle salle : listSalle) {
-                                        System.out.println("coucou");
                                         if (salle.getIdentifiant().equals(reservation.getSalleR())) {
                                             reservation.setSalleR(salle.getNom());
                                             break;
@@ -354,7 +360,6 @@ public class Affichage {
             afficherFiltre();
         }
     }
-
 
     @FXML
     private void afficherFiltre() {
