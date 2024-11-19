@@ -191,6 +191,7 @@ public class Affichage {
                 }
             });
 
+
             StringBuilder fichiersInvalides = new StringBuilder();
 
             for (File fichier : fichiers) {
