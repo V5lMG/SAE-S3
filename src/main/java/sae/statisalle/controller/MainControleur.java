@@ -40,7 +40,6 @@ public class MainControleur extends Application {
     private static Scene Importer;
     private static Scene Visualiser;
     private static Scene Sauvegarder;
-    private static Scene Affichage;
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -124,8 +123,8 @@ public class MainControleur extends Application {
      * Change la scène pour afficher l'écran d'affichage des données.
      */
     public static void activerAffichage() {
-        fenetrePrincipale.setX(250);
-        fenetrePrincipale.setY(150);
+        fenetrePrincipale.setX(150);
+        fenetrePrincipale.setY(50);
         fenetrePrincipale.setScene(Visualiser); }
 
     /**

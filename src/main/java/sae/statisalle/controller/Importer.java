@@ -50,6 +50,14 @@ public class Importer {
 
     Fichier fichierImporter;
 
+    /**
+     * Initialise l'état de l'interface, désactivant le bouton d'envoi.
+     */
+    @FXML
+    void initialize() {
+        btnImporter.setDisable(true);
+    }
+
     @FXML
     void actionRetour() {
         MainControleur.activerAccueil();

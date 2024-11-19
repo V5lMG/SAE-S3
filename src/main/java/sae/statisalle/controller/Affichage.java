@@ -2,10 +2,17 @@ package sae.statisalle.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+
+import javafx.stage.Stage;
 import sae.statisalle.Activite;
 import sae.statisalle.Employe;
 import sae.statisalle.Reservation;
@@ -13,8 +20,10 @@ import sae.statisalle.Salle;
 import sae.statisalle.Fichier;
 
 import java.io.File;
+
 import java.net.URL;
 import java.net.URLDecoder;
+
 import java.util.List;
 
 public class Affichage {
