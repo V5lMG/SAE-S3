@@ -305,6 +305,8 @@ public class Affichage {
                     remplirComboBoxEmployes();
                     remplirComboBoxDates();
                     remplirComboBoxActivites();
+                    remplirComboBoxHeuresD();
+                    remplirComboBoxHeuresF();
                 } catch (Exception e) {
                     System.out.println("Erreur lors du traitement du fichier : " + fichier.getName() + " - " + e.getMessage());
                     fichiersInvalides.append(fichier.getName()).append("\n");
@@ -426,6 +428,24 @@ public class Affichage {
             datesUniques.add(date.getDateR());
         }
         remplirComboBox(filtreDate, datesUniques, "Tous");
+    }
+
+    private void remplirComboBoxHeuresD() {
+        Set<String> heuresUniques = new HashSet<>();
+        for (Reservation heuresD : listReservation) {
+            heuresUniques.add(heuresD.getHeureDebut());
+        }
+
+        remplirComboBox(filtreHeureD, heuresUniques, "Tous");
+    }
+
+    private void remplirComboBoxHeuresF() {
+        Set<String> heuresUniques = new HashSet<>();
+        for (Reservation heuresF : listReservation) {
+            heuresUniques.add(heuresF.getHeureDebut());
+        }
+
+        remplirComboBox(filtreHeureF, heuresUniques, "Tous");
     }
 
     @FXML
