@@ -35,8 +35,7 @@ import java.util.Optional;
 public class MainControleur extends Application {
 
     /* config serveur */
-    private String ipServeur;
-    private int portServeur;
+    private static Reseau serveur;
 
     /* déclaration de l'ensemble des scenes */
     private static Scene Accueil;
@@ -219,12 +218,11 @@ public class MainControleur extends Application {
      * bloquer l'interface utilisateur et peut accepter plusieurs
      * connexions successives.
      */
-    private static void initServeur() {
-        Reseau serveur = new Reseau();
-
+    public static void initServeur() {
         Thread serveurThread = new Thread(() -> {
             try {
-                serveur.preparerServeur();
+                serveur = new Reseau();
+                serveur.preparerServeur(54321);
                 System.out.println("[MAIN] Serveur démarré et en attente "
                                    + "de connexions...");
 
@@ -258,6 +256,18 @@ public class MainControleur extends Application {
         serveurThread.start();
         System.out.println("[MAIN] Serveur alive : "
                            + serveurThread.isAlive());
+    }
+
+    /**
+     * TODO
+     */
+    public static void stopServeur() {
+        if (serveur != null) {
+            serveur.fermerServeur();
+            System.out.println("[MAIN] Serveur arrêté.");
+        } else {
+            System.out.println("[MAIN] Aucun serveur en cours d'exécution.");
+        }
     }
 
     /**

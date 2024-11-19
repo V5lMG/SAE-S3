@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
 
 /**
@@ -83,8 +84,11 @@ public class Accueil {
                     return;
                 }
 
+                MainControleur.stopServeur();
                 Session.setIpServeur(ip);
                 Session.setPortServeur(portText);
+
+                MainControleur.initServeur();
 
                 popupStage.close();
 
