@@ -17,7 +17,7 @@
                 <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="152.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@../img/LogoStatisalle.jpg" />
                 </ImageView>
-                <Button layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" textFill="WHITE" text="Besoin d'aide ?" />
             </AnchorPane>
             <AnchorPane prefHeight="100.0" prefWidth="419.0">
                 <Text layoutX="69.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enregistrer les Fichiers">

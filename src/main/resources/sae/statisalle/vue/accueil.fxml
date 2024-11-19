@@ -11,7 +11,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" />
+                  <Button fx:id="btnQuitter" layoutX="109.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" textFill="WHITE" text="Quitter" />
                   <Button fx:id="btnImporter" layoutY="61.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Importer         " />
                   <ImageView fitHeight="33.0" fitWidth="31.0" layoutX="78.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -37,7 +37,7 @@
                      <image>
                         <Image url="@../img/LogoStatisalle.jpg" />
                      </image></ImageView>
-                  <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+                  <Button fx:id="btnAide" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" textFill="WHITE" text="Besoin d'aide ?" />
                </children></AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
