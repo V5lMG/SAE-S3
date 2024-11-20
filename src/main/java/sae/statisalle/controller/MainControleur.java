@@ -14,8 +14,10 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+import sae.statisalle.modele.Client;
 import sae.statisalle.modele.Fichier;
 import sae.statisalle.modele.Reseau;
+import sae.statisalle.modele.Serveur;
 
 import java.io.File;
 import java.io.IOException;
@@ -221,52 +223,34 @@ public class MainControleur extends Application {
      */
     public static void initServeur() {
         serveurThread = new Thread(() -> {
+            Serveur serveur = null;
             try {
-                serveur = new Reseau();
-                serveur.preparerServeur(54321);
-                System.out.println("[MAIN] Serveur démarré et en attente de connexions...");
+                // Initialiser le serveur
+                serveur = new Serveur();
+                serveur.demarrer(54321, null);
+                System.out.println("[MAIN] Serveur démarré sur le port 54321, en attente de connexions...");
 
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        Reseau clientReseau = serveur.attendreConnexionClient();
+                // Lancer un thread pour accepter les connexions client en continu
+                Thread acceptClientThread = new Thread(serveur::accepterClients);
+                acceptClientThread.start();
 
-                        Thread threadGestionClient = new Thread(() -> {
-                            try {
-                                if (clientReseau != null) {
-                                    String requete = clientReseau.recevoirDonnees();
-                                    String reponse = clientReseau.traiterRequete(requete);
-                                    clientReseau.envoyerReponse("Données bien reçues et traitées.");
+                // Le serveur continue à accepter des connexions jusqu'à ce qu'il soit explicitement arrêté
+                acceptClientThread.join();  // Attend que le thread d'acceptation des clients termine (ou soit interrompu)
 
-                                    Platform.runLater(() -> afficherPopupFichierRecu(reponse));
-                                }
-                            } catch (Exception e) {
-                                System.err.println("[SERVEUR] Erreur client : " + e.getMessage());
-                            } finally {
-                                if (clientReseau != null) {
-                                    clientReseau.fermerClient();
-                                }
-                            }
-                        });
-
-                        threadGestionClient.start();
-                    } catch (Exception e) {
-                        if (!Thread.currentThread().isInterrupted()) {
-                            System.err.println("[SERVEUR] Erreur lors de l'attente d'un client : " + e.getMessage());
-                        }
-                    }
-                }
-            } catch (IOException e) {
+                afficherPopupFichierRecu(serveur.renvoyerDonnee());
+            } catch (IOException | InterruptedException e) {
                 System.err.println("[MAIN] Erreur lors de l'initialisation du serveur : " + e.getMessage());
             } finally {
+                // Fermer le serveur une fois tout terminé
                 if (serveur != null) {
                     serveur.fermerServeur();
+                    System.out.println("[MAIN] Serveur arrêté.");
                 }
             }
         });
 
-        serveurThread.setDaemon(true);
         serveurThread.start();
-        System.out.println("[MAIN] Serveur alive : " + serveurThread.isAlive());
+        System.out.println("[MAIN] Serveur thread lancé : " + serveurThread.isAlive());
     }
 
     /**

@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import sae.statisalle.modele.Client;
 import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
 
@@ -34,15 +35,12 @@ import java.util.List;
 public class Envoyer {
 
     /**
-     * Instance de la classe Reseau utilisée pour gérer la connexion
-     * et les communications avec le serveur.
+     * Instance de la classe Client pour la connexion réseau.
      */
-    private Reseau reseau;
+    private Client client;
 
     /**
-     * Liste contenant les chemins des fichiers sélectionnés pour l'envoi.
-     * Chaque chemin représente un fichier que l'utilisateur souhaite
-     * envoyer au serveur.
+     * Liste contenant les chemins des fichiers sélectionnés.
      */
     private List<String> cheminsDesFichiers;
 
@@ -149,63 +147,47 @@ public class Envoyer {
 
     /**
      * Gère l'envoi des fichiers sélectionnés au serveur.
-     * Cumule le contenu de chaque fichier en une seule chaîne de caractères,
-     * séparée par un délimiteur /EOF, puis envoie le tout en un seul envoi.
      */
     @FXML
     void actionEnvoyer() {
         try {
-            reseau = Session.getReseau();
-            StringBuilder contenuTotal = new StringBuilder();
+            // Initialisation du client et connexion au serveur
+            client = Session.getClient();
+            String ip = Session.getAdresseIp().split(":")[0];
+            int port = Integer.parseInt(Session.getAdresseIp().split(":")[1]);
+            client.connecter(ip, port);
 
+            // Préparer les données à envoyer
+            StringBuilder contenuTotal = new StringBuilder();
             for (String cheminFichier : cheminsDesFichiers) {
                 File fichier = new File(cheminFichier);
 
                 if (!fichier.exists()) {
-                    throw new IllegalArgumentException("Le fichier "
-                            + "n'existe pas : " + cheminFichier);
-                }
-                if (!fichier.isFile()) {
-                    throw new IllegalArgumentException("Ce n'est pas un "
-                            + "fichier valide : " + cheminFichier);
+                    throw new IllegalArgumentException("Le fichier n'existe pas : " + cheminFichier);
                 }
 
-                StringBuilder contenu = new StringBuilder();
-                try (BufferedReader lectureFichier =
-                             new BufferedReader(
-                                     new FileReader(
-                                             fichier.getAbsolutePath()))) {
+                try (BufferedReader reader = new BufferedReader(new FileReader(fichier))) {
                     String ligne;
-                    while ((ligne = lectureFichier.readLine()) != null) {
-                        contenu.append(ligne).append("\n");
+                    while ((ligne = reader.readLine()) != null) {
+                        contenuTotal.append(ligne).append("\n");
                     }
                 } catch (IOException e) {
-                    System.out.println("Erreur lors de la lecture du fichier "
-                            + ": " + e.getMessage());
+                    throw new IOException("Erreur lors de la lecture du fichier : " + fichier.getName(), e);
                 }
 
-                contenuTotal.append(contenu).append("/EOF");
+                contenuTotal.append("/EOF");
             }
 
-            reseau.envoyer(contenuTotal.toString());
-            String reponse = reseau.recevoirReponse();
+            // Envoi des données au serveur
+            client.envoyer(contenuTotal.toString());
+            String reponse = client.recevoir();
 
-            reseau.traiterReponse(reponse);
             afficherConfirmationEtRetour();
-
-        } catch (IllegalArgumentException e) {
-            System.err.println("Erreur d'envoi : " + e.getMessage());
-            MainControleur.showAlert("Erreur d'envoi",
-                    "Une erreur est survenue lors de l'envoi : "
-                            + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Erreur inattendue : " + e.getMessage());
-            MainControleur.showAlert("Erreur inattendue",
-                    "Une erreur inattendue est survenue : "
-                            + e.getMessage());
+            MainControleur.showAlert("Erreur d'envoi", "Une erreur est survenue : " + e.getMessage());
         } finally {
-            if (reseau != null) {
-                reseau.fermerClient();
+            if (client != null) {
+                client.fermer();
             }
         }
     }

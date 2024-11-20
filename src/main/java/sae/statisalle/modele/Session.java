@@ -14,7 +14,7 @@ package sae.statisalle.modele;
  */
 public class Session {
     private static String adresseIp;
-    private static Reseau reseau;
+    private static Client client;
     private static String ipServeur;
     private static String portServeur;
 
@@ -36,18 +36,18 @@ public class Session {
 
     /**
      * Récupère l'instance de la session.
-     * @return l'instance de la classe Reseau associé à la session.
+     * @return l'instance de la classe Client associé à la session.
      */
-    public static Reseau getReseau() {
-        return reseau;
+    public static Client getClient() {
+        return client;
     }
 
     /**
-     * Définit l'objet Reseau de la session.
-     * @param reseau l'objet Reseau à associer à la session.
+     * Définit l'objet Client de la session.
+     * @param client l'objet Client à associer à la session.
      */
-    public static void setReseau(Reseau reseau) {
-        Session.reseau = reseau;
+    public static void setClient(Client client) {
+        Session.client = client;
     }
 
     /**

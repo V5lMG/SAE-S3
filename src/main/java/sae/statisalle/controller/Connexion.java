@@ -9,10 +9,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import sae.statisalle.modele.Client;
 import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 /**
@@ -26,7 +28,7 @@ import java.net.InetAddress;
 public class Connexion {
 
     /** Instance de la classe Reseau. */
-    private final Reseau reseau = new Reseau();
+    private final Client client = new Client();
 
     @FXML
     private TextField textIp;
@@ -114,18 +116,16 @@ public class Connexion {
 
         // tentative de connexion
         try {
-            reseau.preparerClient(ip, port);
+            client.connecter(ip, port);
             Session.setAdresseIp(ip + ":" + portText);
-            Session.setReseau(reseau);
+            Session.setClient(client);
 
             showAlert(AlertType.INFORMATION, "Connexion réussie",
                     "Connexion établie avec l'adresse IP : "
                             + ip + " : " + portText);
             MainControleur.activerEnvoyer();
-        } catch (MauvaiseConnexionServeur e) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
-                                     "Impossible de se connecter "
-                                     + "au serveur : " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

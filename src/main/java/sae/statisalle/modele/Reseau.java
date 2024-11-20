@@ -4,30 +4,21 @@
  */
 package sae.statisalle.modele;
 
-import sae.statisalle.exception.MauvaiseConnexionServeur;
-
 import java.io.*;
 import java.net.*;
 import java.io.IOException;
 
 /**
- * Classe responsable de la gestion des communications réseau.
- * Elle permet l'envoi et la réception de données entre deux
- * différentes machines via des sockets.
- * La classe fournit des méthodes pour initialiser un serveur,
- * accepter des connexions de clients, envoyer et recevoir des données,
- * ainsi que pour gérer la fermeture des connexions.
+ * Classe de base pour la gestion des communications réseau.
+ * Contient les fonctionnalités partagées entre client et serveur,
+ * telles que l'envoi, la réception et la fermeture des connexions.
  * </p>
  * @author valentin.munier-genie
  * @author rodrigo.xavier-taborda
  */
-public class Reseau {
-
-    /** Socket serveur pour écouter les connexions clients. */
-    private ServerSocket serverSocket;
-
-    /** Socket pour la connexion avec un client. */
-    private Socket clientSocket;
+public abstract class Reseau implements Connexion {
+    /** Socket pour la communication. */
+    protected Socket socket;
 
     /** Flux de sortie pour envoyer des données. */
     protected PrintWriter fluxSortie;
@@ -36,275 +27,34 @@ public class Reseau {
     protected BufferedReader fluxEntree;
 
     /**
-     * Renvoie le flux d'entrée utilisé pour recevoir des données.
-     * Ce flux peut être utilisé pour lire directement les messages entrants.
-     * @return Le flux d'entrée (BufferedReader).
-     */
-    public BufferedReader getFluxEntree() {
-        return fluxEntree;
-    }
-
-    // --------- PARTIE SERVEUR -----------
-
-    /**
-     * Initialise le serveur en récupérant l'IP et le port depuis la session.
-     * Si l'IP ou le port n'est pas défini, une exception est levée.
-     * Si le port est null, le port par défaut est utilisé.
+     * Initialise les flux d'entrée et de sortie associés au socket.
+     * Cette méthode est appelée par les classes héritant de Reseau après avoir
+     * établi une connexion (client) ou accepté une connexion (serveur).
      *
-     * @param portParDefaut Port par défaut à utiliser si le port dans
-     *                      la session est null.
-     * @throws IllegalArgumentException Si le port spécifié n'est pas
-     *                                  valide (0 - 65535) ou si l'IP
-     *                                  est invalide.
-     * @throws IOException Si une erreur survient lors de la création
-     *                     du ServerSocket.
+     * @param socket Le socket à associer.
+     * @throws IOException Si une erreur survient lors de l'initialisation des flux.
      */
-    public void preparerServeur(int portParDefaut) throws IOException {
-        System.out.println("[SERVEUR] Initialisation du serveur...");
-
-        // Récupération de l'IP et du port depuis la session
-        String ip = Session.getIpServeur();
-        String portText = Session.getPortServeur();
-
-        // Validation et conversion du port
-        int port = (portText == null) ? portParDefaut : Integer.parseInt(portText);
-        if (port < 0 || port > 65535) {
-            throw new IllegalArgumentException("[SERVEUR] Le port doit être compris entre 0 et 65535.");
-        }
-
-        // Création du ServerSocket en fonction de l'IP
-        if (ip != null && !ip.isEmpty()) {
-            System.out.println("[SERVEUR] Serveur démarré sur l'IP " + ip + " et le port : " + port);
-            serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
-        } else {
-            System.out.println("[SERVEUR] Aucune IP définie. Serveur démarré automatiquement sur le port : " + port);
-            serverSocket = new ServerSocket(port);
-        }
-
-        System.out.println("[SERVEUR] Démarré avec succès.");
-    }
-
-    /**
-     * Attendre une connexion d'un client et renvoyer un objet Reseau
-     * configuré pour ce client.
-     * @return Un objet Reseau représentant la connexion au client, ou null en cas d'erreur.
-     */
-    public Reseau attendreConnexionClient() {
-        System.out.println("[SERVEUR] Attente d'une connexion client...");
-        try {
-            clientSocket = serverSocket.accept();
-            Reseau clientReseau = new Reseau();
-            clientReseau.clientSocket = clientSocket;
-            clientReseau.fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            clientReseau.fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            String clientIP = clientSocket.getInetAddress().getHostAddress();
-            String clientNomMachine = clientSocket.getInetAddress().getHostName();
-            System.out.println("[SERVEUR] Client connecté : " + clientNomMachine + " (" + clientIP + ")");
-            return clientReseau;
-
-        } catch (IOException e) {
-            System.err.println("[SERVEUR] Erreur lors de l'attente d'un client : " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Reçoit les données envoyées par le client.
-     *
-     * @return La ligne de texte reçue du client, ou null en cas d'erreur de lecture.
-     */
-    public String recevoirDonnees() {
-        System.out.println("[SERVEUR] Réception des données...");
-        if (fluxEntree == null) {
-            // Flux non initialisé ou fermé
-            return null;
-        }
-        try {
-            String donnees = fluxEntree.readLine();
-            System.out.println("[SERVEUR] Données reçues : " + donnees);
-            return donnees;
-        } catch (IOException e) {
-            System.err.println("[SERVEUR] Erreur lors de la réception des données : " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Traite la requête reçue du client en séparant la clé et les données chiffrées.
-     *
-     * @param requete La requête reçue du client sous forme de chaîne de caractères.
-     * @return Les données déchiffrées formatées.
-     * @throws IllegalArgumentException Si la requête est null ou mal formatée.
-     */
-    public String traiterRequete(String requete) {
-        System.out.println("[SERVEUR] Traitement de la requête...");
-        if (requete == null) {
-            throw new IllegalArgumentException("[SERVEUR] Requête null reçue.");
-        }
-
-        String[] parties = requete.split("/DELIM/");
-        if (parties.length != 2) {
-            throw new IllegalArgumentException("[SERVEUR] Format de la requête incorrect.");
-        }
-
-        String cle = parties[0];
-        String donneesChiffrees = parties[1];
-        String donneesDechiffrees = Vigenere.dechiffrementDonnees(donneesChiffrees, cle);
-        System.out.println("[SERVEUR] Données déchiffrées avec succès.");
-        return donneesDechiffrees;
-    }
-
-    /**
-     * Envoie une réponse au client.
-     *
-     * @param reponse La réponse a envoyé au client sous forme de chaîne de caractères.
-     */
-    public void envoyerReponse(String reponse) {
-        System.out.println("[SERVEUR] Envoi de la réponse.");
-        fluxSortie.println(reponse);
-    }
-
-    /**
-     * Ferme toutes les connexions et libère les ressources du serveur.
-     * Cette méthode ferme les flux de communication et les sockets
-     * du client et du serveur, s'ils sont ouverts,
-     * pour garantir une libération propre des ressources.
-     * En cas d'erreur, un message est affiché dans la console.
-     */
-    public void fermerServeur() {
-        System.out.println("[SERVEUR] Fermeture du serveur...");
-        try {
-            if (fluxEntree != null) fluxEntree.close();
-            if (fluxSortie != null) fluxSortie.close();
-            if (clientSocket != null) clientSocket.close();
-            if (serverSocket != null) serverSocket.close();
-            System.out.println("[SERVEUR] Toutes les connexions ont été fermées.");
-        } catch (IOException e) {
-            System.err.println("[SERVEUR] Erreur lors de la fermeture : " + e.getMessage());
-        }
-    }
-
-    // --------- PARTIE CLIENT -----------
-
-    /**
-     * Préparation du client en établissant la connexion au serveur.
-     * Cette méthode tente de créer un socket pour se connecter à un serveur
-     * spécifié par son adresse IP et son port.
-     * Si la connexion échoue, une exception {@link MauvaiseConnexionServeur}
-     * est levée avec un message d'erreur approprié.
-     *
-     * @param adresse L'adresse du serveur (IP ou nom d'hôte).
-     * @param port Le numéro de port du serveur.
-     * @throws MauvaiseConnexionServeur Si la connexion échoue (serveur non disponible).
-     */
-    public void preparerClient(String adresse, int port) throws MauvaiseConnexionServeur {
-        try {
-            System.out.println("[CLIENT] Tentative de connexion au serveur : " + adresse + ":" + port);
-            clientSocket = new Socket(adresse, port);
-            fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            System.out.println("[CLIENT] Connexion réussie au serveur " + adresse + " sur le port " + port);
-        } catch (IOException e) {
-            System.err.println("[CLIENT] Erreur lors de la connexion au serveur : " + e.getMessage());
-            throw new MauvaiseConnexionServeur("Impossible de se connecter à " + adresse + ":" + port);
-        }
-    }
-
-    /**
-     * Envoie une chaîne de données au serveur après chiffrement.
-     * Ajoute des informations de débogage pour suivre le processus.
-     *
-     * @param donnees Les données à envoyer.
-     * @throws IllegalArgumentException Si les données sont nulles ou invalides.
-     */
-    public void envoyer(String donnees) {
-        if (donnees == null || donnees.isEmpty()) {
-            throw new IllegalArgumentException("[CLIENT] Les données à envoyer sont nulles ou vides.");
-        }
-
-        String contenu = donnees.replace("\n", "/N").replace("\r", "/R");
-        String cle = Vigenere.genererCleAleatoire(contenu);
-        System.out.println("[CLIENT] Clé générée : " + cle);
-
-        String donneesChiffrees = Vigenere.chiffrementDonnees(contenu, cle);
-        System.out.println("[CLIENT] Données chiffrées : " + donneesChiffrees);
-
-        String message = cle + "/DELIM/" + donneesChiffrees;
-
-        fluxSortie.println(message);
-        System.out.println("[CLIENT] Message envoyé au serveur.");
-    }
-
-    /**
-     * Reçoit la réponse du serveur.
-     *
-     * @return La réponse du serveur sous forme de chaîne, ou une erreur si elle est null.
-     */
-    public String recevoirReponse() {
-        try {
-            System.out.println("[CLIENT] Lecture de la réponse du serveur...");
-            String reponse = fluxEntree.readLine();
-            if (reponse == null) {
-                System.out.println("[CLIENT] La réponse reçue est null.");
-                return null;
-            } else {
-                System.out.println("[CLIENT] Réponse reçue : " + reponse);
-                return reponse;
-            }
-        } catch (IOException e) {
-            System.err.println("[CLIENT] Erreur lors de la réception de la réponse : " + e.getMessage());
-            return "[CLIENT] Erreur lors de la réception de la réponse.";
-        }
-    }
-
-    /**
-     * Utilise la réponse du serveur, avec suivi des étapes pour le débogage.
-     * @param reponse La réponse à traiter.
-     */
-    public void traiterReponse(String reponse) {
-        // TODO : traiter la réponse du serveur
-    }
-
-    /**
-     * Ferme les ressources client (sockets et flux).
-     * Ajoute des messages de débogage à chaque étape.
-     */
-    public void fermerClient() {
-        try {
-            if (fluxEntree != null) {
-                fluxEntree.close();
-                System.out.println("[CLIENT] Flux d'entrée fermé.");
-            }
-            if (fluxSortie != null) {
-                fluxSortie.close();
-                System.out.println("[CLIENT] Flux de sortie fermé.");
-            }
-            if (clientSocket != null) {
-                clientSocket.close();
-                System.out.println("[CLIENT] Socket client fermé.");
-            }
-        } catch (IOException e) {
-            System.err.println("[CLIENT] Erreur lors de la fermeture des ressources client : " + e.getMessage());
-        }
+    protected void initialiserFlux(Socket socket) throws IOException {
+        this.socket = socket;
+        this.fluxSortie = new PrintWriter(socket.getOutputStream(), true);
+        this.fluxEntree = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        System.out.println("[RESEAU] Flux d'entrée et de sortie initialisés.");
     }
 
     /**
      * Renvoie l'adresse IP de la machine locale utilisée pour se connecter
-     * à un serveur externe et son nom de machine.
-     * @return l'adresse IP de la machine sous forme d'objet InetAddress.
+     * à un serveur externe, ainsi que son nom d'hôte.
+     *
+     * @return L'adresse IP locale ou null en cas d'erreur.
      */
     public static InetAddress renvoyerIP() {
-        // 8.8.8.8 correspond au DNS de google
-        try (Socket socket = new Socket("8.8.8.8", 53)) {
-            InetAddress ipLocale = socket.getLocalAddress();
-            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
-            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
+        try (Socket testSocket = new Socket("8.8.8.8", 53)) {
+            InetAddress ipLocale = testSocket.getLocalAddress();
+            System.out.println("[RESEAU] IP locale : " + ipLocale.getHostAddress());
             return ipLocale;
         } catch (IOException e) {
-            System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
-            return null; // retourne null pour éviter les erreurs
+            System.err.println("[RESEAU] Erreur lors de la récupération de l'IP : " + e.getMessage());
+            return null;
         }
     }
 }

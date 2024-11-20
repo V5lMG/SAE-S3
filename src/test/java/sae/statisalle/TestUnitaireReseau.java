@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import sae.statisalle.exception.MauvaiseConnexionServeur;
-import sae.statisalle.modele.Vigenere;
+import sae.statisalle.modele.Chiffrement;
 import sae.statisalle.modele.Reseau;
 
 import java.io.IOException;
@@ -177,7 +177,7 @@ public class TestUnitaireReseau {
         Reseau serveur = new Reseau();
 
         String cleValide = "clé123";
-        String donneesChiffrees = Vigenere.chiffrementDonnees("message", cleValide);
+        String donneesChiffrees = Chiffrement.chiffrementDonnees("message", cleValide);
         String requeteValide = cleValide + "/DELIM/" + donneesChiffrees;
 
         assertDoesNotThrow(() -> {

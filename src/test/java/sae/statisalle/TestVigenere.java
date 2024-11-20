@@ -4,7 +4,7 @@
  */
 package sae.statisalle;
 
-import sae.statisalle.modele.Vigenere;
+import sae.statisalle.modele.Chiffrement;
 import sae.statisalle.modele.Fichier;
 
 import java.util.Arrays;
@@ -45,11 +45,11 @@ public class TestVigenere {
         System.out.println(contenuOriginal);
 
         // Générer une clé aléatoire pour le test
-        int cle = Vigenere.genererCleAleatoire(contenuOriginal);
+        int cle = Chiffrement.genererCleAleatoire(contenuOriginal);
         System.out.println("Clé générée : " + cle);
 
         // Chiffrer le contenu avec la clé générée
-        String contenuChiffre = Vigenere.chiffrementDonnees(contenuOriginal, cle);
+        String contenuChiffre = Chiffrement.chiffrementDonnees(contenuOriginal, cle);
         System.out.println("Contenu chiffré :");
         System.out.println(contenuChiffre);
 
@@ -58,7 +58,7 @@ public class TestVigenere {
         fichierTemp.reecritureFichier(Arrays.asList(contenuChiffre.split("\n")));
 
         // Déchiffrer le contenu chiffré en utilisant la même clé
-        String contenuDechiffre = Vigenere.dechiffrementDonnees(contenuChiffre, cle);
+        String contenuDechiffre = Chiffrement.dechiffrementDonnees(contenuChiffre, cle);
         System.out.println("Contenu déchiffré :");
         System.out.println(contenuDechiffre);
 
