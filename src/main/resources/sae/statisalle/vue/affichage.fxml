@@ -103,15 +103,15 @@
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                <Text fill="#26a4f8" layoutX="67.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalle">
+                <Text fill="#26a4f8" layoutX="67.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalle">
                     <font>
                         <Font size="30.0" />
                     </font>
                 </Text>
-                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@../img/LogoStatisalle.jpg" />
                 </ImageView>
-                <Button fx:id="btnAide" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" />
+                <Button fx:id="btnAide" layoutX="14.0" layoutY="61.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" textFill="WHITE" />
             </AnchorPane>
             <AnchorPane prefHeight="35.0" prefWidth="951.0">
                 <Text fx:id="titre" layoutX="650.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Affichage des données">
