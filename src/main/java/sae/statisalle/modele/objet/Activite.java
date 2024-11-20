@@ -13,7 +13,7 @@ package sae.statisalle.modele.objet;
  * <br>
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des Activités en fonction des contenus des fichiers
- * @author robin.montes
+ * @author erwan.thierry
  */
 public class Activite {
 

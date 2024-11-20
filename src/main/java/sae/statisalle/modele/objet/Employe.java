@@ -17,7 +17,6 @@ package sae.statisalle.modele.objet;
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des Employés en fonction des contenus des fichiers
  * @author erwan.thierry
- * @author robin.montes
  */
 public class Employe {
     /* Identifiant de l'employé */

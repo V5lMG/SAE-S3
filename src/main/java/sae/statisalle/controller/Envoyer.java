@@ -28,8 +28,8 @@ import java.util.List;
  * Contrôleur pour gérer l'envoi de fichiers dans l'application StatiSalle.
  * Permet de sélectionner des fichiers à envoyer et de gérer l'interface.
  *
- * @author Valentin MUNIER-GENIE
- * @author Erwan THIERRY
+ * @author valentin.munier-genie
+ * @author erwan.thierry
  */
 public class Envoyer {
 
