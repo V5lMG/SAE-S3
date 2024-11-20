@@ -208,6 +208,7 @@ public class MainControleur extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Erreur lors du chargement des vues : "
                                + e.getMessage());
         }
