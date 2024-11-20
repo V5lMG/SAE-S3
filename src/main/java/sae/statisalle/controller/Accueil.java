@@ -85,6 +85,10 @@ public class Accueil {
 
         Button saveButton = new Button("Enregistrer");
         Button cancelButton = new Button("Annuler");
+
+        saveButton.setStyle("-fx-background-color: #60BCFB;");
+        cancelButton.setStyle("-fx-background-color: #CD4043;-fx-text-fill: white;");
+
         buttonBox.getChildren().addAll(saveButton, cancelButton);
 
         grid.add(buttonBox, 0, 2, 2, 1);
