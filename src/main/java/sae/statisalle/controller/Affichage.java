@@ -26,9 +26,6 @@ public class Affichage {
     @FXML
     private TabPane grandTableau;
 
-    @FXML
-    private Text titre;
-
     // Table de réservations
     @FXML
     private TableView<Reservation> tabReservation;
@@ -200,7 +197,7 @@ public class Affichage {
                     List<List<String>> contenu = fichierExploite.recupererDonnees();
 
                     switch (fichierExploite.getTypeFichier()) {
-                        case "Employe":
+                        case "Employe" -> {
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 4) {
                                     listEmploye.add(new Employe(ligne.get(0),
@@ -213,11 +210,9 @@ public class Affichage {
                             nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
                             prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
                             numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-
                             tabEmploye.setItems(listEmploye);
-                            break;
-
-                        case "Salle":
+                        }
+                        case "Salle" -> {
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 9) {
                                     listSalle.add(new Salle(ligne.get(0),
@@ -236,11 +231,9 @@ public class Affichage {
                             nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
                             logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
                             imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
-
                             tabSalle.setItems(listSalle);
-                            break;
-
-                        case "Activite":
+                        }
+                        case "Activite" -> {
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() == 2) {
                                     listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
@@ -248,13 +241,11 @@ public class Affichage {
                                     System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
                                 }
                             }
-
                             idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
                             activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-
                             tabActivite.setItems(listActivite);
-                            break;
-                        case "Reservation":
+                        }
+                        case "Reservation" -> {
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 12) {
                                     // Créer une réservation
@@ -288,7 +279,6 @@ public class Affichage {
                                     listReservation.add(reservation);
                                 }
                             }
-
                             idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
                             salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
                             employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
@@ -301,12 +291,10 @@ public class Affichage {
                             prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
                             numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
                             usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
-
                             tabReservation.setItems(listReservation);
-                            break;
-
-                        default:
-                            System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
+                        }
+                        default ->
+                                System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
                     }
                     remplirComboBoxSalles();
                     remplirComboBoxEmployes();
@@ -382,9 +370,9 @@ public class Affichage {
         });
     }
 
-    private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs, String optionParDefaut) {
+    private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
         ObservableList<String> items = FXCollections.observableArrayList();
-        items.add(optionParDefaut);
+        items.add("Tous");
         items.addAll(valeurs);
         comboBox.setItems(items);
         comboBox.getSelectionModel().selectFirst();
@@ -402,7 +390,7 @@ public class Affichage {
             }
         }
 
-        remplirComboBox(filtreEmploye, nomsUniques, "Tous");
+        remplirComboBox(filtreEmploye, nomsUniques);
     }
 
     private void remplirComboBoxActivites() {
@@ -411,7 +399,7 @@ public class Affichage {
             typesUniques.add(activite.getActiviteR());
         }
 
-        remplirComboBox(filtreActivite, typesUniques, "Tous");
+        remplirComboBox(filtreActivite, typesUniques);
     }
 
     private void remplirComboBoxSalles() {
@@ -425,7 +413,7 @@ public class Affichage {
                 nomsUniques.add(salle.getSalleR());
             }
         }
-        remplirComboBox(filtreSalle, nomsUniques, "Tous");
+        remplirComboBox(filtreSalle, nomsUniques);
     }
 
     private void remplirComboBoxDates() {
@@ -433,7 +421,7 @@ public class Affichage {
         for (Reservation date : listReservation) {
             datesUniques.add(date.getDateR());
         }
-        remplirComboBox(filtreDate, datesUniques, "Tous");
+        remplirComboBox(filtreDate, datesUniques);
     }
 
     private void remplirComboBoxHeuresD() {
@@ -442,7 +430,7 @@ public class Affichage {
             heuresUniques.add(heuresD.getHeureDebut());
         }
 
-        remplirComboBox(filtreHeureD, heuresUniques, "Tous");
+        remplirComboBox(filtreHeureD, heuresUniques);
     }
 
     private void remplirComboBoxHeuresF() {
@@ -451,7 +439,7 @@ public class Affichage {
             heuresUniques.add(heuresF.getHeureDebut());
         }
 
-        remplirComboBox(filtreHeureF, heuresUniques, "Tous");
+        remplirComboBox(filtreHeureF, heuresUniques);
     }
 
     @FXML
@@ -479,13 +467,10 @@ public class Affichage {
         ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
         for (Reservation reservation : listReservation) {
-            boolean matchesFiltre = true;
+            boolean matchesFiltre = employeFiltre == null || employeFiltre.equals("Tous") ||
+                    reservation.getEmployeR().equalsIgnoreCase(employeFiltre);
 
             // Vérifier chaque filtre
-            if (employeFiltre != null && !employeFiltre.equals("Tous") &&
-                    !reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) {
-                matchesFiltre = false;
-            }
             if (activiteFiltre != null && !activiteFiltre.equals("Tous") &&
                     !reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) {
                 matchesFiltre = false;

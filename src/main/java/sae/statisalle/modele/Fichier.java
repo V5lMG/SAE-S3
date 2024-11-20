@@ -155,7 +155,7 @@ public class Fichier {
         }
 
         // Récupérer les entêtes de colonnes pour déterminer la taille des lignes
-        String[] entetes = contenu.getFirst().split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
+        String[] entetes = contenu.get(0).split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
 
         // Parcourt les lignes de données du fichier
         for (int i = 1; i < contenu.size(); i++) {
@@ -275,17 +275,17 @@ public class Fichier {
         typeFichier = null;
         contenu = contenuFichier();
 
-        if (contenu.getFirst().contains("Ident;Nom;Capacite;videoproj;"
+        if (contenu.get(0).contains("Ident;Nom;Capacite;videoproj;"
                           + "ecranXXL;ordinateur;type;logiciels;imprimante")) {
             typeFichier = "Salle";
         }
-        if (contenu.getFirst().contains("Ident;Nom;Prenom;Telephone")){
+        if (contenu.get(0).contains("Ident;Nom;Prenom;Telephone")){
             typeFichier = "Employe";
         }
-        if (contenu.getFirst().contains("Ident;Activité")){
+        if (contenu.get(0).contains("Ident;Activité")){
             typeFichier = "Activite";
         }
-        if (contenu.getFirst().contains("Ident;salle;employe;activite;"
+        if (contenu.get(0).contains("Ident;salle;employe;activite;"
                                         + "date;heuredebut;heurefin")) {
             typeFichier = "Reservation";
         } // else
@@ -308,7 +308,7 @@ public class Fichier {
             return null;
         }
 
-        String premiereLigne = contenu.getFirst();
+        String premiereLigne = contenu.get(0);
 
         if (premiereLigne.contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante")) {
             return "Salle";
