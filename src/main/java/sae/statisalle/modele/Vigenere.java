@@ -1,5 +1,5 @@
 /*
- * Chiffrement.java               06/11/2024
+ * Vigenere.java               06/11/2024
  * IUT DE RODEZ,pas de copyrights
  */
 
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * La classe chiffrement gère les opérations de cryptage
+ * La classe Vigenere gère les opérations de cryptage
  * sur des fichiers de type Comma Separated Values (csv). Elle permet de crypter
  * le contenu d'un fichier csv pour sécuriser les données à l'intérieur.
  * <br>
@@ -42,31 +42,27 @@ public class Vigenere {
      * @param donnees Données à crypter sous forme de String
      * @return Le message chiffré sous forme de String
      */
-    public static String chiffrementDonnees(String donnees, String cle) {
+    public static String chiffrementDonnees(String donnees, int cle) {
         StringBuilder messChiffre = new StringBuilder();
 
         int codeDonnees,
                 codeCle,
                 codeCharChiffre;
 
-        // Initialisation de l'alphabet (par exemple : alphabet complet A-Z + a-z + chiffres, etc.)
         creerAlphabet();
 
-        // Ajuster la clé pour qu'elle ait la bonne longueur
         cle = defTailleClef(donnees, cle);
 
-        // Parcours des caractères de la chaîne
         for (int i = 0; i < donnees.length(); i++) {
             char caractere = donnees.charAt(i);
 
             codeDonnees = alphabet.indexOf(caractere);
-            codeCle = alphabet.indexOf(cle.charAt(i % cle.length()));
+            codeCle = cle % alphabet.size();
 
             if (codeDonnees != -1 && codeCle != -1) {
                 codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
                 messChiffre.append(alphabet.get(codeCharChiffre));
             } else {
-                // Conserve le caractère si non trouvé dans l'alphabet
                 messChiffre.append(caractere);
             }
         }
@@ -83,7 +79,7 @@ public class Vigenere {
      * @param cle Clé de déchiffrement que nous utiliserons pour déchiffrer le message
      * @return Le message déchiffré sous forme de String
      */
-    public static String dechiffrementDonnees(String donnees, String cle) {
+    public static String dechiffrementDonnees(String donnees, int cle) {
         StringBuilder messDechiffre = new StringBuilder();
 
         int codeDonnees,
@@ -101,7 +97,7 @@ public class Vigenere {
             char caractere = donnees.charAt(i);
 
             codeDonnees = alphabet.indexOf(caractere);
-            codeCle = alphabet.indexOf(cle.charAt(i % cle.length()));
+            codeCle = cle % alphabet.size();
 
             if (codeDonnees != -1 && codeCle != -1) {
                 // Calculer l'index du caractère d'origine en utilisant la soustraction
@@ -176,25 +172,25 @@ public class Vigenere {
      * @param cle La clé initiale
      * @return La clé ajustée à la taille des données
      */
-    public static String defTailleClef(String donnees, String cle) {
+    public static int defTailleClef(String donnees, int cle) {
         int tailleDonnees = donnees.length();
-        StringBuilder cleAjustee = new StringBuilder();
+        int cleAjustee = cle;
 
         // répéter la clé jusqu'à atteindre la taille des données
-        while (cleAjustee.length() < tailleDonnees) {
-            cleAjustee.append(cle);
+        while (cleAjustee < tailleDonnees) {
+            cleAjustee += cle;
         }
 
         // tronquer la clé à la taille exacte nécessaire
-        return cleAjustee.substring(0, tailleDonnees);
+        return cleAjustee;
     }
 
     /**
      * Génère une clé aléatoire de taille aléatoire entre 1 et la longueur des données.
      * @param donnees Les données sous forme de chaîne de caractères
-     * @return La clé générée sous forme de String.
+     * @return La clé générée sous forme d'int.
      */
-    public static String genererCleAleatoire(String donnees) {
+    public static int genererCleAleatoire(String donnees) {
         if (alphabet == null || alphabet.isEmpty()) {
             creerAlphabet();
         }
@@ -206,14 +202,8 @@ public class Vigenere {
         } else {
             Random random = new Random();
             int longueurCle = random.nextInt(tailleDonnees) + 1;
-            StringBuilder cleBuilder = new StringBuilder();
 
-            for (int i = 0; i < longueurCle; i++) {
-                char lettre = alphabet.get(random.nextInt(alphabet.size()));
-                cleBuilder.append(lettre);
-            }
-
-            return cleBuilder.toString();
+            return random.nextInt(longueurCle);
         }
     }
 

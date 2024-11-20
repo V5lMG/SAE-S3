@@ -231,7 +231,7 @@ public class Envoyer {
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
 
-            alert.setOnHidden(evt -> MainControleur.activerConnexion());
+            alert.setOnHidden(event -> MainControleur.activerConnexion());
             alert.showAndWait();
         }
     }

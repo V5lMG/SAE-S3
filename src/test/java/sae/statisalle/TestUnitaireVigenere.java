@@ -1,6 +1,6 @@
 /*
- * TestChiffrement.java               11/11/2024
- * IUT DE RODEZ,pas de copyrights
+ * TestUnitaireVigenere.java               11/11/2024
+ * IUT DE RODEZ, pas de copyrights
  */
 package sae.statisalle;
 
@@ -16,22 +16,22 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * CLasse qui teste chaque méthode de la classe Chiffrement
+ * Classe qui teste chaque méthode de la classe Vigenere
  * @author Robin Montes
  * @author Mathias Cambon
  * @author rodrigoxaviertaborda
  */
 public class TestUnitaireVigenere {
 
-    /* Tableau composer uniquement d'entier premier */
+    /* Tableau composé uniquement d'entiers premiers */
     private int[] entierPremier = {
             1, 3, 5, 7, 11, 13, 17, 19,
             23, 29, 31, 37, 41, 43, 47,
             53, 59, 61, 67, 71, 73, 79,
-            83, 89, 97,1223, 12907
+            83, 89, 97, 1223, 12907
     };
 
-    /* Tableau composer uniquement d'entier non premier */
+    /* Tableau composé uniquement d'entiers non premiers */
     private int[] entierNonPremier = {
             0, 4, 6, 8, 9, 10, 12, 20,
             22, 25, 26, 28, 30, 40, 45,
@@ -49,7 +49,7 @@ public class TestUnitaireVigenere {
             13, 88, 1290, -73
     };
 
-    /* Liste de modulo pour calculer l'exponentiation modulaire */
+    /* Liste de modulo valide pour calculer l'exponentiation modulaire */
     private int[] moduloValide = {
             3, 8, 1021, 7
     };
@@ -59,7 +59,7 @@ public class TestUnitaireVigenere {
             -2, -1000, -1021, -7
     };
 
-    /* Resultat d'exponentiation modulaire */
+    /* Résultat d'exponentiation modulaire */
     private int[] resultatExpo = {
             1, 1, 737, 5
     };
@@ -179,7 +179,7 @@ public class TestUnitaireVigenere {
     /**
      * Teste si l'alphabet créé contient les lettres minuscules et majuscules.
      * On pourrait faire de même pour les chiffres, lettres accentuées...
-     * Mais on ne le fait pas pour eviter de surcharger la classe de test.
+     * Mais on ne le fait pas pour éviter de surcharger la classe de test.
      */
     @Test
     void testCreerAlphabetContientMinusculesEtMajuscules() {

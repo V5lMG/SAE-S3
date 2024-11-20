@@ -1,5 +1,5 @@
 /*
- * TestChiffrement.java               11/11/2024
+ * TestVigenere.java               11/11/2024
  * IUT DE RODEZ,pas de copyrights
  */
 package sae.statisalle;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * CLasse qui teste chaque méthode de la classe Chiffrement
+ * Classe qui teste chaque méthode de la classe Vigenere.
  * @author Robin Montes
  * @author Mathias Cambon
  * @author rodrigoxaviertaborda
@@ -45,7 +45,7 @@ public class TestVigenere {
         System.out.println(contenuOriginal);
 
         // Générer une clé aléatoire pour le test
-        String cle = Vigenere.genererCleAleatoire(contenuOriginal);
+        int cle = Vigenere.genererCleAleatoire(contenuOriginal);
         System.out.println("Clé générée : " + cle);
 
         // Chiffrer le contenu avec la clé générée
