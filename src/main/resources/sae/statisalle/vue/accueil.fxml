@@ -40,7 +40,7 @@
             <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../img/LogoStatisalle.jpg" />
             </ImageView>
-            <Button fx:id="btnAide" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #60BCFB;" text="Besoin d'aide ?" />
+            <Button fx:id="btnAide" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" />
          </AnchorPane>
          <AnchorPane prefHeight="200.0" prefWidth="200.0" />
          <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -49,7 +49,7 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <Button fx:id="btnReglage" layoutX="143.0" layoutY="20.0" mnemonicParsing="false" onAction="#actionReglage" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color: #60BCFB;">
+            <Button fx:id="btnReglage" layoutX="143.0" layoutY="20.0" mnemonicParsing="false" onAction="#actionReglage" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color: #21618C;">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                      <Image url="@../img/parametre.png" />
