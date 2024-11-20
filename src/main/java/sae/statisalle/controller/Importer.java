@@ -21,10 +21,10 @@ import java.util.List;
 /**
  * Classe du controller Importer,
  * Qui permet de faire le lien entre la vue Importer et son modèle
- * @author Mathias CAMBON
- * @author Robin MONTES
- * @author Erwan THIERRY
- * @author Valentin MUNIER
+ * @author robin.montes
+ * @author mathias.cambon
+ * @author valentin.munier-genie
+ * @author erwan.thierry
  */
 public class Importer {
 

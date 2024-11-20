@@ -21,7 +21,6 @@ package sae.statisalle.modele.objet;
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des salles en fonction des contenus des fichiers
  * @author erwan.thierry
- * @author robin.montes
  */
 public class Salle {
     /* Identifiant de la salle */

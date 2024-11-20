@@ -19,9 +19,9 @@ import java.util.ArrayList;
  * Les fichiers pris en charge doivent avoir une extension .csv ou .CSV.
  * Nous utiliserons le chiffrement avec la methode de Vignère pour chiffrer le
  * contenu du fichier. Ensuite, nous utiliserons la méthode de Diffie-Hellman
- * @author Montes Robin
- * @author Xavier-Taborda Rodrigo
- * @author Cambon Mathias
+ * @author robin.montes
+ * @author rodrigo.xavier-taborda
+ * @author mathias.cambon
  * @author valentin.munier-genie
  */
 public class Vigenere {
@@ -320,7 +320,6 @@ public class Vigenere {
     /**
      * Implémente l'échange de clés Diffie-Hellman pour générer une clé partagée
      * entre deux parties (par exemple, A et B).
-     *
      *
      * <p>La méthode retourne la clé partagée calculée entre A et B après l'échange.</p>
      *
