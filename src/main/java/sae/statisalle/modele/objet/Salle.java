@@ -19,8 +19,9 @@ package sae.statisalle.modele.objet;
  * </ul>
  * <br>
  * Elle gère également toutes les erreurs relatives à l'instantiation
- * des salles en fonction des contenus des fichier
+ * des salles en fonction des contenus des fichiers
  * @author erwan.thierry
+ * @author robin.montes
  */
 public class Salle {
     /* Identifiant de la salle */
@@ -63,9 +64,7 @@ public class Salle {
         this.imprimante = imprimante;
     }
 
-    public String getIdentifiant() {
-        return identifiant;
-    }
+    public String getIdentifiant() { return identifiant; }
 
     public String getNom() {
         return nom;
@@ -134,4 +133,7 @@ public class Salle {
     public void setImprimante(String imprimante) {
         this.imprimante = imprimante;
     }
+
+
+
 }
