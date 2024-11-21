@@ -1,67 +1,99 @@
-/*
- * Classement.java              21/11/2024
- * Pas de droits d'auteur ni de copyright
- */
 package sae.statisalle.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.event.ActionEvent;
+import sae.statisalle.modele.objet.Activite;
+import sae.statisalle.modele.objet.Employe;
+import sae.statisalle.modele.objet.Reservation;
+import sae.statisalle.modele.objet.Salle;
 
-/**
- * Contrôleur de la connexion pour l'application StatiSalle.
- * Gère les actions liées à la connexion réseau entre le client
- * et le serveur. Vérifie la validité de l'adresse IP et tente
- * d'établir la connexion.
- * @author valentin.munier-genie
- */
 public class Classement {
 
+    @FXML
+    private ComboBox<String> filtreDateDebut;
 
     @FXML
-    private TextField textIp;
+    private ComboBox<String> filtreDateFin;
 
     @FXML
-    private TextField textPort;
+    private ComboBox<String> filtreHeureD;
 
     @FXML
-    private Button btnConnexion;
+    private ComboBox<String> filtreHeureF;
 
     @FXML
-    private Button btnAfficherIp;
+    private Button reinitialiserFiltre;
 
-
-    /**
-     * Retourne à l'écran d'accueil de l'application.
-     */
+    // Table de salle
     @FXML
-    void actionRetour() {
-        MainControleur.activerAccueil();
+    private TableView<Salle> tabSalle;
+    @FXML
+    private TableColumn<Salle, String> idSalle;
+    @FXML
+    private TableColumn<Salle, String> nomS;
+    @FXML
+    private TableColumn<Salle, String> employeS;
+    @FXML
+    private TableColumn<Salle, String> activiteS;
+    @FXML
+    private TableColumn<Salle, String> totalS;
+
+    // Table d'activité
+    @FXML
+    private TableView<Activite> tabActivite;
+    @FXML
+    private TableColumn<Activite, String> idActivite;
+    @FXML
+    private TableColumn<Activite, String> activiteA;
+    @FXML
+    private TableColumn<Activite, String> salleA;
+    @FXML
+    private TableColumn<Activite, String> employeA;
+    @FXML
+    private TableColumn<Activite, String> totalA;
+
+    // Table d'employe
+    @FXML
+    private TableView<Employe> tabEmploye;
+    @FXML
+    private TableColumn<Employe, String> idEmploye;
+    @FXML
+    private TableColumn<Employe, String> nomPrenomE;
+    @FXML
+    private TableColumn<Employe, String> salleE;
+    @FXML
+    private TableColumn<Employe, String> activiteE;
+    @FXML
+    private TableColumn<Employe, String> totalE;
+
+    @FXML
+    private Button btnAide;
+
+    @FXML
+    private Button btnRetour;
+
+    @FXML
+    void handleReinitialiserFiltre(ActionEvent event) {
+
     }
 
-    /**
-     * Affiche l'écran d'aide pour la connexion.
-     */
     @FXML
-    void actionAide() {
-        MainControleur.activerAideConnexion();
+    void actionAide(ActionEvent event) {
+        MainControleur.activerAideClassement();
     }
 
-    /**
-     * Affiche une alerte pour informer l'utilisateur
-     * d'une situation spécifique.
-     *
-     * @param alertType le type de l'alerte.
-     * @param title le titre de l'alerte.
-     * @param message le message de l'alerte.
-     */
-    private void showAlert(AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    void actionRetour(ActionEvent event) {
+        MainControleur.activerActionAnalyse();
+    }
+
+    // Méthode d'initialisation si nécessaire
+    @FXML
+    public void initialize() {
+
     }
 }

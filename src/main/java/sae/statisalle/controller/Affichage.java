@@ -2,11 +2,14 @@ package sae.statisalle.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
+
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+
 import sae.statisalle.modele.objet.Activite;
 import sae.statisalle.modele.objet.Employe;
 import sae.statisalle.modele.objet.Reservation;
@@ -14,11 +17,15 @@ import sae.statisalle.modele.objet.Salle;
 import sae.statisalle.modele.Fichier;
 
 import java.io.File;
+
 import java.net.URLDecoder;
+
 import java.nio.charset.StandardCharsets;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+
+import java.util.*; // TODO ne jamais mettre d'étoiles
 
 /**
  * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
