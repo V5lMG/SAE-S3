@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controller.Accueil">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <Button fx:id="btnQuitter" layoutX="109.0" layoutY="188.0" mnemonicParsing="false" onAction="#actionQuitter" prefHeight="35.0" prefWidth="97.0" style="-fx-background-color: #CD4043;" text="Quitter" textFill="WHITE" />
+            <Button fx:id="btnImporter" layoutX="14.0" layoutY="64.0" mnemonicParsing="false" onAction="#actionImporter" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Importer">
+               <graphic>
+                  <ImageView fitHeight="33.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../img/importer_logo.png" />
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button layoutX="174.0" layoutY="64.0" mnemonicParsing="false" onAction="#actionEnvoyer" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Envoyer" textFill="#030303">
+               <graphic>
+                  <ImageView fitHeight="33.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../img/envoyer_logo.png" />
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button layoutX="94.0" layoutY="119.0" mnemonicParsing="false" onAction="#actionAfficher" prefHeight="41.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Afficher les données" />
+         </AnchorPane>
+      </VBox>
+   </center>
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <Text fill="#26a4f8" layoutX="67.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalle">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../img/LogoStatisalle.jpg" />
+            </ImageView>
+            <Button fx:id="btnAide" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" textFill="WHITE" />
+         </AnchorPane>
+         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <Text layoutX="32.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Accueil">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnReglage" layoutX="143.0" layoutY="20.0" mnemonicParsing="false" onAction="#actionReglage" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color: #21618C;" />
+            <ImageView fitHeight="25.0" fitWidth="23.0" layoutX="32.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../img/parametre.png" />
+            </ImageView>
+         </AnchorPane>
+      </HBox>
+   </top>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <HBox prefHeight="100.0" prefWidth="200.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <Button fx:id="btnInfo" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" opacity="0.6" prefHeight="37.0" prefWidth="126.0" style="-fx-background-color: #9a9999;" text="Qui sommes-nous ?" />
+            </AnchorPane>
+         </HBox>
+         <HBox prefHeight="100.0" prefWidth="200.0" />
+         <HBox prefHeight="100.0" prefWidth="200.0" />
+      </HBox>
+   </bottom>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="139.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <VBox prefHeight="200.0" prefWidth="148.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>
