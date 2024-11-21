@@ -10,14 +10,13 @@ package sae.statisalle.modele;
  * Elle permet de centraliser et d'accéder aux informations de la session à travers des méthodes statiques.
  * @author Cambon Mathias
  * @author valentin.munier-genie
- * @author Xavier-Taborda Rodrigo
+ * @author rodrigo.xavier-taborda
  */
 public class Session {
     private static String adresseIp;
     private static Reseau reseau;
     private static String ipServeur;
     private static String portServeur;
-
 
     /**
      * Récupère l'adresse IP de la session.

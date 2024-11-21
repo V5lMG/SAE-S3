@@ -21,7 +21,7 @@ import sae.statisalle.modele.Session;
 
 /**
  * TODO
- * @author valentin munier-genie
+ * @author valentin.munier-genie
  */
 public class Accueil {
 

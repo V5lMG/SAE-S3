@@ -17,7 +17,6 @@ package sae.statisalle.modele.objet;
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des reservations en fonction des contenus des fichiers
  * @author erwan.thierry
- * @author robin.montes
  */
 public class Reservation {
     /* Identifiant de la reservation */
