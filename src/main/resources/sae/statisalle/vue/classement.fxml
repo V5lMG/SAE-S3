@@ -57,7 +57,7 @@
                         <TableView fx:id="tabEmploye" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
                               <TableColumn fx:id="idEmploye" prefWidth="275.0" text="Identifiant" />
-                              <TableColumn fx:id="nomPrenomE" prefWidth="275.0" text="Nom et preénom" />
+                              <TableColumn fx:id="nomPrenomE" prefWidth="275.0" text="Nom et prénom" />
                               <TableColumn fx:id="salleE" prefWidth="275.0" text="Salle" />
                               <TableColumn fx:id="activiteE" prefWidth="275.0" text="Activité" />
                               <TableColumn fx:id="totalE" prefWidth="275.0" text="Durée total de réservation" />

@@ -48,6 +48,9 @@ public class Affichage {
     private Button btnAfficherTableaux;
 
     @FXML
+    private Button btnClassement;
+
+    @FXML
     private TabPane grandTableau;
 
     // Table de réservations
@@ -152,6 +155,7 @@ public class Affichage {
     private TableColumn<Employe, String> prenomE;
     @FXML
     private TableColumn<Employe, String> numTelE;
+
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
@@ -161,11 +165,14 @@ public class Affichage {
     @FXML
     ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
 
-
-    // Méthodes d'action pour les boutons
     @FXML
     private void actionAide() {
         MainControleur.activerAideAffichage();
+    }
+
+    @FXML
+    private void actionClassement() {
+        MainControleur.activerActionAnalyse();
     }
 
     @FXML
@@ -196,16 +203,12 @@ public class Affichage {
     @FXML
     private void chargerDonnees() {
 
-        // Cache la barre des filtres avant de charger les données
         masquerFiltres();
 
-        // Cache le bouton
         btnAfficherTableaux.setVisible(false);
 
-        // Affiche les tableaux
         grandTableau.setVisible(true);
 
-        // Vider les tableaux pour éviter des doublons
         tabEmploye.getItems().clear();
         tabSalle.getItems().clear();
         tabActivite.getItems().clear();
@@ -396,11 +399,7 @@ public class Affichage {
 
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
-
     }
-
-
-
 
     @FXML
     private void afficherFiltre() {
@@ -470,6 +469,7 @@ public class Affichage {
                 nomsUniques.add(salle.getSalleR());
             }
         }
+
         remplirComboBox(filtreSalle, nomsUniques);
     }
 
@@ -478,6 +478,7 @@ public class Affichage {
         for (Reservation date : listReservation) {
             datesUniques.add(date.getDateR());
         }
+
         remplirComboBox(filtreDateDebut, datesUniques);
         remplirComboBox(filtreDateFin, datesUniques);
     }
@@ -503,16 +504,12 @@ public class Affichage {
     @FXML
     private void initialize() {
 
-        // Sélectionner l'onglet "Réservation" par défaut
         grandTableau.getSelectionModel().select(feuilleReservation);
 
-        // Mettre à jour le filtre d'heure de fin dès le début
         mettreAJourFiltreHeureFin();
 
-        // Masquer les filtres au démarrage
         masquerFiltres();
 
-        // Lier les ComboBox avec leur valueProperty pour appliquer les filtres
         filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
@@ -602,9 +599,6 @@ public class Affichage {
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
-
-
-
     private void mettreAJourFiltreHeureDebut() {
         // Extraire les heures de début uniques des réservations
         Set<String> heuresDebutUniques = new HashSet<>();
@@ -624,7 +618,6 @@ public class Affichage {
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
-
     private void mettreAJourFiltreHeureFin() {
         // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
@@ -643,8 +636,6 @@ public class Affichage {
         // Mettre à jour le filtre d'heure de fin avec la liste d'heures
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
-
-
 
     private void appliquerFiltres() {
         // Récupérer les filtres sélectionnés
@@ -710,7 +701,6 @@ public class Affichage {
         tabReservation.setItems(reservationsFiltrees);
     }
 
-
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
         try {
@@ -722,7 +712,6 @@ public class Affichage {
             return null; // Si l'heure est invalide, retourner null
         }
     }
-
 
     @FXML
     private void handleReinitialiserFiltre() {

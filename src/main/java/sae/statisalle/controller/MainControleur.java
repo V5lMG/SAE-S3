@@ -269,25 +269,25 @@ public class MainControleur extends Application {
 
             FXMLLoader chargeurFXMLActionAnalyse = new FXMLLoader();
             chargeurFXMLActionAnalyse.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/actionAnalyse.fxml"));
+                    .getResource("/sae/statisalle/vue/actionAnalyse.fxml"));
             conteneur = chargeurFXMLActionAnalyse.load();
             ActionAnalyse = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLDonneesCalculees= new FXMLLoader();
             chargeurFXMLDonneesCalculees.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/donneesCalculees.fxml"));
+                    .getResource("/sae/statisalle/vue/donneesCalculees.fxml"));
             conteneur = chargeurFXMLDonneesCalculees.load();
             DonneesCalculees = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLClassement = new FXMLLoader();
             chargeurFXMLClassement.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/classement.fxml"));
+                    .getResource("/sae/statisalle/vue/classement.fxml"));
             conteneur = chargeurFXMLClassement.load();
             Classement = new Scene(conteneur);
 
             FXMLLoader chargeurFXMLPourcentage = new FXMLLoader();
             chargeurFXMLPourcentage.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/pourcentage.fxml"));
+                    .getResource("/sae/statisalle/vue/pourcentage.fxml"));
             conteneur = chargeurFXMLPourcentage.load();
             Pourcentage = new Scene(conteneur);
 
