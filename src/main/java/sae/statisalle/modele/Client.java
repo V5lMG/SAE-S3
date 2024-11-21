@@ -21,6 +21,17 @@ public class Client implements Connexion {
         System.out.println("[CLIENT] Connecté au serveur " + adresse + ":" + port);
     }
 
+    public String recevoirClePublic() {
+        String clePubliqueServeur = recevoir();
+        System.out.println("[CLIENT] Clé publique du serveur reçue : " + clePubliqueServeur);
+        return clePubliqueServeur;
+    }
+
+    public void envoyerClePublic(String clePublique) {
+        envoyer(clePublique);
+        System.out.println("[CLIENT] Clé publique envoyée : " + clePublique);
+    }
+
     @Override
     public void envoyer(String donnees) {
         fluxSortie.println(donnees);
@@ -56,10 +67,7 @@ public class Client implements Connexion {
     public InetAddress renvoyerIP() {
         // 8.8.8.8 correspond au DNS de google
         try (Socket socket = new Socket("8.8.8.8", 53)) {
-            InetAddress ipLocale = socket.getLocalAddress();
-            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
-            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
-            return ipLocale;
+            return socket.getLocalAddress();
         } catch (IOException e) {
             System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
             return null; // retourne null pour éviter les erreurs

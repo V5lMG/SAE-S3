@@ -9,22 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-import sae.statisalle.modele.Fichier;
 import sae.statisalle.modele.Serveur;
 import sae.statisalle.modele.Session;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Classe principale du package controleur, qui va lier les vues entre-elles
@@ -133,73 +125,33 @@ public class MainControleur extends Application {
         return fenetrePrincipale;
     }
 
-    /**
-     * Méthode principale pour lier les interfaces.
-     *
-     * @param primaryStage Le stage principal de l'application.
-     */
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader chargeurFXMLAccueil= new FXMLLoader();
-            chargeurFXMLAccueil.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/accueil.fxml"));
-            Parent conteneur = chargeurFXMLAccueil.load();
-            Accueil = new Scene(conteneur);
+            // Tableau des noms et chemins des vues
+            Map<String, String> vues = Map.of(
+                    "Accueil", "/sae/statisalle/vue/accueil.fxml",
+                    "AideAccueil", "/sae/statisalle/vue/aide/aideAccueil.fxml",
+                    "AideConnexion", "/sae/statisalle/vue/aide/aideConnexion.fxml",
+                    "AideEnvoyer", "/sae/statisalle/vue/aide/aideEnvoyer.fxml",
+                    "AideImporter", "/sae/statisalle/vue/aide/aideImporter.fxml",
+                    "Connexion", "/sae/statisalle/vue/connexion.fxml",
+                    "Envoyer", "/sae/statisalle/vue/envoyer.fxml",
+                    "Importer", "/sae/statisalle/vue/importer.fxml",
+                    "Visualiser", "/sae/statisalle/vue/affichage.fxml",
+                    "AideAffichage", "/sae/statisalle/vue/aide/aideAffichage.fxml"
+            );
 
-            FXMLLoader chargeurFXMLAideAccueil = new FXMLLoader();
-            chargeurFXMLAideAccueil.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/aideAccueil.fxml"));
-            conteneur = chargeurFXMLAideAccueil.load();
-            AideAccueil = new Scene(conteneur);
+            // Chargement des scènes dans une boucle
+            for (Map.Entry<String, String> entry : vues.entrySet()) {
+                FXMLLoader chargeur = new FXMLLoader();
+                chargeur.setLocation(getClass().getResource(entry.getValue()));
+                Parent conteneur = chargeur.load();
 
-            FXMLLoader chargeurFXMLAideConnexion = new FXMLLoader();
-            chargeurFXMLAideConnexion.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/aideConnexion.fxml"));
-            conteneur = chargeurFXMLAideConnexion.load();
-            AideConnexion = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLAideEnvoyer = new FXMLLoader();
-            chargeurFXMLAideEnvoyer.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/aideEnvoyer.fxml"));
-            conteneur = chargeurFXMLAideEnvoyer.load();
-            AideEnvoyer = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLAideImporter = new FXMLLoader();
-            chargeurFXMLAideImporter.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/aideImporter.fxml"));
-            conteneur = chargeurFXMLAideImporter.load();
-            AideImporter = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLConnexion = new FXMLLoader();
-            chargeurFXMLConnexion.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/connexion.fxml"));
-            conteneur = chargeurFXMLConnexion.load();
-            Connexion = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLEnvoyer = new FXMLLoader();
-            chargeurFXMLEnvoyer.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/envoyer.fxml"));
-            conteneur = chargeurFXMLEnvoyer.load();
-            Envoyer = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLImporter = new FXMLLoader();
-            chargeurFXMLImporter.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/importer.fxml"));
-            conteneur = chargeurFXMLImporter.load();
-            Importer = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLAffichage = new FXMLLoader();
-            chargeurFXMLAffichage.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/affichage.fxml"));
-            conteneur = chargeurFXMLAffichage.load();
-            Visualiser = new Scene(conteneur);
-
-            FXMLLoader chargeurFXMLAideAffichage = new FXMLLoader();
-            chargeurFXMLAideAffichage.setLocation(getClass()
-                    .getResource("/sae/statisalle/vue/aide/aideAffichage.fxml"));
-            conteneur = chargeurFXMLAideAffichage.load();
-            AideAffichage = new Scene(conteneur);
+                Field champScene = this.getClass().getDeclaredField(entry.getKey());
+                champScene.setAccessible(true);
+                champScene.set(this, new Scene(conteneur));
+            }
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
@@ -207,8 +159,8 @@ public class MainControleur extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            System.err.println("Erreur lors du chargement des vues : "
-                               + e.getMessage());
+            System.err.println("Erreur lors du chargement des vues : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -236,8 +188,6 @@ public class MainControleur extends Application {
 
                 // Le serveur continue à accepter des connexions jusqu'à ce qu'il soit explicitement arrêté
                 acceptClientThread.join();
-
-                afficherPopupFichierRecu(serveur.renvoyerDonnee());
             } catch (IOException | InterruptedException e) {
                 System.err.println("[MAIN] Erreur lors de l'initialisation du serveur : " + e.getMessage());
             } finally {
@@ -259,90 +209,6 @@ public class MainControleur extends Application {
     public static void stopThreadServeur() {
         serveurThread.interrupt();
         System.out.println("[MAIN] Thread serveur arrêté.");
-    }
-
-    /**
-     * Affiche une popup avec des boutons d'action pour gérer un fichier reçu.
-     */
-    public static void afficherPopupFichierRecu(String donneeRecu) {
-        Alert popup = new Alert(Alert.AlertType.CONFIRMATION);
-        popup.setTitle("Fichier Reçu");
-        popup.setHeaderText("Vous avez reçu un (ou plusieurs) fichier(s).");
-        popup.setContentText("Que souhaitez-vous faire ?");
-
-        ButtonType boutonCharger = new ButtonType("Charger dans l'application");
-        ButtonType boutonVisualiser = new ButtonType("Visualiser");
-        ButtonType boutonAnnuler = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        popup.getButtonTypes().setAll(boutonCharger, boutonVisualiser, boutonAnnuler);
-
-        Optional<ButtonType> resultat = popup.showAndWait();
-
-        String reponseAvecRetourLigne = donneeRecu.replace("/N", "\n")
-                                                  .replace("/R", "\r");
-
-        String[] fichiers = reponseAvecRetourLigne.split("/EOF");
-
-        if (resultat.isPresent()) {
-            if (resultat.get() == boutonVisualiser) {
-                afficherPopupVisualiser(reponseAvecRetourLigne);
-            } else if (resultat.get() == boutonCharger) {
-                String dateDuJour = new SimpleDateFormat("ddMMyyyy").format(new Date());
-
-                try {
-                    // Vérifier et créer le répertoire si nécessaire
-                    File dossier = new File("src/main/resources/csv/");
-                    if (!dossier.exists() && !dossier.mkdirs()) {
-                        throw new IOException("Erreur lors de la création du répertoire.");
-                    }
-
-                    // parcourir chaque fichier extrait et les sauvegarder
-                    for (String fichier : fichiers) {
-                        List<String> donneesEnListe = Arrays.asList(fichier.split("\n"));
-
-                        String nomFichier = Fichier.getTypeDepuisContenu(
-                                                        donneesEnListe
-                                            ) + "_" + dateDuJour + ".csv";
-
-                        // créer ou réécrire le fichier avec les données reçues
-                        Fichier.ecritureFichier(donneesEnListe, "src/main/resources/csv/" + nomFichier);
-                        System.out.println("Les données ont été sauvegardées dans : " + nomFichier);
-                    }
-
-                    // renvoie l'utilisateur vers l'affichage des données
-                    MainControleur.activerAffichage();
-                } catch (IOException e) {
-                    showAlert("Erreur d'importation", "Impossible de charger les données dans l'application : " + e.getMessage());
-                }
-            } else {
-                System.out.println("Action annulée.");
-                popup.close();
-            }
-        }
-    }
-
-    private static void afficherPopupVisualiser(String donnees) {
-        Dialog<ButtonType> popupVisualiser = new Dialog<>();
-        popupVisualiser.setTitle("Visualisation des données");
-        popupVisualiser.setHeaderText("Données reçues");
-
-        // création du contenu de la popup
-        String contenu = donnees.replace("/EOF", "\n\n");
-        TextArea zoneTexte = new TextArea(contenu);
-        zoneTexte.setEditable(false);
-        zoneTexte.setWrapText(true);
-
-        ButtonType boutonRetour = new ButtonType("Retour", ButtonBar.ButtonData.OK_DONE);
-        popupVisualiser.getDialogPane().getButtonTypes().add(boutonRetour);
-
-        popupVisualiser.getDialogPane().setContent(zoneTexte);
-
-        // gestion du retour
-        popupVisualiser.showAndWait().ifPresent(result -> {
-            if (result == boutonRetour) {
-                afficherPopupFichierRecu(donnees);
-            }
-        });
     }
 
     /**

@@ -1,6 +1,7 @@
 package sae.statisalle.modele;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -78,11 +79,17 @@ public class Vigenere {
     private static void creerAlphabet() {
         if (alphabet != null) return;
         alphabet = new ArrayList<>();
-        for (char c = 'a'; c <= 'z'; c++) alphabet.add(c);
-        for (char c = 'A'; c <= 'Z'; c++) alphabet.add(c);
-        for (char c : "àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0123456789!@#$%^&*()-_=+[]{}\\|;:'\",.<>?/`~ ".toCharArray()) {
-            alphabet.add(c);
-        }
+        for (char c = '0'; c <= '9'; c++) alphabet.add(c); // chiffre
+        for (char c = 'a'; c <= 'z'; c++) alphabet.add(c); // lettres minuscules
+        for (char c = 'A'; c <= 'Z'; c++) alphabet.add(c); // lettres majuscules
+        Collections.addAll(alphabet,                       // caractères spéciaux
+                'à', 'â', 'ä', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'ö',
+                'ù', 'û', 'ü', 'ç', 'À', 'Â', 'Ä', 'É', 'È', 'Ê', 'Ë', 'Î', 'Ï',
+                'Ô', 'Ö', 'Ù', 'Û', 'Ü', 'Ç', '!', '@', '#', '$', '%', '^', '&',
+                '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', '\\',
+                '|', ';', ':', '\'', '\"', ',', '.', '<', '>', '/', '?', '`',
+                '~', ' '
+        );
     }
 
     private static int ajusterTailleClef(String donnees, int cle) {

@@ -1,5 +1,7 @@
 package sae.statisalle.modele;
 
+import sae.statisalle.controleur.RevoirNomClasse;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,42 +25,66 @@ public class Serveur implements Connexion {
             serverSocket = new ServerSocket(port);
         }
 
+        // TODO tester l'efficacité
         String ipEffective = serverSocket.getInetAddress().getHostAddress();
         if (ipEffective.equals("0.0.0.0")) {
             ipEffective = InetAddress.getLocalHost().getHostAddress();
         }
-
         System.out.println("[SERVEUR] Démarré sur " + ipEffective + ":" + port);
     }
 
+    public void envoyerClePublic(String clePublique) {
+        envoyer(clePublique);  // Envoie la clé publique au client
+        System.out.println("[SERVEUR] Clé publique envoyée : " + clePublique);
+
+    }
+
     public void accepterClients() {
-        while (!isClosed) { // Tant que le serveur n'est pas fermé, accepter des connexions
+        while (!isClosed) {
             try {
-                clientSocket = serverSocket.accept(); // Attente d'une connexion client
-                fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
-                fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                clientSocket = serverSocket.accept();
+                fluxSortie = new PrintWriter(clientSocket.getOutputStream(),
+                                    true);
+                fluxEntree = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream())
+                );
                 Client client = new Client();
-                System.out.println("[SERVEUR] Client connecté : " + client.renvoyerIP().getHostAddress());
+                System.out.println("[SERVEUR] Client connecté : "
+                                   + client.renvoyerIP().getHostAddress());
 
                 // Créer un thread pour gérer cette connexion client
                 Thread clientThread = new Thread(() -> {
                     try {
-                        // Traiter la communication avec le client
+                        String initialisationDiffieHellman = recevoir();
+                        System.out.println("[SERVEUR] Clé publique du client "
+                                + "reçue : " + initialisationDiffieHellman);
+
+                        String[] parties = initialisationDiffieHellman
+                                                            .split(" ; ");
+
+                        int clePublicClient = Integer.parseInt(parties[0]);
+                        Session.setClePublicClient(clePublicClient);
+                        int b = 15;//DiffieHellman.genererEntierPremier(0,999999999);
+
+                        int p = Integer.parseInt(parties[1]);
+                        int g = Integer.parseInt(parties[2]);
+
+                        String clePartageeGB = DiffieHellman.expoModulaire(g, b, p) + " ; " + p + " ; " + g;
+                        envoyerClePublic(clePartageeGB);
+
                         String requete = recevoir();
                         System.out.println("[SERVEUR] Requête reçue : " + requete);
+                        //RevoirNomClasse.afficherPopupFichierRecu(requete);
                         String reponse = traiterRequete(requete);
                         envoyer(reponse);
-                        System.out.println("[SERVEUR] Réponse envoyée : " + reponse);
                     } catch (Exception e) {
                         System.err.println("[SERVEUR] Erreur lors de la gestion du client : " + e.getMessage());
                     } finally {
-                        // Fermer la connexion avec le client
                         fermer();
-                        System.out.println("[SERVEUR] Connexion client fermée.");
                     }
                 });
 
-                clientThread.start(); // Lancer le thread de gestion du client
+                clientThread.start();
             } catch (IOException e) {
                 if (isClosed) {
                     System.out.println("[SERVEUR] Le serveur est arrêté, plus de clients à accepter.");
@@ -121,7 +147,7 @@ public class Serveur implements Connexion {
         if (requete == null || requete.isEmpty()) {
             return "Requête invalide.";
         }
-        return "Données bien reçues et traitées : " + requete;
+        return "Données bien envoyé :" +requete;
     }
 
     /**
@@ -133,10 +159,7 @@ public class Serveur implements Connexion {
     public InetAddress renvoyerIP() {
         // 8.8.8.8 correspond au DNS de google
         try (Socket socket = new Socket("8.8.8.8", 53)) {
-            InetAddress ipLocale = socket.getLocalAddress();
-            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
-            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
-            return ipLocale;
+            return socket.getLocalAddress();
         } catch (IOException e) {
             System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
             return null; // retourne null pour éviter les erreurs

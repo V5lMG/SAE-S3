@@ -5,6 +5,7 @@
 package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -112,21 +113,34 @@ public class ControleurConnexion {
             return;
         }
 
-        // tentative de connexion
-        try {
-            client.connecter(ip, port);
-            Session.setClient(client);
+        // mettre le curseur en mode chargement
+        MainControleur.getFenetrePrincipale().getScene().setCursor(Cursor.WAIT);
 
-            showAlert(AlertType.INFORMATION, "Connexion réussie",
-                    "Connexion établie avec l'adresse IP : "
-                            + ip + " : " + portText);
-            MainControleur.activerEnvoyer();
-        } catch (IOException e) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
-                    "Impossible de se connecter au serveur.");
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        // envoie de donnée dans un thread séparé pour éviter les bloquages
+        new Thread(() -> {
+            try {
+                client.connecter(ip, port);
+                Session.setClient(client);
+                Session.setIpServeur(ip);
+
+                // revenir sur le thread principal pour mettre à jour l'UI
+                javafx.application.Platform.runLater(() -> {
+                    MainControleur.getFenetrePrincipale().getScene()
+                                  .setCursor(Cursor.DEFAULT);
+                    showAlert(AlertType.INFORMATION, "Connexion réussie",
+                            "Connexion établie avec l'adresse IP : "
+                                     + ip + " : " + port);
+                    MainControleur.activerEnvoyer();
+                });
+            } catch (IOException e) {
+                javafx.application.Platform.runLater(() -> {
+                    MainControleur.getFenetrePrincipale().getScene()
+                                  .setCursor(Cursor.DEFAULT);
+                    showAlert(AlertType.ERROR, "Erreur de connexion",
+                            "Impossible de se connecter au serveur.");
+                });
+            }
+        }).start();
     }
 
     /**

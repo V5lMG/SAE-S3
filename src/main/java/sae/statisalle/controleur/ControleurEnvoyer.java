@@ -10,9 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import sae.statisalle.modele.Client;
-import sae.statisalle.modele.Serveur;
-import sae.statisalle.modele.Session;
+import sae.statisalle.modele.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -154,7 +152,7 @@ public class ControleurEnvoyer {
             String port = Session.getPortServeur();
             client.connecter(ip, Integer.parseInt(port));
 
-            // Préparer les données à envoyer
+            // préparer les données à envoyer
             StringBuilder contenuTotal = new StringBuilder();
             for (String cheminFichier : cheminsDesFichiers) {
                 File fichier = new File(cheminFichier);
@@ -175,9 +173,22 @@ public class ControleurEnvoyer {
                 contenuTotal.append("/EOF");
             }
 
+            String contenuFormate = contenuTotal.toString().replace("\n", "/N").replace("\r", "/R");
+
+            int p = 23;//DiffieHellman.genererEntierPremier(0,999999999);
+            int g = 5;//DiffieHellman.genererGenerateur(p);
+            int a = 6;//DiffieHellman.genererEntierPremier(0,999999999);;
+
+            String clePartageeGA = DiffieHellman.expoModulaire(g, a, p) + " ; " + p + " ; " + g;
+            client.envoyerClePublic(clePartageeGA);
+
+            clePartageeGA = client.recevoirClePublic();
+            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, Integer.parseInt(clePartageeGA));
+
             // Envoi des données au serveur
-            client.envoyer(contenuTotal.toString().replace("\n", "/N").replace("\r", "/R"));
+            client.envoyer(donneesChiffrees);
             String reponse = client.recevoir();
+            System.out.println("Le client recoit : " + reponse);
 
             afficherConfirmationEtRetour();
         } catch (Exception e) {
@@ -200,7 +211,7 @@ public class ControleurEnvoyer {
         // Si l'IP est localhost, ne pas quitter la page d'envoi
         if (ipSource.equals("localhost") || ipSource.equals("127.0.0.1 ")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Envoi réussi");
+            alert.setTitle("Envoi réussi (local)");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
             alert.showAndWait();
