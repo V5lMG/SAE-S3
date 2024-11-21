@@ -2,7 +2,6 @@ package sae.statisalle.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -21,6 +20,21 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+/**
+ * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
+ *
+ * Ce contrôleur applique des filtres sur :
+ * <ul>
+ *     <li>Le nom des salles</li>
+ *     <li>Le nom de l'employé que a reservé la salle</li>
+ *     <li>Les dates de réservation</li>
+ *     <li>Les créneaux horaires</li>
+ * </ul>
+ * et retourne les données filtrées à la vue.
+ *
+ * @author Montes Robin
+ * @author Cambon Mathias
+ */
 public class Affichage {
 
     @FXML
@@ -66,7 +80,9 @@ public class Affichage {
     @FXML
     private ComboBox<String> filtreSalle;
     @FXML
-    private ComboBox<String> filtreDate;
+    private ComboBox<String> filtreDateDebut;
+    @FXML
+    private ComboBox<String> filtreDateFin;
     @FXML
     private ComboBox<String> filtreHeureD;
     @FXML
@@ -80,7 +96,9 @@ public class Affichage {
     @FXML
     private Text textfiltreSalle;
     @FXML
-    private Text textfiltreDate;
+    private Text textfiltreDateDebut;
+    @FXML
+    private Text textfiltreDateFin;
     @FXML
     private Text textfiltreHeureD;
     @FXML
@@ -145,12 +163,12 @@ public class Affichage {
 
     @FXML
     void actionRetour() {
-
         // Rendre les filtres invisibles
         filtreEmploye.setVisible(false);
         filtreSalle.setVisible(false);
         filtreActivite.setVisible(false);
-        filtreDate.setVisible(false);
+        filtreDateDebut.setVisible(false);
+        filtreDateFin.setVisible(false);
         filtreHeureD.setVisible(false);
         filtreHeureF.setVisible(false);
         reinitialiserFiltre.setVisible(false);
@@ -159,7 +177,8 @@ public class Affichage {
         textfiltreEmploye.setVisible(false);
         textfiltreSalle.setVisible(false);
         textfiltreActivite.setVisible(false);
-        textfiltreDate.setVisible(false);
+        textfiltreDateDebut.setVisible(false);
+        textfiltreDateFin.setVisible(false);
         textfiltreHeureD.setVisible(false);
         textfiltreHeureF.setVisible(false);
         grandTableau.setVisible(false);
@@ -273,6 +292,7 @@ public class Affichage {
                         case "Reservation" -> {
                             for (List<String> ligne : contenu) {
                                 if (ligne.size() >= 12) {
+
                                     Reservation reservation = new Reservation(
                                             ligne.get(0), ligne.get(1),
                                             ligne.get(2), ligne.get(3),
@@ -379,8 +399,8 @@ public class Affichage {
     private void afficherFiltre() {
         // création d'une liste contenant tous les filtres
         List<Node> filtres = Arrays.asList(
-                filtreEmploye, filtreSalle, filtreActivite, filtreDate, filtreHeureD, filtreHeureF,
-                textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDate, textfiltreHeureD,
+                filtreEmploye, filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
@@ -451,7 +471,8 @@ public class Affichage {
         for (Reservation date : listReservation) {
             datesUniques.add(date.getDateR());
         }
-        remplirComboBox(filtreDate, datesUniques);
+        remplirComboBox(filtreDateDebut, datesUniques);
+        remplirComboBox(filtreDateFin, datesUniques);
     }
 
     private void remplirComboBoxHeuresD() {
@@ -488,7 +509,8 @@ public class Affichage {
         filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreDate.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
     }
@@ -500,8 +522,10 @@ public class Affichage {
         textfiltreSalle.setVisible(false);
         filtreActivite.setVisible(false);
         textfiltreActivite.setVisible(false);
-        filtreDate.setVisible(false);
-        textfiltreDate.setVisible(false);
+        filtreDateDebut.setVisible(false);
+        filtreDateFin.setVisible(false);
+        textfiltreDateDebut.setVisible(false);
+        textfiltreDateFin.setVisible(false);
         filtreHeureD.setVisible(false);
         textfiltreHeureD.setVisible(false);
         filtreHeureF.setVisible(false);
@@ -526,11 +550,18 @@ public class Affichage {
             filtreEmploye.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
-        if (filtreDate != null) {
-            if (!filtreDate.getItems().contains("Tous")) {
-                filtreDate.getItems().add(0, "Tous");
+        if (filtreDateDebut != null) {
+            if (!filtreDateDebut.getItems().contains("Tous")) {
+                filtreDateDebut.getItems().add(0, "Tous");
             }
-            filtreDate.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
+            filtreDateDebut.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
+        }
+
+        if (filtreDateFin != null) {
+            if (!filtreDateFin.getItems().contains("Tous")) {
+                filtreDateFin.getItems().add(0, "Tous");
+            }
+            filtreDateFin.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreActivite != null) {
@@ -613,7 +644,8 @@ public class Affichage {
         String employeFiltre = filtreEmploye.getValue();
         String activiteFiltre = filtreActivite.getValue();
         String salleFiltre = filtreSalle.getValue();
-        String dateFiltre = filtreDate.getValue();
+        String dateFiltreDebut = filtreDateDebut.getValue();
+        String dateFiltreFin = filtreDateFin.getValue();
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
@@ -627,7 +659,7 @@ public class Affichage {
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
                             (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
                             (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre)) &&
-                            (dateFiltre == null || dateFiltre.equals("Tous") || reservation.getDateR().equals(dateFiltre));
+                            (dateFiltreDebut == null || dateFiltreDebut.equals("Tous") || reservation.getDateR().equals(dateFiltreDebut));
 
             // Ajouter la vérification pour les heures
             boolean matchesHeureDebut = true;
