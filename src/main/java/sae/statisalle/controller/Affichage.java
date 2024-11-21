@@ -16,13 +16,14 @@ import sae.statisalle.modele.Fichier;
 import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
  * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
- *
  * Ce contrôleur applique des filtres sur :
  * <ul>
  *     <li>Le nom des salles</li>
@@ -387,13 +388,13 @@ public class Affichage {
         mettreAJourFiltreHeureFin();
         mettreAJourFiltreHeureDebut();
 
+        mettreAJourFiltreDateDebut();
+        mettreAJourFiltreDateFin();
+
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
 
     }
-
-
-
 
     @FXML
     private void afficherFiltre() {
@@ -637,7 +638,43 @@ public class Affichage {
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
+    private void mettreAJourFiltreDateDebut() {
+        // Extraire les dates de début uniques des réservations
+        Set<String> datesDebutUniques = new HashSet<>();
 
+        for (Reservation reservation : listReservation) {
+            datesDebutUniques.add(reservation.getDateR());
+        }
+
+        // Convertir en liste et trier les dates de début
+        List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
+        Collections.sort(datesDebutListe);
+
+        // Ajouter l'option "Tous" en tête de liste
+        datesDebutListe.add(0, "Tous");
+
+        // Mettre à jour le filtre de date de début avec la liste de dates
+        filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
+    }
+
+    private void mettreAJourFiltreDateFin() {
+        // Extraire les dates de fin uniques des réservations
+        Set<String> datesFinUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            datesFinUniques.add(reservation.getDateR());  // Si tu as une méthode pour récupérer la date de fin, adapte cette ligne
+        }
+
+        // Convertir en liste et trier les dates de fin
+        List<String> datesFinListe = new ArrayList<>(datesFinUniques);
+        Collections.sort(datesFinListe);
+
+        // Ajouter l'option "Tous" en tête de liste
+        datesFinListe.add(0, "Tous");
+
+        // Mettre à jour le filtre de date de fin avec la liste de dates
+        filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
+    }
 
     private void appliquerFiltres() {
         // Récupérer les filtres sélectionnés
@@ -658,43 +695,51 @@ public class Affichage {
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
                             (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre)) &&
-                            (dateFiltreDebut == null || dateFiltreDebut.equals("Tous") || reservation.getDateR().equals(dateFiltreDebut));
+                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-            // Ajouter la vérification pour les heures
+            // Vérification pour les dates de début
+            boolean matchesDateDebut = true;
+            if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
+                LocalDate dateDebut = parseDate(dateFiltreDebut);
+                if (dateDebut != null && reservation.getDateR() != null) {
+                    // Comparer les dates de début
+                    matchesDateDebut = reservation.getDateR().compareTo(String.valueOf(dateDebut)) >= 0;
+                }
+            }
+
+            // Vérification pour les dates de fin
+            boolean matchesDateFin = true;
+            if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
+                LocalDate dateFin = parseDate(dateFiltreFin);
+                if (dateFin != null && reservation.getDateR() != null) {
+                    // Comparer les dates de fin
+                    matchesDateFin = reservation.getDateR().compareTo(String.valueOf(dateFin)) >= 0;
+                }
+            }
+
+            // Appliquer les heures
             boolean matchesHeureDebut = true;
             boolean matchesHeureFin = true;
 
-            // Vérification pour l'heure de début
             if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
                 LocalTime heureDebut = parseHeure(heureDebutFiltre);
                 if (heureDebut != null && reservation.getHeureDebut() != null) {
-                    // Comparer les heures de début avec compareTo
                     matchesHeureDebut = reservation.getHeureDebut().compareTo(String.valueOf(heureDebut)) >= 0;
                 }
             }
 
-            // Vérification pour l'heure de fin
             if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
-                // Convertir l'heure de fin du filtre en LocalTime
                 LocalTime heureFin = parseHeure(heureFinFiltre);
-
                 if (heureFin != null && reservation.getHeureFin() != null) {
-                    // Convertir l'heure de fin de la réservation en LocalTime si nécessaire
                     LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
-
                     if (heureFinReservation != null) {
-                        // Comparer les heures de fin
-                        matchesHeureFin = !heureFinReservation.isAfter(heureFin); // heureFinReservation <= heureFin
-                    } else {
-                        // Si l'heure de fin de la réservation est mal formatée, ne pas inclure cette réservation
-                        matchesHeureFin = false;
+                        matchesHeureFin = !heureFinReservation.isAfter(heureFin);
                     }
                 }
             }
 
             // Si tous les filtres sont validés, ajouter la réservation filtrée
-            if (matchesFiltre && matchesHeureDebut && matchesHeureFin) {
+            if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
         }
@@ -702,7 +747,6 @@ public class Affichage {
         // Mettre à jour la table avec les résultats filtrés
         tabReservation.setItems(reservationsFiltrees);
     }
-
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
@@ -715,6 +759,21 @@ public class Affichage {
             return null; // Si l'heure est invalide, retourner null
         }
     }
+
+    private LocalDate parseDate(String date) {
+        try {
+            // Créer un DateTimeFormatter avec le format "dd/MM/yyyy"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            // Utiliser le formatter pour convertir la chaîne en LocalDate
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Erreur de format de date: " + date);
+            return null; // Si la date est invalide, retourner null
+        }
+    }
+
+
 
 
     @FXML
