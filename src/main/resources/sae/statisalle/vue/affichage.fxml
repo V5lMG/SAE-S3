@@ -20,7 +20,7 @@
     <center>
         <VBox alignment="CENTER" prefHeight="400.0" prefWidth="400.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="400.0" prefWidth="400.0">
-                <Button fx:id="btnAfficherTableaux" layoutX="690.0" layoutY="180.0" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Charger les données" visible="true" />
+                <Button fx:id="btnAfficherTableaux" layoutX="694.0" layoutY="216.0" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Charger les données" visible="true" />
                 <Pane prefHeight="400.0" prefWidth="400.0">
                     <ComboBox fx:id="filtreEmploye" editable="true" layoutX="36.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false" />
                     <Text fx:id="textfiltreEmploye" layoutX="36.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employé :" visible="false" />

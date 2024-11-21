@@ -691,46 +691,53 @@ public class Affichage {
 
         for (Reservation reservation : listReservation) {
 
-            // Appliquer les autres filtres
+            // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
                             (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
                             (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-            // Vérification pour les dates de début
+            // Appliquer les filtres de date
             boolean matchesDateDebut = true;
+            boolean matchesDateFin = true;
+
             if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
                 LocalDate dateDebut = parseDate(dateFiltreDebut);
-                if (dateDebut != null && reservation.getDateR() != null) {
-                    // Comparer les dates de début
-                    matchesDateDebut = reservation.getDateR().compareTo(String.valueOf(dateDebut)) >= 0;
+                if (dateDebut != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateDebut = !dateReservation.isBefore(dateDebut);
+                    }
                 }
             }
 
-            // Vérification pour les dates de fin
-            boolean matchesDateFin = true;
             if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
                 LocalDate dateFin = parseDate(dateFiltreFin);
-                if (dateFin != null && reservation.getDateR() != null) {
-                    // Comparer les dates de fin
-                    matchesDateFin = reservation.getDateR().compareTo(String.valueOf(dateFin)) >= 0;
+                if (dateFin != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateFin = !dateReservation.isAfter(dateFin);
+                    }
                 }
             }
 
-            // Appliquer les heures
+            // Appliquer les filtres d'heure
             boolean matchesHeureDebut = true;
             boolean matchesHeureFin = true;
 
             if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
                 LocalTime heureDebut = parseHeure(heureDebutFiltre);
-                if (heureDebut != null && reservation.getHeureDebut() != null) {
-                    matchesHeureDebut = reservation.getHeureDebut().compareTo(String.valueOf(heureDebut)) >= 0;
+                if (heureDebut != null) {
+                    LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
+                    if (heureDebutReservation != null) {
+                        matchesHeureDebut = !heureDebutReservation.isBefore(heureDebut);
+                    }
                 }
             }
 
             if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
                 LocalTime heureFin = parseHeure(heureFinFiltre);
-                if (heureFin != null && reservation.getHeureFin() != null) {
+                if (heureFin != null) {
                     LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
                     if (heureFinReservation != null) {
                         matchesHeureFin = !heureFinReservation.isAfter(heureFin);
@@ -738,7 +745,7 @@ public class Affichage {
                 }
             }
 
-            // Si tous les filtres sont validés, ajouter la réservation filtrée
+            // Ajouter la réservation si tous les filtres sont validés
             if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
@@ -772,9 +779,6 @@ public class Affichage {
             return null; // Si la date est invalide, retourner null
         }
     }
-
-
-
 
     @FXML
     private void handleReinitialiserFiltre() {
