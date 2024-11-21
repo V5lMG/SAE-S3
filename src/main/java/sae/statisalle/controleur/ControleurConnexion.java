@@ -2,7 +2,7 @@
  * Connexion.java              31/10/2024
  * Pas de droits d'auteur ni de copyright
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -10,9 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import sae.statisalle.modele.Client;
-import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
-import sae.statisalle.exception.MauvaiseConnexionServeur;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -25,9 +23,9 @@ import java.net.InetAddress;
  *
  * @author valentin.munier-genie
  */
-public class Connexion {
+public class ControleurConnexion {
 
-    /** Instance de la classe Reseau. */
+    /** Instance de la classe Client. */
     private final Client client = new Client();
 
     @FXML
@@ -117,7 +115,6 @@ public class Connexion {
         // tentative de connexion
         try {
             client.connecter(ip, port);
-            Session.setAdresseIp(ip + ":" + portText);
             Session.setClient(client);
 
             showAlert(AlertType.INFORMATION, "Connexion réussie",
@@ -125,7 +122,10 @@ public class Connexion {
                             + ip + " : " + portText);
             MainControleur.activerEnvoyer();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            showAlert(AlertType.ERROR, "Erreur de connexion",
+                    "Impossible de se connecter au serveur.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -143,7 +143,8 @@ public class Connexion {
      */
     @FXML
     void actionAfficherIp() {
-        InetAddress ip = Reseau.renvoyerIP();
+        Client clientIP = new Client();
+        InetAddress ip = clientIP.renvoyerIP();
         if (ip != null) {
             String ipAddress = ip.getHostAddress();
             btnAfficherIp.setText(ipAddress);

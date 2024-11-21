@@ -1,7 +1,7 @@
-package sae.statisalle.controller.aides;
+package sae.statisalle.controleur.aides;
 
 import javafx.fxml.FXML;
-import sae.statisalle.controller.MainControleur;
+import sae.statisalle.controleur.MainControleur;
 
 public class AideAffichage {
 

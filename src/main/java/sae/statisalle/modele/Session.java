@@ -13,26 +13,11 @@ package sae.statisalle.modele;
  * @author rodrigo.xavier-taborda
  */
 public class Session {
-    private static String adresseIp;
     private static Client client;
+    private static Serveur serveur;
     private static String ipServeur;
-    private static String portServeur;
+    private static String portServeur = "54321";
 
-    /**
-     * Récupère l'adresse IP de la session.
-     * @return l'adresse IP de la session.
-     */
-    public static String getAdresseIp() {
-        return adresseIp;
-    }
-
-    /**
-     * Définit l'adresse IP de la session.
-     * @param ip l'adresse IP à définir pour la session.
-     */
-    public static void setAdresseIp(String ip) {
-        adresseIp = ip;
-    }
 
     /**
      * Récupère l'instance de la session.
@@ -81,5 +66,21 @@ public class Session {
      */
     public static void setPortServeur(String portServeur) {
         Session.portServeur = portServeur;
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public static Serveur getServeur() {
+        return serveur;
+    }
+
+    /**
+     * TODO
+     * @param serveur
+     */
+    public static void setServeur(Serveur serveur) {
+        Session.serveur = serveur;
     }
 }

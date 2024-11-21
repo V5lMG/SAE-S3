@@ -2,7 +2,7 @@
  * Importer.java               24/10/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author valentin.munier-genie
  * @author erwan.thierry
  */
-public class Importer {
+public class ControleurImporter {
 
     public Button btnFichier;
 

@@ -2,7 +2,7 @@
  * Envoyer.java                 30/10/2024
  * IUT DE RODEZ                 Pas de copyrights
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -11,17 +11,13 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sae.statisalle.modele.Client;
-import sae.statisalle.modele.Reseau;
+import sae.statisalle.modele.Serveur;
 import sae.statisalle.modele.Session;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +28,7 @@ import java.util.List;
  * @author valentin.munier-genie
  * @author erwan.thierry
  */
-public class Envoyer {
+public class ControleurEnvoyer {
 
     /**
      * Instance de la classe Client pour la connexion réseau.
@@ -97,7 +93,8 @@ public class Envoyer {
      */
     @FXML
     private void actionChoixFichier() {
-        ipFx.setText(Session.getAdresseIp());
+        Serveur serveur = Session.getServeur();
+        ipFx.setText(serveur.renvoyerIP().getHostAddress());
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir des fichiers");
@@ -153,9 +150,9 @@ public class Envoyer {
         try {
             // Initialisation du client et connexion au serveur
             client = Session.getClient();
-            String ip = Session.getAdresseIp().split(":")[0];
-            int port = Integer.parseInt(Session.getAdresseIp().split(":")[1]);
-            client.connecter(ip, port);
+            String ip = Session.getIpServeur();
+            String port = Session.getPortServeur();
+            client.connecter(ip, Integer.parseInt(port));
 
             // Préparer les données à envoyer
             StringBuilder contenuTotal = new StringBuilder();
@@ -179,7 +176,7 @@ public class Envoyer {
             }
 
             // Envoi des données au serveur
-            client.envoyer(contenuTotal.toString());
+            client.envoyer(contenuTotal.toString().replace("\n", "/N").replace("\r", "/R"));
             String reponse = client.recevoir();
 
             afficherConfirmationEtRetour();
@@ -198,7 +195,7 @@ public class Envoyer {
      */
     private void afficherConfirmationEtRetour() {
         // récup l'ip et enlever le port
-        String ipSource = Session.getAdresseIp().split(":")[0];
+        String ipSource = Session.getIpServeur();
 
         // Si l'IP est localhost, ne pas quitter la page d'envoi
         if (ipSource.equals("localhost") || ipSource.equals("127.0.0.1 ")) {

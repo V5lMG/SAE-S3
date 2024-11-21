@@ -2,10 +2,9 @@
  * MainControleur.java         30/10/2024
  * Pas de droits d'auteur ni de copyright
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,13 +13,13 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-import sae.statisalle.modele.Client;
 import sae.statisalle.modele.Fichier;
-import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Serveur;
+import sae.statisalle.modele.Session;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,8 +35,6 @@ import java.util.Optional;
  */
 public class MainControleur extends Application {
 
-    /* config serveur */
-    private static Reseau serveur;
     private static Thread serveurThread;
 
     /* déclaration de l'ensemble des scenes */
@@ -227,7 +224,10 @@ public class MainControleur extends Application {
             try {
                 // Initialiser le serveur
                 serveur = new Serveur();
-                serveur.demarrer(54321, null);
+                Session.setServeur(serveur);
+                String ip = Session.getIpServeur();
+                String port = Session.getPortServeur();
+                serveur.demarrer(Integer.parseInt(port), ip);
                 System.out.println("[MAIN] Serveur démarré sur le port 54321, en attente de connexions...");
 
                 // Lancer un thread pour accepter les connexions client en continu
@@ -235,7 +235,7 @@ public class MainControleur extends Application {
                 acceptClientThread.start();
 
                 // Le serveur continue à accepter des connexions jusqu'à ce qu'il soit explicitement arrêté
-                acceptClientThread.join();  // Attend que le thread d'acceptation des clients termine (ou soit interrompu)
+                acceptClientThread.join();
 
                 afficherPopupFichierRecu(serveur.renvoyerDonnee());
             } catch (IOException | InterruptedException e) {
@@ -257,12 +257,8 @@ public class MainControleur extends Application {
      * TODO
      */
     public static void stopThreadServeur() {
-        if (serveur != null) {
-            serveurThread.interrupt();
-            System.out.println("[MAIN] Thread serveur arrêté.");
-        } else {
-            System.out.println("[MAIN] Aucun thread en cours d'exécution.");
-        }
+        serveurThread.interrupt();
+        System.out.println("[MAIN] Thread serveur arrêté.");
     }
 
     /**

@@ -1,4 +1,4 @@
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +18,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Affichage {
+public class ControleurAffichage {
 
     @FXML
     private Button btnAfficherTableaux;

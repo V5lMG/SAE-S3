@@ -2,7 +2,7 @@
  * SauvegarderFichier.java            13/11/2024
  * IUT DE RODEZ                       Pas de copyrights
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import static sae.statisalle.controller.MainControleur.activerAccueil;
+import static sae.statisalle.controleur.MainControleur.activerAccueil;
 
 /**
  * Contrôleur pour la sauvegarde de fichiers dans l'application StatiSalle.

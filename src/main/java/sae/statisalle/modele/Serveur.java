@@ -13,15 +13,22 @@ public class Serveur implements Connexion {
     private Socket clientSocket;
     private BufferedReader fluxEntree;
     private PrintWriter fluxSortie;
-    private volatile boolean isClosed = false; // Indicateur de fermeture du serveur
+    private volatile boolean isClosed = false;
     private String dernierRequeteRecu = "";
 
     public void demarrer(int port, String ip) throws IOException {
-        // Initialiser le serveur socket
-        serverSocket = (ip != null)
-                ? new ServerSocket(port, 50, InetAddress.getByName(ip))
-                : new ServerSocket(port);
-        System.out.println("[SERVEUR] Démarré sur " + ip + ":" + port);
+        if (ip != null && !ip.isEmpty()) {
+            serverSocket = new ServerSocket(port, 50, InetAddress.getByName(ip));
+        } else {
+            serverSocket = new ServerSocket(port);
+        }
+
+        String ipEffective = serverSocket.getInetAddress().getHostAddress();
+        if (ipEffective.equals("0.0.0.0")) {
+            ipEffective = InetAddress.getLocalHost().getHostAddress();
+        }
+
+        System.out.println("[SERVEUR] Démarré sur " + ipEffective + ":" + port);
     }
 
     public void accepterClients() {
@@ -30,7 +37,8 @@ public class Serveur implements Connexion {
                 clientSocket = serverSocket.accept(); // Attente d'une connexion client
                 fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
                 fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                System.out.println("[SERVEUR] Client connecté : " + clientSocket.getInetAddress());
+                Client client = new Client();
+                System.out.println("[SERVEUR] Client connecté : " + client.renvoyerIP().getHostAddress());
 
                 // Créer un thread pour gérer cette connexion client
                 Thread clientThread = new Thread(() -> {
@@ -114,5 +122,24 @@ public class Serveur implements Connexion {
             return "Requête invalide.";
         }
         return "Données bien reçues et traitées : " + requete;
+    }
+
+    /**
+     * Renvoie l'adresse IP de la machine locale utilisée pour se connecter
+     * à un serveur externe et son nom de machine.
+     * @return l'adresse IP de la machine sous forme d'objet InetAddress.
+     */
+    @Override
+    public InetAddress renvoyerIP() {
+        // 8.8.8.8 correspond au DNS de google
+        try (Socket socket = new Socket("8.8.8.8", 53)) {
+            InetAddress ipLocale = socket.getLocalAddress();
+            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
+            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
+            return ipLocale;
+        } catch (IOException e) {
+            System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
+            return null; // retourne null pour éviter les erreurs
+        }
     }
 }

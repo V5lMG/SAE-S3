@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client implements Connexion {
@@ -12,7 +14,8 @@ public class Client implements Connexion {
     private PrintWriter fluxSortie;
 
     public void connecter(String adresse, int port) throws IOException {
-        clientSocket = new Socket(adresse, port);
+        clientSocket = new Socket();
+        clientSocket.connect(new InetSocketAddress(adresse, port), 5000); // Timeout de 5 secondes
         fluxSortie = new PrintWriter(clientSocket.getOutputStream(), true);
         fluxEntree = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         System.out.println("[CLIENT] Connecté au serveur " + adresse + ":" + port);
@@ -43,4 +46,25 @@ public class Client implements Connexion {
             System.err.println("[CLIENT] Erreur lors de la fermeture : " + e.getMessage());
         }
     }
+
+    /**
+     * Renvoie l'adresse IP de la machine locale utilisée pour se connecter
+     * à un serveur externe et son nom de machine.
+     * @return l'adresse IP de la machine sous forme d'objet InetAddress.
+     */
+    @Override
+    public InetAddress renvoyerIP() {
+        // 8.8.8.8 correspond au DNS de google
+        try (Socket socket = new Socket("8.8.8.8", 53)) {
+            InetAddress ipLocale = socket.getLocalAddress();
+            System.out.println("[SCAN] IP locale : " + ipLocale.getHostAddress());
+            System.out.println("[SCAN] Nom de la machine : " + ipLocale.getHostName());
+            return ipLocale;
+        } catch (IOException e) {
+            System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
+            return null; // retourne null pour éviter les erreurs
+        }
+    }
+
+
 }

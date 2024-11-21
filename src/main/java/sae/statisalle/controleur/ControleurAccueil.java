@@ -2,7 +2,7 @@
  * Accueil.java                 14/11/2024
  * IUT DE RODEZ                 Pas de copyrights
  */
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.application.Platform;
@@ -16,14 +16,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sae.statisalle.modele.Reseau;
 import sae.statisalle.modele.Session;
 
 /**
  * TODO
  * @author valentin.munier-genie
  */
-public class Accueil {
+public class ControleurAccueil {
 
     @FXML
     void actionImporter() {
@@ -165,12 +164,17 @@ public class Accueil {
         }
 
         for (String part : ip.split("\\.")) {
-            int num = Integer.parseInt(part);
+            int num;
+            try {
+                num = Integer.parseInt(part);
+            } catch (NumberFormatException e) {
+                return false;
+            }
             if (num < 0 || num > 255) {
                 return false;
             }
         }
 
-        return ip.equals(Reseau.renvoyerIP().getHostAddress());
+        return true;
     }
 }
