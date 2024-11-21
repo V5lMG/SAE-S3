@@ -49,6 +49,15 @@ public class MainControleur extends Application {
     private static Scene Envoyer;
     private static Scene Importer;
     private static Scene Visualiser;
+    private static Scene DonneesCalculees;
+    private static Scene ActionAnalyse;
+    private static Scene Classement;
+    private static Scene Pourcentage;
+    private static Scene AideActionAnalyse;
+    private static Scene AideClassement;
+    private static Scene AideDonneesCalculees;
+    private static Scene AidePourcentage;
+
 
     /* Déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -127,6 +136,62 @@ public class MainControleur extends Application {
     }
 
     /**
+     * Change la scène pour afficher l'écran de choix d'une action d'analyse
+     */
+    public static void activerActionAnalyse () {
+        fenetrePrincipale.setScene(ActionAnalyse);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des données calculés simples
+     */
+    public static void activerDonneesCalculees () {
+        fenetrePrincipale.setScene(DonneesCalculees);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des statistiques par classement
+     */
+    public static void activerClassement () {
+        fenetrePrincipale.setScene(Classement);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des statistiques par pourcentage
+     */
+    public static void activerPourcentage() {
+        fenetrePrincipale.setScene(Pourcentage);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur le choix d'une action d'analyse
+     */
+    public static void activerAideActionAnalyse () {
+        fenetrePrincipale.setScene(AideActionAnalyse);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les statistiques de classement
+     */
+    public static void activerAideClassement() {
+        fenetrePrincipale.setScene(AideClassement);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les données calculées simples
+     */
+    public static void activerAideDonneesCalculees() {
+        fenetrePrincipale.setScene(AideDonneesCalculees);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les statistiques de pourcentages
+     */
+    public static void activerAidePourcentage() {
+        fenetrePrincipale.setScene(AidePourcentage);
+    }
+    
+    /**
      * Renvoie la fenêtre principale de l'application.
      * @return l'objet Stage de la fenêtre principale.
      */
@@ -201,6 +266,54 @@ public class MainControleur extends Application {
                     .getResource("/sae/statisalle/vue/aide/aideAffichage.fxml"));
             conteneur = chargeurFXMLAideAffichage.load();
             AideAffichage = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLActionAnalyse = new FXMLLoader();
+            chargeurFXMLActionAnalyse.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/actionAnalyse.fxml"));
+            conteneur = chargeurFXMLActionAnalyse.load();
+            ActionAnalyse = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLDonneesCalculees= new FXMLLoader();
+            chargeurFXMLDonneesCalculees.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/donneesCalculees.fxml"));
+            conteneur = chargeurFXMLDonneesCalculees.load();
+            DonneesCalculees = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLClassement = new FXMLLoader();
+            chargeurFXMLClassement.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/classement.fxml"));
+            conteneur = chargeurFXMLClassement.load();
+            Classement = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLPourcentage = new FXMLLoader();
+            chargeurFXMLPourcentage.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/pourcentage.fxml"));
+            conteneur = chargeurFXMLPourcentage.load();
+            Pourcentage = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAideActionAnalyse = new FXMLLoader();
+            chargeurFXMLAideActionAnalyse.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/aideActionAnalyse.fxml"));
+            conteneur = chargeurFXMLAideActionAnalyse.load();
+            AideActionAnalyse = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAideClassement = new FXMLLoader();
+            chargeurFXMLAideClassement .setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/aideClassement.fxml"));
+            conteneur = chargeurFXMLAideClassement.load();
+            AideClassement  = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAideDonneesCalculees = new FXMLLoader();
+            chargeurFXMLAideDonneesCalculees.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/aideDonneesCalculees.fxml"));
+            conteneur = chargeurFXMLAideDonneesCalculees.load();
+            AideDonneesCalculees = new Scene(conteneur);
+
+            FXMLLoader chargeurFXMLAidePourcentage = new FXMLLoader();
+            chargeurFXMLAidePourcentage.setLocation(getClass()
+                    .getResource("/sae/statisalle/vue/aide/aidePourcentage.fxml"));
+            conteneur = chargeurFXMLAidePourcentage.load();
+            AidePourcentage = new Scene(conteneur);
 
             primaryStage.setScene(Accueil);
             fenetrePrincipale = primaryStage;
