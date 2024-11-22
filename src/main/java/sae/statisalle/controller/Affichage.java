@@ -10,26 +10,19 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
-import sae.statisalle.modele.objet.Activite;
-import sae.statisalle.modele.objet.Employe;
-import sae.statisalle.modele.objet.Reservation;
-import sae.statisalle.modele.objet.Salle;
-import sae.statisalle.modele.Fichier;
+import sae.statisalle.modele.objet.*;
 
-import java.io.File;
+import java.io.IOException;
 
-import java.net.URLDecoder;
-
-import java.nio.charset.StandardCharsets;
-
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import java.util.*; // TODO ne jamais mettre d'étoiles
 
 /**
  * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
- *
  * Ce contrôleur applique des filtres sur :
  * <ul>
  *     <li>Le nom des salles</li>
@@ -39,8 +32,8 @@ import java.util.*; // TODO ne jamais mettre d'étoiles
  * </ul>
  * et retourne les données filtrées à la vue.
  *
- * @author Montes Robin
- * @author Cambon Mathias
+ * @author robin.montes
+ * @author mathias.cambon
  */
 public class Affichage {
 
@@ -201,7 +194,7 @@ public class Affichage {
     }
 
     @FXML
-    private void chargerDonnees() {
+    private void chargerDonnees() throws IOException {
 
         masquerFiltres();
 
@@ -214,188 +207,61 @@ public class Affichage {
         tabActivite.getItems().clear();
         tabReservation.getItems().clear();
 
-        String URLDossier = "src/main/resources/csv";
-        try {
-            File dossier = new File(URLDecoder.decode(URLDossier, StandardCharsets.UTF_8));
+        // Appel de la méthode centralisée pour charger les fichiers
+        LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
 
-            // Vérifier si le répertoire contient des fichiers
-            if (!dossier.exists() || !dossier.isDirectory()) {
-                System.out.println("Le répertoire 'csv' n'existe pas ou n'est pas un dossier.");
-                return;
-            }
+        // Configurez les tables après avoir chargé les données
+        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        tabEmploye.setItems(listEmploye);
 
-            File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
+        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
+        ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
+        typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
+        videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
+        nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
+        logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
+        imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+        tabSalle.setItems(listSalle);
 
-            // Vérifier si des fichiers ont été trouvés
-            if (fichiers == null || fichiers.length == 0) {
-                System.out.println("Aucun fichier CSV trouvé dans le répertoire.");
-                return;
-            }
+        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
+        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
+        tabActivite.setItems(listActivite);
 
-            // Trier les fichiers pour donner la priorité à "Salle"
-            Arrays.sort(fichiers, (f1, f2) -> {
-                if (f1.getName().contains("Salle") && !f2.getName().contains("Salle")) {
-                    return -1;
-                } else if (!f1.getName().contains("Salle") && f2.getName().contains("Salle")) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-
-            StringBuilder fichiersInvalides = new StringBuilder();
-
-            for (File fichier : fichiers) {
-                try {
-                    Fichier fichierExploite = new Fichier(fichier.getPath());
-                    List<List<String>> contenu = fichierExploite.recupererDonnees();
-
-                    switch (fichierExploite.getTypeFichier()) {
-                        case "Employe" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 4) {
-                                    listEmploye.add(new Employe(ligne.get(0),
-                                            ligne.get(1),
-                                            ligne.get(2),
-                                            ligne.get(3)));
-                                }
-                            }
-                            idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-                            nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-                            numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-                            tabEmploye.setItems(listEmploye);
-                        }
-                        case "Salle" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 9) {
-                                    listSalle.add(new Salle(ligne.get(0),
-                                            ligne.get(1), ligne.get(2),
-                                            ligne.get(3), ligne.get(4),
-                                            ligne.get(5), ligne.get(6),
-                                            ligne.get(7), ligne.get(8)));
-                                }
-                            }
-                            idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-                            nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-                            ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
-                            typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
-                            videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
-                            nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
-                            logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
-                            imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
-                            tabSalle.setItems(listSalle);
-                        }
-                        case "Activite" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() == 2) {
-                                    listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
-                                } else {
-                                    System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
-                                }
-                            }
-                            idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
-                            activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-                            tabActivite.setItems(listActivite);
-                        }
-                        case "Reservation" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 12) {
-
-                                    Reservation reservation = new Reservation(
-                                            ligne.get(0), ligne.get(1),
-                                            ligne.get(2), ligne.get(3),
-                                            ligne.get(4), ligne.get(5),
-                                            ligne.get(6), ligne.get(7),
-                                            ligne.get(8), ligne.get(9),
-                                            ligne.get(10), ligne.get(11)
-                                    );
-
-                                    for (Employe employe : listEmploye) {
-                                        if (employe.getIdE().equals(reservation.getEmployeR())) {
-                                            reservation.setEmployeR(employe.getNom() + " " + employe.getPrenom());
-                                            break;
-                                        }
-                                    }
-
-                                    for (Salle salle : listSalle) {
-                                        if (salle.getIdentifiant().equals(reservation.getSalleR())) {
-                                            reservation.setSalleR(salle.getNom());
-                                            break;
-                                        }
-                                    }
-
-                                    listReservation.add(reservation);
-                                }
-                            }
-                            idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
-                            salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
-                            employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-                            activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-                            dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-                            heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
-                            heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
-                            descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
-                            nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
-                            prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
-                            numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
-                            usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
-                            tabReservation.setItems(listReservation);
-                        }
-                        default -> System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
-                    }
-
-                    remplirComboBoxSalles();
-                    remplirComboBoxEmployes();
-                    remplirComboBoxDates();
-                    remplirComboBoxActivites();
-                    remplirComboBoxHeuresD();
-                    remplirComboBoxHeuresF();
-                } catch (Exception e) {
-                    System.out.println("Erreur lors du traitement du fichier : " + fichier.getName() + " - " + e.getMessage());
-                    fichiersInvalides.append(fichier.getName()).append("\n");
-                }
-            }
-
-            if (!fichiersInvalides.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Fichiers invalides");
-                alert.setHeaderText("Certains fichiers n'ont pas pu être chargés");
-                alert.setContentText("Les fichiers suivants sont invalides :\n" + fichiersInvalides);
-
-                ButtonType supprimerButton = new ButtonType("Supprimer");
-                ButtonType ignorerButton = new ButtonType("Ignorer", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(supprimerButton, ignorerButton);
-
-                Optional<ButtonType> resultat = alert.showAndWait();
-                if (resultat.isPresent() && resultat.get() == supprimerButton) {
-                    try {
-                        for (String nomFichier : fichiersInvalides.toString().split("\n")) {
-                            File fichierADelete = new File("src/main/resources/csv/" + nomFichier.trim());
-                            if (fichierADelete.exists() && fichierADelete.isFile()) {
-                                if (fichierADelete.delete()) {
-                                    System.out.println("Fichier supprimé : " + fichierADelete.getName());
-                                } else {
-                                    System.out.println("Impossible de supprimer : " + fichierADelete.getName());
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Erreur lors de la suppression des fichiers : " + e.getMessage());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erreur générale : " + e.getMessage());
-        }
+        idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+        salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+        employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+        activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
+        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
+        descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
+        nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
+        prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
+        numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
+        usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
+        tabReservation.setItems(listReservation);
 
         if (grandTableau.getSelectionModel().getSelectedItem() == feuilleReservation) {
             afficherFiltre();
         }
 
+        remplirComboBoxSalles();
+        remplirComboBoxEmployes();
+        remplirComboBoxDates();
+        remplirComboBoxActivites();
+        remplirComboBoxHeuresD();
+        remplirComboBoxHeuresF();
+
         mettreAJourFiltreHeureFin();
         mettreAJourFiltreHeureDebut();
+
+        mettreAJourFiltreDateDebut();
+        mettreAJourFiltreDateFin();
 
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
@@ -436,7 +302,7 @@ public class Affichage {
 
     private void remplirComboBoxEmployes() {
         Set<String> nomsUniques = new HashSet<>();
-        if (!listEmploye.isEmpty()){
+        if (!listEmploye.isEmpty()) {
             for (Employe employe : listEmploye) {
                 nomsUniques.add(employe.getNom() + " " + employe.getPrenom());
             }
@@ -460,7 +326,7 @@ public class Affichage {
 
     private void remplirComboBoxSalles() {
         Set<String> nomsUniques = new HashSet<>();
-        if(!listSalle.isEmpty()) {
+        if (!listSalle.isEmpty()) {
             for (Salle salle : listSalle) {
                 nomsUniques.add(salle.getNom());
             }
@@ -469,7 +335,6 @@ public class Affichage {
                 nomsUniques.add(salle.getSalleR());
             }
         }
-
         remplirComboBox(filtreSalle, nomsUniques);
     }
 
@@ -478,7 +343,6 @@ public class Affichage {
         for (Reservation date : listReservation) {
             datesUniques.add(date.getDateR());
         }
-
         remplirComboBox(filtreDateDebut, datesUniques);
         remplirComboBox(filtreDateFin, datesUniques);
     }
@@ -504,12 +368,16 @@ public class Affichage {
     @FXML
     private void initialize() {
 
+        // Sélectionner l'onglet "Réservation" par défaut
         grandTableau.getSelectionModel().select(feuilleReservation);
 
+        // Mettre à jour le filtre d'heure de fin dès le début
         mettreAJourFiltreHeureFin();
 
+        // Masquer les filtres au démarrage
         masquerFiltres();
 
+        // Lier les ComboBox avec leur valueProperty pour appliquer les filtres
         filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
@@ -542,49 +410,49 @@ public class Affichage {
         // Ajouter "Tous" dans les listes de filtres (si ce n'est pas déjà fait)
         if (filtreSalle != null) {
             if (!filtreSalle.getItems().contains("Tous")) {
-                filtreSalle.getItems().add(0, "Tous");
+                filtreSalle.getItems().addFirst("Tous");
             }
             filtreSalle.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreEmploye != null) {
             if (!filtreEmploye.getItems().contains("Tous")) {
-                filtreEmploye.getItems().add(0, "Tous");
+                filtreEmploye.getItems().addFirst("Tous");
             }
             filtreEmploye.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreDateDebut != null) {
             if (!filtreDateDebut.getItems().contains("Tous")) {
-                filtreDateDebut.getItems().add(0, "Tous");
+                filtreDateDebut.getItems().addFirst("Tous");
             }
             filtreDateDebut.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreDateFin != null) {
             if (!filtreDateFin.getItems().contains("Tous")) {
-                filtreDateFin.getItems().add(0, "Tous");
+                filtreDateFin.getItems().addFirst("Tous");
             }
             filtreDateFin.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreActivite != null) {
             if (!filtreActivite.getItems().contains("Tous")) {
-                filtreActivite.getItems().add(0, "Tous");
+                filtreActivite.getItems().addFirst("Tous");
             }
             filtreActivite.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreHeureD != null) {
             if (!filtreHeureD.getItems().contains("Tous")) {
-                filtreHeureD.getItems().add(0, "Tous");
+                filtreHeureD.getItems().addFirst("Tous");
             }
             filtreHeureD.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
 
         if (filtreHeureF != null) {
             if (!filtreHeureF.getItems().contains("Tous")) {
-                filtreHeureF.getItems().add(0, "Tous");
+                filtreHeureF.getItems().addFirst("Tous");
             }
             filtreHeureF.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
         }
@@ -598,6 +466,7 @@ public class Affichage {
         // Afficher un message de confirmation ou notifier l'utilisateur
         System.out.println("Filtres réinitialisés avec succès.");
     }
+
 
     private void mettreAJourFiltreHeureDebut() {
         // Extraire les heures de début uniques des réservations
@@ -618,6 +487,7 @@ public class Affichage {
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
+
     private void mettreAJourFiltreHeureFin() {
         // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
@@ -637,6 +507,44 @@ public class Affichage {
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
+    private void mettreAJourFiltreDateDebut() {
+        // Extraire les dates de début uniques des réservations
+        Set<String> datesDebutUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            datesDebutUniques.add(reservation.getDateR());
+        }
+
+        // Convertir en liste et trier les dates de début
+        List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
+        Collections.sort(datesDebutListe);
+
+        // Ajouter l'option "Tous" en tête de liste
+        datesDebutListe.addFirst("Tous");
+
+        // Mettre à jour le filtre de date de début avec la liste de dates
+        filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
+    }
+
+    private void mettreAJourFiltreDateFin() {
+        // Extraire les dates de fin uniques des réservations
+        Set<String> datesFinUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            datesFinUniques.add(reservation.getDateR());  // Si tu as une méthode pour récupérer la date de fin, adapte cette ligne
+        }
+
+        // Convertir en liste et trier les dates de fin
+        List<String> datesFinListe = new ArrayList<>(datesFinUniques);
+        Collections.sort(datesFinListe);
+
+        // Ajouter l'option "Tous" en tête de liste
+        datesFinListe.addFirst("Tous");
+
+        // Mettre à jour le filtre de date de fin avec la liste de dates
+        filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
+    }
+
     private void appliquerFiltres() {
         // Récupérer les filtres sélectionnés
         String employeFiltre = filtreEmploye.getValue();
@@ -652,47 +560,62 @@ public class Affichage {
 
         for (Reservation reservation : listReservation) {
 
-            // Appliquer les autres filtres
+            // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
                             (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre)) &&
-                            (dateFiltreDebut == null || dateFiltreDebut.equals("Tous") || reservation.getDateR().equals(dateFiltreDebut));
+                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-            // Ajouter la vérification pour les heures
-            boolean matchesHeureDebut = true;
-            boolean matchesHeureFin = true;
+            // Appliquer les filtres de date
+            boolean matchesDateDebut = true;
+            boolean matchesDateFin = true;
 
-            // Vérification pour l'heure de début
-            if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
-                LocalTime heureDebut = parseHeure(heureDebutFiltre);
-                if (heureDebut != null && reservation.getHeureDebut() != null) {
-                    // Comparer les heures de début avec compareTo
-                    matchesHeureDebut = reservation.getHeureDebut().compareTo(String.valueOf(heureDebut)) >= 0;
-                }
-            }
-
-            // Vérification pour l'heure de fin
-            if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
-                // Convertir l'heure de fin du filtre en LocalTime
-                LocalTime heureFin = parseHeure(heureFinFiltre);
-
-                if (heureFin != null && reservation.getHeureFin() != null) {
-                    // Convertir l'heure de fin de la réservation en LocalTime si nécessaire
-                    LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
-
-                    if (heureFinReservation != null) {
-                        // Comparer les heures de fin
-                        matchesHeureFin = !heureFinReservation.isAfter(heureFin); // heureFinReservation <= heureFin
-                    } else {
-                        // Si l'heure de fin de la réservation est mal formatée, ne pas inclure cette réservation
-                        matchesHeureFin = false;
+            if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
+                LocalDate dateDebut = parseDate(dateFiltreDebut);
+                if (dateDebut != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateDebut = !dateReservation.isBefore(dateDebut);
                     }
                 }
             }
 
-            // Si tous les filtres sont validés, ajouter la réservation filtrée
-            if (matchesFiltre && matchesHeureDebut && matchesHeureFin) {
+            if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
+                LocalDate dateFin = parseDate(dateFiltreFin);
+                if (dateFin != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateFin = !dateReservation.isAfter(dateFin);
+                    }
+                }
+            }
+
+            // Appliquer les filtres d'heure
+            boolean matchesHeureDebut = true;
+            boolean matchesHeureFin = true;
+
+            if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
+                LocalTime heureDebut = parseHeure(heureDebutFiltre);
+                if (heureDebut != null) {
+                    LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
+                    if (heureDebutReservation != null) {
+                        matchesHeureDebut = !heureDebutReservation.isBefore(heureDebut);
+                    }
+                }
+            }
+
+            if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
+                LocalTime heureFin = parseHeure(heureFinFiltre);
+                if (heureFin != null) {
+                    LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
+                    if (heureFinReservation != null) {
+                        matchesHeureFin = !heureFinReservation.isAfter(heureFin);
+                    }
+                }
+            }
+
+            // Ajouter la réservation si tous les filtres sont validés
+            if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
         }
@@ -713,9 +636,21 @@ public class Affichage {
         }
     }
 
+    private LocalDate parseDate(String date) {
+        try {
+            // Créer un DateTimeFormatter avec le format "dd/MM/yyyy"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            // Utiliser le formatter pour convertir la chaîne en LocalDate
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Erreur de format de date: " + date);
+            return null; // Si la date est invalide, retourner null
+        }
+    }
+
     @FXML
     private void handleReinitialiserFiltre() {
         reinitialiserFiltre();
     }
-
 }

@@ -132,7 +132,4 @@ public class Salle {
     public void setImprimante(String imprimante) {
         this.imprimante = imprimante;
     }
-
-
-
 }

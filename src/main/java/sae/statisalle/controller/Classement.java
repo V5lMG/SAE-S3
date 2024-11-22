@@ -1,15 +1,16 @@
 package sae.statisalle.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
-import sae.statisalle.modele.objet.Activite;
-import sae.statisalle.modele.objet.Employe;
-import sae.statisalle.modele.objet.Reservation;
-import sae.statisalle.modele.objet.Salle;
+import javafx.scene.control.Button;
+import javafx.scene.control.cell.PropertyValueFactory;
+import sae.statisalle.modele.objet.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Classement {
 
@@ -27,6 +28,18 @@ public class Classement {
 
     @FXML
     private Button reinitialiserFiltre;
+
+    @FXML
+    private Button btnAide;
+
+    @FXML
+    private Button btnRetour;
+
+    @FXML
+    private Button btnAfficherTableaux;
+
+    @FXML
+    private TabPane grandTableau;
 
     // Table de salle
     @FXML
@@ -71,10 +84,19 @@ public class Classement {
     private TableColumn<Employe, String> totalE;
 
     @FXML
-    private Button btnAide;
-
+    ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
-    private Button btnRetour;
+    ObservableList<Activite> listActivite = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Salle> listSalle = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Employe> listEmployeClasser = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Activite> listActiviteClasser = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Salle> listSalleClasser = FXCollections.observableArrayList();
 
     @FXML
     void handleReinitialiserFiltre(ActionEvent event) {
@@ -91,9 +113,64 @@ public class Classement {
         MainControleur.activerActionAnalyse();
     }
 
-    // Méthode d'initialisation si nécessaire
-    @FXML
-    public void initialize() {
+    public void chargerDonnees() {
+        btnAfficherTableaux.setVisible(false);
 
+        grandTableau.setVisible(true);
+
+        tabEmploye.getItems().clear();
+        tabSalle.getItems().clear();
+        tabActivite.getItems().clear();
+
+        // Appel de la méthode centralisée pour charger les fichiers
+        LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
+
+//        List<Reservation> listeSimple = new ArrayList<>(listReservation);
+//        Reservation reservation;
+//        reservation = listeSimple.getFirst();
+//        System.out.print(reservation);
+
+        // Contène le nom et prénom de chaque employé
+        for (Employe employe : listEmploye) {
+            employe.setNom(employe.getNom() + " " + employe.getPrenom());
+        }
+
+        // Configurez les tables après avoir chargé les données
+        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+        nomPrenomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        activiteE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        salleE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        totalE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        tabEmploye.setItems(listEmploye);
+
+        // Configurez les tables après avoir chargé les données
+//        idSalle.setCellValueFactory(new PropertyValueFactory<>("idE"));
+//        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+//        activiteS.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+//        employeS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+//        totalS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+//        tabSalle.setItems(listSalle);
+//
+//        // Configurez les tables après avoir chargé les données
+//        idActivite.setCellValueFactory(new PropertyValueFactory<>("idE"));
+//        activiteA.setCellValueFactory(new PropertyValueFactory<>("nom"));
+//        salleA.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+//        employeA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+//        totalA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+//        tabActivite.setItems(listActivite);
+
+        // Faites de même pour les autres tables si nécessaire...
+    }
+
+    public void setListEmploye(ObservableList<Employe> listEmploye) {
+        this.listEmploye = listEmploye;
+    }
+
+    public void setListSalle(ObservableList<Salle> listSalle) {
+        this.listSalle = listSalle;
+    }
+
+    public void setListActivite(ObservableList<Activite> listActivite) {
+        this.listActivite = listActivite;
     }
 }

@@ -285,6 +285,7 @@ public class MainControleur extends Application {
             conteneur = chargeurFXMLClassement.load();
             Classement = new Scene(conteneur);
 
+
             FXMLLoader chargeurFXMLPourcentage = new FXMLLoader();
             chargeurFXMLPourcentage.setLocation(getClass()
                     .getResource("/sae/statisalle/vue/pourcentage.fxml"));
@@ -460,7 +461,6 @@ public class MainControleur extends Application {
         popupVisualiser.setTitle("Visualisation des données");
         popupVisualiser.setHeaderText("Données reçues");
 
-        // création du contenu de la popup
         String contenu = donnees.replace("/EOF", "\n\n");
         TextArea zoneTexte = new TextArea(contenu);
         zoneTexte.setEditable(false);
