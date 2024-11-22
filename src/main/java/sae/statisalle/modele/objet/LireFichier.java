@@ -1,3 +1,8 @@
+/*
+ * LireFichier.java               22/11/2024
+ * IUT DE RODEZ               Pas de copyrights
+ */
+
 package sae.statisalle.modele.objet;
 
 import javafx.collections.ObservableList;
@@ -15,6 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Classe qui charge les fichiers csv dans des list afin de les affichés dans
+ * les tableux.
+ * Et qui créer des associations entre les classes objet Reservation,Salle,
+ * Employe,Activite
+ * @author erwan.thierry
+ * @author rodrigo.xaviertaborda
+ */
 public class LireFichier {
 
     // Méthode pour charger les données depuis les fichiers CSV
@@ -146,6 +159,34 @@ public class LireFichier {
 
         } catch (Exception e) {
             System.out.println("Erreur générale : " + e.getMessage());
+        }
+
+        // Étape 2 : Établir les relations entre les entités
+        for (Reservation reservation : listReservation) {
+            // Associer les réservations aux salles
+            for (Salle salle : listSalle) {
+                if (salle.getNom().equals(reservation.getSalleR())) {
+                    salle.getReservations().add(reservation);
+                    System.out.println("Réservation ajoutée à la salle : " + salle.getIdentifiant());
+                    break;
+                }
+            }
+
+            // Associer les réservations aux employés
+            for (Employe employe : listEmploye) {
+                if (employe.getIdE().equals(reservation.getEmployeR())) {
+                    employe.getReservations().add(reservation);
+                    break;
+                }
+            }
+
+            // Associer les réservations aux activités
+            for (Activite activite : listActivite) {
+                if (activite.getIdActivite().equals(reservation.getActiviteR())) {
+                    activite.getReservations().add(reservation);
+                    break;
+                }
+            }
         }
     }
 }

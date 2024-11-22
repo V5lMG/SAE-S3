@@ -1,3 +1,8 @@
+/*
+ * Classement.java               21/11/2024
+ * IUT DE RODEZ               Pas de copyrights
+ */
+
 package sae.statisalle.controller;
 
 import javafx.collections.FXCollections;
@@ -12,6 +17,11 @@ import sae.statisalle.modele.objet.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controleur des statistiques - Classement
+ * @author erwan.thierry
+ * @author rodrigo.xaviertaborda
+ */
 public class Classement {
 
     @FXML
@@ -130,36 +140,35 @@ public class Classement {
 //        reservation = listeSimple.getFirst();
 //        System.out.print(reservation);
 
-        // Contène le nom et prénom de chaque employé
+        // Concatène le nom et prénom de chaque employé
         for (Employe employe : listEmploye) {
             employe.setNom(employe.getNom() + " " + employe.getPrenom());
         }
 
-        // Configurez les tables après avoir chargé les données
+        //Table employe
         idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
         nomPrenomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        activiteE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        salleE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-        totalE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        salleE.setCellValueFactory(new PropertyValueFactory<>("sallesReservees"));
+        activiteE.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
+        //totalE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
         tabEmploye.setItems(listEmploye);
 
-        // Configurez les tables après avoir chargé les données
-//        idSalle.setCellValueFactory(new PropertyValueFactory<>("idE"));
-//        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-//        activiteS.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-//        employeS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-//        totalS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-//        tabSalle.setItems(listSalle);
-//
-//        // Configurez les tables après avoir chargé les données
-//        idActivite.setCellValueFactory(new PropertyValueFactory<>("idE"));
-//        activiteA.setCellValueFactory(new PropertyValueFactory<>("nom"));
-//        salleA.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-//        employeA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-//        totalA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-//        tabActivite.setItems(listActivite);
+        //Table salle
+        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        employeS.setCellValueFactory(new PropertyValueFactory<>("nomEmploye"));
+        activiteS.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
+        //totalS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        tabSalle.setItems(listSalle);
 
-        // Faites de même pour les autres tables si nécessaire...
+        //Table activite
+        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
+        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
+        salleA.setCellValueFactory(new PropertyValueFactory<>("sallesAssociees"));
+        employeA.setCellValueFactory(new PropertyValueFactory<>("employeAssocies"));
+        //totalA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        tabActivite.setItems(listActivite);
+
     }
 
     public void setListEmploye(ObservableList<Employe> listEmploye) {

@@ -4,6 +4,9 @@
  */
 package sae.statisalle.modele.objet;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  * La classe Activite initialise les objets de type Activite.
  * L'objet Activite est composé de :
@@ -14,6 +17,7 @@ package sae.statisalle.modele.objet;
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des Activités en fonction des contenus des fichiers
  * @author erwan.thierry
+ * @author rodrigo.xaviertaborda
  */
 public class Activite {
 
@@ -23,9 +27,12 @@ public class Activite {
     /* Les différents types d'activité */
     String type;
 
+    private ObservableList<Reservation> listReservation ;
+
     public Activite(String type, String idActivite) {
         this.idActivite = idActivite;
         this.type = type;
+        this.listReservation = FXCollections.observableArrayList();
     }
 
     public String getType() {
@@ -34,6 +41,35 @@ public class Activite {
 
     public String getIdActivite() {
         return idActivite;
+    }
+
+    public ObservableList<Reservation> getReservations() {
+        return listReservation;
+    }
+
+    // 1. Obtenir les salles associées
+    public String getSallesAssociees() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getSalleR())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Aucune salle");
+    }
+
+//    // 2. Calculer le temps total pour l'activité
+//    public int getTempsTotal() {
+//        return reservations.stream()
+//                .mapToInt(Reservation::getDuree)
+//                .sum();
+//    }
+
+    // 3. Obtenir les noms des employés participant à l'activité
+    public String getEmployeAssocies() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getEmployeR())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Aucun employé");
     }
 
     public void setIdActivite(String idActivite) {
