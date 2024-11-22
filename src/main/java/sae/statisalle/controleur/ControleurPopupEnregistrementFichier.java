@@ -2,8 +2,6 @@ package sae.statisalle.controleur;
 
 import javafx.scene.control.*;
 import sae.statisalle.modele.Fichier;
-import sae.statisalle.modele.Session;
-import sae.statisalle.modele.Vigenere;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +11,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class RevoirNomClasse {
+public class ControleurPopupEnregistrementFichier {
 
     /**
      * Affiche une popup avec des boutons d'action pour gérer un fichier reçu.
      */
-    public static void afficherPopupFichierRecu(String donneeRecu) {
+    public static void afficherPopupFichierRecu(String donnees) {
+
         Alert popup = new Alert(Alert.AlertType.CONFIRMATION);
         popup.setTitle("Fichier Reçu");
         popup.setHeaderText("Vous avez reçu un (ou plusieurs) fichier(s).");
@@ -32,10 +31,8 @@ public class RevoirNomClasse {
 
         Optional<ButtonType> resultat = popup.showAndWait();
 
-        int cle = Session.getClePublicClient();
-        String donneesCrytpees = Vigenere.dechiffrementDonnees(donneeRecu, cle);
-        String reponseAvecRetourLigne = donneesCrytpees.replace("/N", "\n")
-                .replace("/R", "\r");
+        String reponseAvecRetourLigne = donnees.replace("/N", "\n")
+                                               .replace("/R", "\r");
 
         String[] fichiers = reponseAvecRetourLigne.split("/EOF");
 

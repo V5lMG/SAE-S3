@@ -1,7 +1,7 @@
 package sae.statisalle.modele;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -13,57 +13,59 @@ public class Vigenere {
 
     private static List<Character> alphabet;
 
-    /**
-     * Chiffrement des données avec l'algorithme de Vigenère.
-     * @param donnees Données à chiffrer
-     * @param cle Clé de chiffrement
-     * @return Données chiffrées
-     */
-    public static String chiffrementDonnees(String donnees, int cle) {
+    public static String chiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messChiffre = new StringBuilder();
         creerAlphabet();
-        cle = ajusterTailleClef(donnees, cle);
+        BigInteger cleAjustee = ajusterTailleClef(donnees, cle);
+        BigInteger tailleAlphabet = BigInteger.valueOf(alphabet.size());
 
         for (int i = 0; i < donnees.length(); i++) {
             char caractere = donnees.charAt(i);
             int codeDonnees = alphabet.indexOf(caractere);
-            int codeCle = cle % alphabet.size();
 
             if (codeDonnees != -1) {
-                int codeCharChiffre = (codeDonnees + codeCle) % alphabet.size();
-                messChiffre.append(alphabet.get(codeCharChiffre));
+                BigInteger codeCle = cleAjustee.mod(tailleAlphabet);
+                BigInteger codeDonneesBI = BigInteger.valueOf(codeDonnees);
+                BigInteger codeCharChiffre = codeDonneesBI.add(codeCle).mod(tailleAlphabet);
+                messChiffre.append(alphabet.get(codeCharChiffre.intValue()));
             } else {
                 messChiffre.append(caractere);
             }
-        }
 
+            // Décale la clé
+            cleAjustee = cleAjustee.divide(BigInteger.TEN);
+        }
         return messChiffre.toString();
     }
 
-    /**
-     * Déchiffrement des données avec l'algorithme de Vigenère.
-     * @param donnees Données à déchiffrer
-     * @param cle Clé de déchiffrement
-     * @return Données déchiffrées
-     */
-    public static String dechiffrementDonnees(String donnees, int cle) {
+    public static String dechiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messDechiffre = new StringBuilder();
         creerAlphabet();
-        cle = ajusterTailleClef(donnees, cle);
+        BigInteger cleAjustee = ajusterTailleClef(donnees, cle);
+        BigInteger tailleAlphabet = BigInteger.valueOf(alphabet.size());
 
         for (int i = 0; i < donnees.length(); i++) {
             char caractere = donnees.charAt(i);
             int codeDonnees = alphabet.indexOf(caractere);
-            int codeCle = cle % alphabet.size();
 
             if (codeDonnees != -1) {
-                int codeCharDechiffre = (codeDonnees - codeCle + alphabet.size()) % alphabet.size();
-                messDechiffre.append(alphabet.get(codeCharDechiffre));
+                BigInteger codeCle = cleAjustee.mod(tailleAlphabet);
+                BigInteger codeDonneesBI = BigInteger.valueOf(codeDonnees);
+                BigInteger codeCharDechiffre = codeDonneesBI.subtract(codeCle).mod(tailleAlphabet);
+
+                // Gestion des indices négatifs dans modulo
+                if (codeCharDechiffre.compareTo(BigInteger.ZERO) < 0) {
+                    codeCharDechiffre = codeCharDechiffre.add(tailleAlphabet);
+                }
+
+                messDechiffre.append(alphabet.get(codeCharDechiffre.intValue()));
             } else {
                 messDechiffre.append(caractere);
             }
-        }
 
+            // Décale la clé
+            cleAjustee = cleAjustee.divide(BigInteger.TEN);
+        }
         return messDechiffre.toString();
     }
 
@@ -76,28 +78,75 @@ public class Vigenere {
         return random.nextInt(tailleDonnees) + 1;
     }
 
-    private static void creerAlphabet() {
-        if (alphabet != null) return;
+    /**
+     * Création de l'alphabet contenant tous les caractères imprimables
+     * disponibles sur un clavier standard.
+     */
+    public static void creerAlphabet() {
+
+        // -----------
+        // ATTENTION, ne pas MODIFIER l'aplhpabet sous peine de casser
+        //            tous les tests.
+        // -----------
+
         alphabet = new ArrayList<>();
-        for (char c = '0'; c <= '9'; c++) alphabet.add(c); // chiffre
-        for (char c = 'a'; c <= 'z'; c++) alphabet.add(c); // lettres minuscules
-        for (char c = 'A'; c <= 'Z'; c++) alphabet.add(c); // lettres majuscules
-        Collections.addAll(alphabet,                       // caractères spéciaux
-                'à', 'â', 'ä', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'ö',
-                'ù', 'û', 'ü', 'ç', 'À', 'Â', 'Ä', 'É', 'È', 'Ê', 'Ë', 'Î', 'Ï',
-                'Ô', 'Ö', 'Ù', 'Û', 'Ü', 'Ç', '!', '@', '#', '$', '%', '^', '&',
-                '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', '\\',
-                '|', ';', ':', '\'', '\"', ',', '.', '<', '>', '/', '?', '`',
-                '~', ' '
-        );
+
+        // lettres minuscules et majuscules
+        for (char c = 'a'; c <= 'z'; c++) {
+            alphabet.add(c);
+            alphabet.add(Character.toUpperCase(c));
+        }
+
+        // lettres accentuées courantes
+        char[] accents = {
+                'à', 'â', 'ä', 'é', 'è', 'ê', 'ë',
+                'î', 'ï', 'ô', 'ö', 'ù', 'û', 'ü',
+                'ç', 'À', 'Â', 'Ä', 'É', 'È', 'Ê',
+                'Ë', 'Î', 'Ï', 'Ô', 'Ö', 'Ù', 'Û',
+                'Ü', 'Ç'
+        };
+        for (char c : accents) {
+            alphabet.add(c);
+        }
+
+        // chiffres
+        for (char c = '0'; c <= '9'; c++) {
+            alphabet.add(c);
+        }
+
+        // symboles courants et caractères de ponctuation
+        char[] symboles = {
+                '!', '@', '#', '$', '%', '^', '&',
+                '*', '(', ')', '-', '_', '=', '+',
+                '[', ']', '{', '}', '\\', '|', ':',
+                ';', '\'', '"', '<', '>', ',', '.',
+                '?', '/'
+        };
+        for (char c : symboles) {
+            alphabet.add(c);
+        }
+
+        // espace et autres caractères spécifiques
+        alphabet.add(' ');
+        alphabet.add('`');
+        alphabet.add('~');
     }
 
-    private static int ajusterTailleClef(String donnees, int cle) {
+    public static BigInteger ajusterTailleClef(String donnees, BigInteger cle) {
         int tailleDonnees = donnees.length();
-        while (cle < tailleDonnees) {
-            cle += cle;
+        String cleStr = String.valueOf(cle);
+        StringBuilder cleAjustee = new StringBuilder();
+
+        // Répéter la clé jusqu'à atteindre la taille des données
+        while (cleAjustee.length() < tailleDonnees) {
+            cleAjustee.append(cleStr);
         }
-        return cle;
+
+        // Tronquer la clé à la taille exacte nécessaire
+        String cleFinale = cleAjustee.substring(0, tailleDonnees);
+
+        // Convertir la clé ajustée en BigInteger
+        return new BigInteger(cleFinale);
     }
 }
 

@@ -1,11 +1,13 @@
 package sae.statisalle.modele;
 
-import sae.statisalle.controleur.RevoirNomClasse;
+import javafx.application.Platform;
+import sae.statisalle.controleur.ControleurPopupEnregistrementFichier;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -61,21 +63,39 @@ public class Serveur implements Connexion {
 
                         String[] parties = initialisationDiffieHellman
                                                             .split(" ; ");
+                        if (parties.length != 3) {
+                            throw new IllegalArgumentException("Format de clé publique invalide : " + initialisationDiffieHellman);
+                        }
 
                         int clePublicClient = Integer.parseInt(parties[0]);
-                        Session.setClePublicClient(clePublicClient);
-                        int b = 15;//DiffieHellman.genererEntierPremier(0,999999999);
-
                         int p = Integer.parseInt(parties[1]);
                         int g = Integer.parseInt(parties[2]);
 
-                        String clePartageeGB = DiffieHellman.expoModulaire(g, b, p) + " ; " + p + " ; " + g;
-                        envoyerClePublic(clePartageeGB);
+                        // génération de la clé publique du serveur
+                        int b = 15; //DiffieHellman.genererEntierPremier(0,999999999);
+                        int clePubliqueServeur = DiffieHellman.expoModulaire(g, b, p);
+                        envoyerClePublic(clePubliqueServeur + " ; " + p + " ; " + g);
 
-                        String requete = recevoir();
-                        System.out.println("[SERVEUR] Requête reçue : " + requete);
-                        //RevoirNomClasse.afficherPopupFichierRecu(requete);
-                        String reponse = traiterRequete(requete);
+                        // calcul de la clé secrète partagée
+                        BigInteger cleSecretePartagee = BigInteger.valueOf(DiffieHellman.expoModulaire(clePublicClient, b, p));
+                        System.out.println("[SERVEUR] Clé secrète partagée calculée : " + cleSecretePartagee);
+
+                        String requeteChiffree  = recevoir();
+                        System.out.println("[SERVEUR] Requête reçue : " + requeteChiffree );
+
+                        String requeteDechiffree =
+                                Vigenere.dechiffrementDonnees(requeteChiffree,
+                                                            cleSecretePartagee);
+
+                        System.out.println("[SERVEUR] Données déchiffrées : "
+                                           + requeteDechiffree);
+
+                        Platform.runLater(() ->
+                                ControleurPopupEnregistrementFichier.afficherPopupFichierRecu(
+                                                              requeteDechiffree
+                                                                         ));
+
+                        String reponse = traiterRequete(requeteDechiffree);
                         envoyer(reponse);
                     } catch (Exception e) {
                         System.err.println("[SERVEUR] Erreur lors de la gestion du client : " + e.getMessage());

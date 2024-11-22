@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,24 +176,35 @@ public class ControleurEnvoyer {
 
             String contenuFormate = contenuTotal.toString().replace("\n", "/N").replace("\r", "/R");
 
+            // Initialisation Diffie-Hellman
             int p = 23;//DiffieHellman.genererEntierPremier(0,999999999);
             int g = 5;//DiffieHellman.genererGenerateur(p);
             int a = 6;//DiffieHellman.genererEntierPremier(0,999999999);;
 
-            String clePartageeGA = DiffieHellman.expoModulaire(g, a, p) + " ; " + p + " ; " + g;
-            client.envoyerClePublic(clePartageeGA);
+            int clePubliqueClient = DiffieHellman.expoModulaire(g, a, p);
+            client.envoyerClePublic(clePubliqueClient + " ; " + p + " ; " + g);
 
-            clePartageeGA = client.recevoirClePublic();
-            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, Integer.parseInt(clePartageeGA));
+            String clePartageeServeur = client.recevoirClePublic();
+            String[] parties = clePartageeServeur.split(" ; ");
+            if (parties.length != 3) {
+                throw new IllegalArgumentException("Format de clé publique invalide.");
+            }
 
-            // Envoi des données au serveur
+            int clePubliqueServeur = Integer.parseInt(parties[0]);
+            BigInteger cleSecretePartagee = BigInteger.valueOf(DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
+            System.out.println("[CLIENT] Clé secrète partagée : " + cleSecretePartagee);
+
+            // chiffrement et envoi des données
+            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, cleSecretePartagee);
             client.envoyer(donneesChiffrees);
+
             String reponse = client.recevoir();
-            System.out.println("Le client recoit : " + reponse);
+            System.out.println("[CLIENT] Réponse du serveur : " + reponse);
 
             afficherConfirmationEtRetour();
         } catch (Exception e) {
-            MainControleur.showAlert("Erreur d'envoi", "Une erreur est survenue : " + e.getMessage());
+            MainControleur.showAlert("Erreur d'envoi", "Une erreur est survenue.");
+            System.out.println("[CLIENT] Une erreur est survenue :" + e.getMessage());
         } finally {
             if (client != null) {
                 client.fermer();

@@ -17,7 +17,6 @@ public class Session {
     private static Serveur serveur;
     private static String ipServeur;
     private static String portServeur = "54321";
-    private static int clePublicClient;
 
 
     /**
@@ -83,21 +82,5 @@ public class Session {
      */
     public static void setServeur(Serveur serveur) {
         Session.serveur = serveur;
-    }
-
-    /**
-     *
-     * @param clePublicClient
-     */
-    public static void setClePublicClient(int clePublicClient) {
-        Session.clePublicClient = clePublicClient;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public static int getClePublicClient() {
-        return clePublicClient;
     }
 }

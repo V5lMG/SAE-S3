@@ -1,3 +1,7 @@
+import sae.statisalle.modele.Vigenere;
+
+import java.math.BigInteger;
+
 public class TestDiffieHellman {
     // Méthode pour calculer l'exponentiation modulaire
     public static int expoModulaire(int base, int exposant, int modulo) {
@@ -32,18 +36,23 @@ public class TestDiffieHellman {
 
         // Alice envoie gaModP à Bob, et Bob envoie gbModP à Alice
         // Étape 3: Alice calcule (g^b)^a mod p
-        int clePartageeAlice = expoModulaire(gbModP, a, p);
+        BigInteger clePartageeAlice = BigInteger.valueOf(expoModulaire(gbModP, a, p));
         System.out.println("Clé partagée calculée par Alice : " + clePartageeAlice);
 
         // Étape 4: Bob calcule (g^a)^b mod p
-        int clePartageeBob = expoModulaire(gaModP, b, p);
+        BigInteger clePartageeBob = BigInteger.valueOf(expoModulaire(gaModP, b, p));
         System.out.println("Clé partagée calculée par Bob : " + clePartageeBob);
 
         // Vérification que les deux clés partagées sont identiques
-        if (clePartageeAlice == clePartageeBob) {
+        if (clePartageeAlice.equals(clePartageeBob)) {
             System.out.println("Les clés partagées sont identiques : " + clePartageeAlice);
         } else {
             System.out.println("Les clés partagées ne correspondent pas.");
         }
+
+        String donneesChiffrees = Vigenere.chiffrementDonnees("Test", clePartageeAlice);
+        System.out.println("Donnees: " + donneesChiffrees);
+        String donneesDechiffrees = Vigenere.dechiffrementDonnees(donneesChiffrees, clePartageeBob);
+        System.out.println("Dechiffrees: " + donneesDechiffrees);
     }
 }
