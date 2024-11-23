@@ -1,8 +1,8 @@
 /*
- * Reservation.java               21/11/2024
- * IUT DE RODEZ               Pas de copyrights
+ * GenererPdf.java               20/11/2024
+ * IUT DE RODEZ                  Pas de copyrights
  */
-package sae.statisalle.modele.objet;
+package sae.statisalle.modele;
 
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
@@ -15,7 +15,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import javafx.collections.ObservableList;
-import javafx.stage.FileChooser;
+import sae.statisalle.modele.objet.Reservation;
 
 import java.io.File;
 import java.io.IOException;

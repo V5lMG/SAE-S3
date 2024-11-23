@@ -1,5 +1,5 @@
 /*
- * Connexion.java              31/10/2024
+ * ControleurConnexion.java              31/10/2024
  * Pas de droits d'auteur ni de copyright
  */
 package sae.statisalle.controleur;
@@ -10,7 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import sae.statisalle.modele.Client;
+import sae.statisalle.modele.objet.Client;
 import sae.statisalle.modele.Session;
 
 import java.io.IOException;
@@ -30,16 +30,10 @@ public class ControleurConnexion {
     private final Client client = new Client();
 
     @FXML
-    private TextField textIp;
+    private TextField textIp, textPort;
 
     @FXML
-    private TextField textPort;
-
-    @FXML
-    private Button btnConnexion;
-
-    @FXML
-    private Button btnAfficherIp;
+    private Button btnConnexion, btnAfficherIp;
 
     /**
      * Initialise l'état de la scène de connexion et

@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import sae.statisalle.modele.Serveur;
+import sae.statisalle.modele.objet.Serveur;
 import sae.statisalle.modele.Session;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class MainControleur extends Application {
     private static Scene Importer;
     private static Scene Visualiser;
 
-    /* Déclaration du stage */
+    /* déclaration du stage */
     private static Stage fenetrePrincipale;
 
     /**
@@ -148,7 +148,9 @@ public class MainControleur extends Application {
                 chargeur.setLocation(getClass().getResource(entry.getValue()));
                 Parent conteneur = chargeur.load();
 
-                Field champScene = this.getClass().getDeclaredField(entry.getKey());
+                Field champScene = this.getClass().getDeclaredField(
+                        entry.getKey()
+                );
                 champScene.setAccessible(true);
                 champScene.set(this, new Scene(conteneur));
             }
@@ -159,9 +161,8 @@ public class MainControleur extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            System.err.println("Erreur lors du chargement des vues : " + e.getMessage());
-            System.out.println();
-            e.printStackTrace();
+            System.err.println("Erreur lors du chargement des vues : "
+                               + e.getMessage());
         }
     }
 
@@ -175,24 +176,27 @@ public class MainControleur extends Application {
         serveurThread = new Thread(() -> {
             Serveur serveur = null;
             try {
-                // Initialiser le serveur
+                // initialiser le serveur
                 serveur = new Serveur();
                 Session.setServeur(serveur);
                 String ip = Session.getIpServeur();
                 String port = Session.getPortServeur();
                 serveur.demarrer(Integer.parseInt(port), ip);
-                System.out.println("[MAIN] Serveur démarré sur le port 54321, en attente de connexions...");
+                System.out.println("[MAIN] Serveur démarré sur le "
+                                  + "port 54321, en attente de connexions...");
 
-                // Lancer un thread pour accepter les connexions client en continu
-                Thread acceptClientThread = new Thread(serveur::accepterClients);
+                // lancer un thread pour accepter les connexions client en continu
+                Thread acceptClientThread =
+                        new Thread(serveur::accepterClients);
                 acceptClientThread.start();
 
-                // Le serveur continue à accepter des connexions jusqu'à ce qu'il soit explicitement arrêté
+                // Continuer à accepter des connexions
+                // jusqu'à l'execution du .stop()
                 acceptClientThread.join();
             } catch (IOException | InterruptedException e) {
-                System.err.println("[MAIN] Erreur lors de l'initialisation du serveur : " + e.getMessage());
+                System.err.println("[MAIN] Erreur lors de l'initialisation"
+                                   + " du serveur : " + e.getMessage());
             } finally {
-                // Fermer le serveur une fois tout terminé
                 if (serveur != null) {
                     serveur.fermerServeur();
                     System.out.println("[MAIN] Serveur arrêté.");
@@ -205,7 +209,7 @@ public class MainControleur extends Application {
     }
 
     /**
-     * TODO
+     * Arrête le thread serveur en cours d'exécution.
      */
     public static void stopThreadServeur() {
         serveurThread.interrupt();

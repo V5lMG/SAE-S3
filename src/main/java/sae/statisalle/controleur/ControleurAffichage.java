@@ -1,3 +1,7 @@
+/*
+ * ControleurAffichage.java          14/11/2024
+ * IUT DE RODEZ                      Pas de copyrights
+ */
 package sae.statisalle.controleur;
 
 import javafx.collections.FXCollections;
@@ -20,10 +24,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import sae.statisalle.modele.objet.GenererPdf;
+import sae.statisalle.modele.GenererPdf;
 
 /**
- * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
+ * Contrôleur qui gère la consultation des données et des filtres
+ * de recherche sont applicables sur les reservations.
  * Ce contrôleur applique des filtres sur :
  * <ul>
  *     <li>Le nom des salles</li>
@@ -38,6 +43,14 @@ import sae.statisalle.modele.objet.GenererPdf;
  */
 public class ControleurAffichage {
 
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    //                         TODO Faire la javadoc et !!! colonne 80
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+
     @FXML
     private Button btnAfficherTableaux;
 
@@ -48,104 +61,43 @@ public class ControleurAffichage {
     @FXML
     private TableView<Reservation> tabReservation;
     @FXML
-    private TableColumn<Reservation, String> idReservation;
-    @FXML
-    private TableColumn<Reservation, String> salleR;
-    @FXML
-    private TableColumn<Reservation, String> employeR;
-    @FXML
-    private TableColumn<Reservation, String> activiteR;
-    @FXML
-    private TableColumn<Reservation, String> dateR;
-    @FXML
-    private TableColumn<Reservation, String> heureDebutR;
-    @FXML
-    private TableColumn<Reservation, String> heureFinR;
-    @FXML
-    private TableColumn<Reservation, String> descriptionR;
-    @FXML
-    private TableColumn<Reservation, String> nomR;
-    @FXML
-    private TableColumn<Reservation, String> prenomR;
-    @FXML
-    private TableColumn<Reservation, String> numTelR;
-    @FXML
-    private TableColumn<Reservation, String> usageR;
+    private TableColumn<Reservation, String> idReservation, salleR, employeR,
+                                             activiteR, dateR, heureDebutR,
+                                             heureFinR, descriptionR, nomR,
+                                             prenomR, numTelR, usageR;
     @FXML
     private Tab feuilleReservation;
 
     @FXML
-    private ComboBox<String> filtreEmploye;
-    @FXML
-    private ComboBox<String> filtreActivite;
-    @FXML
-    private ComboBox<String> filtreSalle;
-    @FXML
-    private ComboBox<String> filtreDateDebut;
-    @FXML
-    private ComboBox<String> filtreDateFin;
-    @FXML
-    private ComboBox<String> filtreHeureD;
-    @FXML
-    private ComboBox<String> filtreHeureF;
+    private ComboBox<String> filtreEmploye, filtreActivite, filtreSalle,
+                             filtreDateDebut, filtreDateFin, filtreHeureD,
+                             filtreHeureF;
     @FXML
     private Button reinitialiserFiltre;
     @FXML
-    private Text textfiltreEmploye;
-    @FXML
-    private Text textfiltreActivite;
-    @FXML
-    private Text textfiltreSalle;
-    @FXML
-    private Text textfiltreDateDebut;
-    @FXML
-    private Text textfiltreDateFin;
-    @FXML
-    private Text textfiltreHeureD;
-    @FXML
-    private Text textfiltreHeureF;
+    private Text textfiltreEmploye, textfiltreActivite, textfiltreSalle,
+                 textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
+                 textfiltreHeureF;
 
-    // Table des salles
+    // table des salles
     @FXML
     private TableView<Salle> tabSalle;
     @FXML
-    private TableColumn<Salle, String> idSalle;
-    @FXML
-    private TableColumn<Salle, String> nomS;
-    @FXML
-    private TableColumn<Salle, String> capaciteS;
-    @FXML
-    private TableColumn<Salle, String> videoProjS;
-    @FXML
-    private TableColumn<Salle, String> ecranXXLS;
-    @FXML
-    private TableColumn<Salle, String> nbrOrdiS;
-    @FXML
-    private TableColumn<Salle, String> typeS;
-    @FXML
-    private TableColumn<Salle, String> logicielS;
-    @FXML
-    private TableColumn<Salle, String> imprimanteS;
+    private TableColumn<Salle, String> idSalle, nomS, capaciteS,
+                                       videoProjS, ecranXXLS, nbrOrdiS,
+                                       typeS, logicielS, imprimanteS;
 
-    // Table des activités
+    // table des activités
     @FXML
     private TableView<Activite> tabActivite;
     @FXML
-    private TableColumn<Activite, String> idActivite;
-    @FXML
-    private TableColumn<Activite, String> activiteA;
+    private TableColumn<Activite, String> idActivite, activiteA;
 
-    // Table des employés
+    // table des employés
     @FXML
     private TableView<Employe> tabEmploye;
     @FXML
-    private TableColumn<Employe, String> idEmploye;
-    @FXML
-    private TableColumn<Employe, String> nomE;
-    @FXML
-    private TableColumn<Employe, String> prenomE;
-    @FXML
-    private TableColumn<Employe, String> numTelE;
+    private TableColumn<Employe, String> idEmploye, nomE, prenomE, numTelE;
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
@@ -153,18 +105,21 @@ public class ControleurAffichage {
     @FXML
     ObservableList<Salle> listSalle = FXCollections.observableArrayList();
     @FXML
-    ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+    ObservableList<Reservation> listReservation = FXCollections
+                                                        .observableArrayList();
 
+    // génération de pdf
     @FXML
     private Button btnGenererPdf;
 
 
-    // Méthodes d'action pour les boutons
+    // afficher page d'aide
     @FXML
     private void actionAide() {
         MainControleur.activerAideAffichage();
     }
 
+    // bouton retour
     @FXML
     void actionRetour() {
         // Rendre les filtres invisibles
@@ -188,16 +143,18 @@ public class ControleurAffichage {
         grandTableau.setVisible(false);
         btnAfficherTableaux.setVisible(true);
 
-        //Rendre le bouton de génération de pdf invisible
+        // Rendre le bouton de génération de pdf invisible
         btnGenererPdf.setVisible(false);
 
         MainControleur.activerAccueil();
     }
 
+    /**
+     * TODO
+     */
     @FXML
     private void chargerDonnees() {
 
-        // Cache la barre des filtres avant de charger les données
         masquerFiltres();
 
         // Cache le bouton

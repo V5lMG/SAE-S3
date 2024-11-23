@@ -2,7 +2,7 @@ import sae.statisalle.modele.Vigenere;
 
 import java.math.BigInteger;
 
-public class TestDiffieHellman {
+public class TestChiffrement {
     // Méthode pour calculer l'exponentiation modulaire
     public static int expoModulaire(int base, int exposant, int modulo) {
         int resultat = 1;

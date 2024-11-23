@@ -1,6 +1,6 @@
 /*
- * Importer.java               24/10/2024
- * IUT DE RODEZ               Pas de copyrights
+ * ControleurImporter.java          24/10/2024
+ * IUT DE RODEZ                     Pas de copyrights
  */
 package sae.statisalle.controleur;
 
@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Classe du controller Importer,
- * Qui permet de faire le lien entre la vue Importer et son modèle
+ * Permet de faire le lien entre la vue Importer et le modèle
  * @author robin.montes
  * @author mathias.cambon
  * @author valentin.munier-genie
@@ -28,17 +28,11 @@ import java.util.List;
  */
 public class ControleurImporter {
 
-    public Button btnFichier;
+    @FXML
+    public Button btnFichier, btnImporter;
 
-    public Button btnImporter;
-
-    public Text cheminFichier;
-
-    public Text nomFichier;
-
-    public Text texteCheminFichier;
-
-    public Text texteNomFichier;
+    @FXML
+    public Text cheminFichier, nomFichier, texteCheminFichier, texteNomFichier;
 
     /**
      * Liste contenant les chemins des fichiers sélectionnés pour l'envoi.
@@ -57,16 +51,29 @@ public class ControleurImporter {
         btnImporter.setDisable(true);
     }
 
+    /**
+     * Cette méthode est appelée lors de l'action de retour.
+     * Elle permet de retourner à la page d'accueil.
+     */
     @FXML
     void actionRetour() {
         MainControleur.activerAccueil();
     }
 
+    /**
+     * Cette méthode est appelée lors de l'action d'aide.
+     * Elle permet d'afficher la page d'aide pour l'importation de données.
+     */
     @FXML
     void actionAide() {
         MainControleur.activerAideImporter();
     }
 
+    /**
+     * Cette méthode est appelée lors de l'importation de fichiers.
+     * Elle gère la création, l'écriture ou la réécriture de fichiers CSV
+     * à partir des fichiers importés.
+     */
     @FXML
     void actionImporter() {
         String dateDuJour = new SimpleDateFormat("ddMMyyyy")
@@ -78,39 +85,47 @@ public class ControleurImporter {
             String nomFichier = fichierImporter.getTypeFichier() + "_"
                     + dateDuJour + ".csv";
 
-            // Vérifier si le répertoire existe, sinon le créer
+            // vérifier si le répertoire existe, sinon le créer
             File dossier = new File("src/main/resources/csv/");
             if (!dossier.exists()) {
-                boolean created = dossier.mkdirs(); // Crée les répertoires si nécessaires
+                boolean created = dossier.mkdirs();
                 if (!created) {
-                    System.out.println("Erreur : Impossible de créer le répertoire.");
-                    return;  // Arrêter si la création échoue
+                    System.out.println("Erreur : Impossible de créer le "
+                                       + "répertoire.");
+                    return;
                 }
             }
 
             // Si le fichier n'existe pas, on le crée. Sinon, on le réécrit.
             if (!Fichier.fichierExiste(nomFichier)) {
                 Fichier.ecritureFichier(fichierImporter.contenuFichier(),
-                        "src/main/resources/csv/" + fichierImporter.getTypeFichier()
+                        "src/main/resources/csv/"
+                                + fichierImporter.getTypeFichier()
                                 + "_" + dateDuJour + ".csv");
             } else {
                 Fichier fichierExistant = new Fichier(nomFichier);
-                fichierExistant.reecritureFichier(fichierImporter.contenuFichier());
+                fichierExistant.reecritureFichier(
+                        fichierImporter.contenuFichier());
             }
         }
 
-        // Confirmation d'importation réussie
-        System.out.println("Le fichier ou les fichiers ont bien été importé(s)");
+        System.out.println("Le fichier ou les fichiers ont bien "
+                           + "été importé(s)");
         MainControleur.activerAccueil();
 
-        // Pop-up d'information pour confirmer l'importation réussie
         Alert information = new Alert(Alert.AlertType.INFORMATION);
         information.setTitle("Validation");
         information.setHeaderText(null);
-        information.setContentText("Le/Les fichier(s) a/ont bien été importé(s)");
+        information.setContentText("Le/Les fichier(s) a/ont bien été "
+                                   + "importé(s)");
         information.showAndWait();
     }
 
+    /**
+     * Cette méthode est appelée lors de l'importation de fichiers.
+     * Elle gère la création, l'écriture ou la réécriture de fichiers CSV
+     * à partir des fichiers importés.
+     */
     @FXML
     private void actionChoixFichier() {
         FileChooser fileChooser = new FileChooser();
@@ -120,7 +135,7 @@ public class ControleurImporter {
                 new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv")
         );
 
-        // Obtenir le stage principal à partir de MainControleur
+        // obtenir le stage principal à partir de MainControleur
         Stage stage = MainControleur.getFenetrePrincipale();
 
         List<File> fichiers = fileChooser.showOpenMultipleDialog(stage);
@@ -143,7 +158,8 @@ public class ControleurImporter {
             texteNomFichier.setStyle("-fx-fill: #000000;");
             cheminFichier.setStyle("-fx-fill: #000000;");
             nomFichier.setStyle("-fx-fill: #000000;");
-            btnImporter.setStyle("-fx-background-color: #4CAF50;-fx-text-fill: #000000;");
+            btnImporter.setStyle("-fx-background-color: #4CAF50;" +
+                                 "-fx-text-fill: #000000;");
             btnImporter.setDisable(false);
 
             System.out.println("Fichiers sélectionnés : \n" + chemins);

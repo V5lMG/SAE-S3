@@ -1,6 +1,6 @@
 /*
- * Envoyer.java                 30/10/2024
- * IUT DE RODEZ                 Pas de copyrights
+ * ControleurEnvoyer.java              30/10/2024
+ * IUT DE RODEZ                        Pas de copyrights
  */
 package sae.statisalle.controleur;
 
@@ -11,6 +11,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sae.statisalle.modele.*;
+import sae.statisalle.modele.objet.Client;
+import sae.statisalle.modele.objet.Serveur;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -144,43 +146,57 @@ public class ControleurEnvoyer {
                 File fichier = new File(cheminFichier);
 
                 if (!fichier.exists()) {
-                    throw new IllegalArgumentException("Le fichier n'existe pas : " + cheminFichier);
+                    throw new IllegalArgumentException("Le fichier n'existe "
+                                                       + "pas : "
+                                                       + cheminFichier);
                 }
 
-                try (BufferedReader reader = new BufferedReader(new FileReader(fichier))) {
+                try (BufferedReader reader = new BufferedReader(
+                                                    new FileReader(fichier))) {
                     String ligne;
                     while ((ligne = reader.readLine()) != null) {
                         contenuTotal.append(ligne).append("\n");
                     }
-                } catch (IOException e) {
-                    throw new IOException("Erreur lors de la lecture du fichier : " + fichier.getName(), e);
+
+                } catch (IOException erreurLecture) {
+                    throw new IOException("Erreur lors de la lecture du "
+                                          + "fichier : " + fichier.getName(),
+                                          erreurLecture);
                 }
 
-                contenuTotal.append("/EOF");
+                contenuTotal.append("/EOF"); // limiteur de fin de fichier
             }
 
-            String contenuFormate = contenuTotal.toString().replace("\n", "/N").replace("\r", "/R");
+            String contenuFormate = contenuTotal.toString()
+                                                .replace("\n", "/N")
+                                                .replace("\r", "/R");
 
-            // Initialisation Diffie-Hellman
-            int p = DiffieHellman.genererEntierPremier(1,9999); // TODO passer en BigInteger
+            /* Initialisation Diffie-Hellman */
+            // TODO passer en BigInteger si possible
+            int p = DiffieHellman.genererEntierPremier(1,9999);
             int g = DiffieHellman.genererGenerateur(p);
             int a = DiffieHellman.genererEntierPremier(1,9999);
 
             int clePubliqueClient = DiffieHellman.expoModulaire(g, a, p);
-            client.envoyerClePublic(clePubliqueClient + " ; " + p + " ; " + g);
+            client.envoyerClePublic( clePubliqueClient + " ; "
+                                    + p + " ; " + g);
 
             String clePartageeServeur = client.recevoirClePublic();
             String[] parties = clePartageeServeur.split(" ; ");
             if (parties.length != 3) {
-                throw new IllegalArgumentException("Format de clé publique invalide.");
+                throw new IllegalArgumentException("Format de clé publique "
+                                                   + "invalide.");
             }
 
             int clePubliqueServeur = Integer.parseInt(parties[0]);
-            BigInteger cleSecreteCalculee = BigInteger.valueOf(DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
+            BigInteger cleSecreteCalculee = BigInteger.valueOf(
+                    DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
             System.out.println("[CLIENT] Clé secrète calculé : " + cleSecreteCalculee);
 
             // chiffrement et envoi des données
-            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, cleSecreteCalculee);
+            String donneesChiffrees =
+                    Vigenere.chiffrementDonnees(contenuFormate,
+                                                cleSecreteCalculee);
             client.envoyer(donneesChiffrees);
 
             String reponse = client.recevoir();
@@ -188,8 +204,10 @@ public class ControleurEnvoyer {
 
             afficherConfirmationEtRetour();
         } catch (Exception e) {
-            MainControleur.showAlert("Erreur d'envoi", "Une erreur est survenue.");
-            System.out.println("[CLIENT] Une erreur est survenue :" + e.getMessage());
+            MainControleur.showAlert("Erreur d'envoi",
+                            "Une erreur est survenue.");
+            System.out.println("[CLIENT] Une erreur est survenue :"
+                               + e.getMessage());
         } finally {
             if (client != null) {
                 client.fermer();

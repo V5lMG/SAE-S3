@@ -1,6 +1,6 @@
 /*
- * Accueil.java                 14/11/2024
- * IUT DE RODEZ                 Pas de copyrights
+ * ControleurAccueil.java                 14/11/2024
+ * IUT DE RODEZ                            Pas de copyrights
  */
 package sae.statisalle.controleur;
 
@@ -19,40 +19,60 @@ import javafx.stage.Stage;
 import sae.statisalle.modele.Session;
 
 /**
- * TODO
+ * Contrôleur de l'écran d'accueil de l'application.
+ * Gère les actions déclenchées par les utilisateurs depuis l'écran principal.
+ *
  * @author valentin.munier-genie
  */
 public class ControleurAccueil {
 
+    /**
+     * Action déclenchée pour passer à l'écran d'importation.
+     */
     @FXML
     void actionImporter() {
         MainControleur.activerImporter();
     }
 
+    /**
+     * Action déclenchée pour passer à l'écran de connexion
+     * et envoyer des données.
+     */
     @FXML
     void actionEnvoyer() {
         MainControleur.activerConnexion();
     }
 
+    /**
+     * Action déclenchée pour afficher les données importées.
+     */
     @FXML
     void actionAfficher() {
         MainControleur.activerAffichage();
     }
 
+    /**
+     * Action déclenchée pour quitter l'application.
+     */
     @FXML
     void actionQuitter() {
         Platform.exit();
     }
 
+    /**
+     * Action déclenchée pour afficher l'aide liée à l'écran d'accueil.
+     */
     @FXML
     void actionAide() {
         MainControleur.activerAideAccueil();
     }
 
     /**
-     * Action déclenchée pour ouvrir une fenêtre de réglages du serveur.
-     * Cette fenêtre permet de définir l'adresse IP et le port du serveur.
-     * Les informations saisies sont validées avant d'être enregistrées.
+     * Action déclenchée pour afficher une fenêtre de réglages.
+     * Permet de modifier l'adresse IP et le port du serveur,
+     * avec validation des entrées.
+     * Applique les modifications si elles sont valides,
+     * redémarre le serveur et ferme la fenêtre.
      */
     @FXML
     private void actionReglage() {
@@ -85,8 +105,9 @@ public class ControleurAccueil {
         Button saveButton = new Button("Enregistrer");
         Button cancelButton = new Button("Annuler");
 
-        saveButton.setStyle("-fx-background-color: #60BCFB;");
-        cancelButton.setStyle("-fx-background-color: #CD4043;-fx-text-fill: white;");
+        saveButton.setStyle(   "-fx-background-color: #60BCFB;");
+        cancelButton.setStyle( "-fx-background-color: #CD4043;"
+                              +"-fx-text-fill: white;");
 
         buttonBox.getChildren().addAll(saveButton, cancelButton);
 
@@ -98,19 +119,22 @@ public class ControleurAccueil {
 
             try {
                 if (!ip.isEmpty() && !isValidIp(ip)) {
-                    MainControleur.showAlert("Erreur", "L'adresse IP saisie n'est pas valide !");
+                    MainControleur.showAlert("Erreur",
+                            "L'adresse IP saisie n'est pas valide !");
                     return;
                 }
 
                 if (!portText.isEmpty()) {
                     int port = Integer.parseInt(portText);
                     if (port < 1 || port > 65535) {
-                        MainControleur.showAlert("Erreur", "Le port doit être compris entre 1 et 65535 !");
+                        MainControleur.showAlert("Erreur",
+                                "Le port doit être compris entre "
+                                        + "1 et 65535 !");
                         return;
                     }
                 }
 
-                // Si tout est valide, appliquer les modifications
+                // si tout est valide, appliquer les modifications
                 if (!ip.isEmpty()) {
                     Session.setIpServeur(ip);
                     System.out.println("[SERVEUR] Adresse IP modifiée : " + ip);
@@ -124,14 +148,17 @@ public class ControleurAccueil {
                 // redémarrer le serveur
                 if (!ip.isEmpty() || !portText.isEmpty()) {
                     MainControleur.stopThreadServeur();
-                    System.out.println("[MAIN] Serveur stoppé pour changement de l'IP.");
+                    System.out.println("[MAIN] Serveur stoppé pour changement "
+                                       + "de l'IP ou du PORT.");
                     MainControleur.initServeur();
-                    System.out.println("[MAIN] Serveur redémarré avec nouvelle l'IP.");
+                    System.out.println("[MAIN] Serveur redémarré avec "
+                                       + "la nouvelle l'IP.");
                 }
 
                 popupStage.close();
             } catch (NumberFormatException ex) {
-                MainControleur.showAlert("Erreur", "Le port doit être un nombre valide.");
+                MainControleur.showAlert("Erreur",
+                        "Le port doit être un nombre valide.");
             }
         });
 

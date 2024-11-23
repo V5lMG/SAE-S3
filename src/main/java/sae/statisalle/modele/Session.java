@@ -4,6 +4,9 @@
  */
 package sae.statisalle.modele;
 
+import sae.statisalle.modele.objet.Client;
+import sae.statisalle.modele.objet.Serveur;
+
 /**
  * La classe Session gère les informations relatives à une session réseau
  * telles que l'adresse IP, le contenu de la session, les objets réseau et la clé associée.

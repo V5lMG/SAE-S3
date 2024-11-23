@@ -19,6 +19,7 @@ package sae.statisalle.modele.objet;
  * @author erwan.thierry
  */
 public class Reservation {
+
     /* Identifiant de la reservation */
     String idReservation;
 
@@ -55,12 +56,27 @@ public class Reservation {
     /* Date de la réservation */
     String usage;
 
+    /**
+     * Constructeur de la classe Reservation
+     * @param idReservation Identifiant de la réservation
+     * @param salleR Salle réservée
+     * @param employeR Employé ayant effectué la réservation
+     * @param activiteR Activité liée à la réservation
+     * @param dateR Date de la réservation
+     * @param heureDebut Heure de début de la réservation
+     * @param heureFin Heure de fin de la réservation
+     * @param description Description de la réservation
+     * @param nomIntervenant Nom de l'intervenant
+     * @param prenomIntervenant Prénom de l'intervenant
+     * @param numTelIntervenant Numéro de téléphone de l'intervenant
+     * @param usage Usage de la réservation
+     */
+    public Reservation(String idReservation, String salleR, String employeR,
+                       String activiteR, String dateR, String heureDebut,
+                       String heureFin, String description,
+                       String nomIntervenant, String prenomIntervenant,
+                       String numTelIntervenant, String usage) {
 
-
-    //TODO Faire la documentation
-    public Reservation(String idReservation, String salleR           , String employeR         , String activiteR  , String dateR,
-                       String heureDebut       , String heureFin         , String description, String nomIntervenant,
-                       String prenomIntervenant, String numTelIntervenant, String usage) {
         this.idReservation = idReservation;
         this.salleR = salleR;
         this.employeR = employeR;
@@ -86,6 +102,10 @@ public class Reservation {
         this.usage = usage;
     }
 
+    /* ---------------------------------------------- */
+    /* Getters pour chaque attribut de la réservation */
+    /* ---------------------------------------------- */
+
     public String getIdReservation() {
         return idReservation;
     }
@@ -102,12 +122,12 @@ public class Reservation {
         return activiteR;
     }
 
-    public String getHeureDebut() {
-        return heureDebut;
-    }
-
     public String getDateR() {
         return dateR;
+    }
+
+    public String getHeureDebut() {
+        return heureDebut;
     }
 
     public String getHeureFin() {
@@ -118,37 +138,25 @@ public class Reservation {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getNomIntervenant() {
         return nomIntervenant;
-    }
-
-    public void setNomIntervenant(String nomIntervenant) {
-        this.nomIntervenant = nomIntervenant;
     }
 
     public String getPrenomIntervenant() {
         return prenomIntervenant;
     }
 
-    public void setPrenomIntervenant(String prenomIntervenant) {
-        this.prenomIntervenant = prenomIntervenant;
-    }
-
     public String getNumTelIntervenant() {
         return numTelIntervenant;
-    }
-
-    public void setNumTelIntervenant(String numTelIntervenant) {
-        this.numTelIntervenant = numTelIntervenant;
     }
 
     public String getUsage() {
         return usage;
     }
+
+    /* ----------------------------------------------------- */
+    /* Setters pour modifier les attributs de la réservation */
+    /* ----------------------------------------------------- */
 
     public void setIdReservation(String idReservation) {
         this.idReservation = idReservation;
@@ -166,16 +174,32 @@ public class Reservation {
         this.activiteR = activiteR;
     }
 
-    public void setHeureDebut(String heureDebut) {
-        this.heureDebut = heureDebut;
-    }
-
     public void setDateR(String dateR) {
         this.dateR = dateR;
     }
 
+    public void setHeureDebut(String heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
     public void setHeureFin(String heureFin) {
         this.heureFin = heureFin;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setNomIntervenant(String nomIntervenant) {
+        this.nomIntervenant = nomIntervenant;
+    }
+
+    public void setPrenomIntervenant(String prenomIntervenant) {
+        this.prenomIntervenant = prenomIntervenant;
+    }
+
+    public void setNumTelIntervenant(String numTelIntervenant) {
+        this.numTelIntervenant = numTelIntervenant;
     }
 
     public void setUsage(String usage) {

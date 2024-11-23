@@ -82,7 +82,6 @@
 //        if (result.isPresent() && result.get() == ButtonType.OK) {
 //            String dateDuJour = new SimpleDateFormat("ddMMyyyy").format(new Date());
 //
-//            // TODO: Ajouter la logique pour réécrire le fichier
 //            /* Fichier.reecritureFichier(fichierImporter.contenuFichier(),
 //               "/fichier/" + fichierImporter.getTypeFichier() + "_" + dateDuJour); */
 //
