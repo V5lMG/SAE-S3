@@ -28,13 +28,15 @@
             <ComboBox fx:id="filtreDateFin" editable="true" layoutX="659.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
             <ComboBox fx:id="filtreHeureD" layoutX="840.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
             <ComboBox fx:id="filtreHeureF" layoutX="1026.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreSalle" editable="true" layoutX="200.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <Text fx:id="textfiltreSalle" layoutX="200.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle :" visible="false" />
             <Text fx:id="textfiltreDateDebut" layoutX="461.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date début :" visible="false" wrappingWidth="84.291015625" />
             <Text fx:id="textfiltreDateFin" layoutX="659.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date fin :" visible="false" wrappingWidth="69.490234375" />
             <Text fx:id="textfiltreHeureD" layoutX="840.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Début du créneau :" visible="false" wrappingWidth="119.875" />
             <Text fx:id="textfiltreHeureF" layoutX="1026.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fin du créneau :" visible="false" wrappingWidth="123.830078125" />
             <Button fx:id="reinitialiserFiltre" layoutX="1271.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleReinitialiserFiltre" style="-fx-background-color: #60BCFB;" text="Réinitialiser filtre" visible="false" />
             <TabPane fx:id="grandTableau" layoutX="88.0" layoutY="117.0" prefHeight="419.0" prefWidth="1312.0" tabClosingPolicy="UNAVAILABLE" visible="false">
-               <Tab fx:id="feuilleSalle" onSelectionChanged="#afficherFiltre" text="Salle">
+               <Tab fx:id="feuilleSalle" onSelectionChanged="#afficherFiltreSalle" text="Salle">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <TableView fx:id="tabSalle" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
@@ -53,7 +55,7 @@
                      </TableView>
                   </AnchorPane>
                </Tab>
-               <Tab fx:id="feuilleActivite" text="Activité">
+               <Tab fx:id="feuilleActivite" onSelectionChanged="#afficherFiltreActivite" text="Activité">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <TableView fx:id="tabActivite" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
@@ -69,7 +71,7 @@
                      </TableView>
                   </AnchorPane>
                </Tab>
-               <Tab fx:id="feuilleEmploye" text="Employé">
+               <Tab fx:id="feuilleEmploye" onSelectionChanged="#afficherFiltreEmploye" text="Employé">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="592.0">
                      <TableView fx:id="tabEmploye" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>

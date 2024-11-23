@@ -58,8 +58,8 @@ public class Reservation {
 
 
     //TODO Faire la documentation
-    public Reservation(String idReservation, String salleR           , String employeR         , String activiteR  , String dateR,
-                       String heureDebut       , String heureFin         , String description, String nomIntervenant,
+    public Reservation(String idReservation, String salleR , String employeR , String activiteR , String dateR,
+                       String heureDebut   , String heureFin , String description, String nomIntervenant,
                        String prenomIntervenant, String numTelIntervenant, String usage) {
         this.idReservation = idReservation;
         this.salleR = salleR;

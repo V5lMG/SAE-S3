@@ -56,6 +56,24 @@ public class Activite {
                 .orElse("Aucune salle");
     }
 
+    //Obtenir les types d'activités associées à la salle
+    public String getHeureDebutR() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getHeureDebut())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                .orElse("Aucune activité");
+    }
+
+    //Obtenir les types d'activités associées à la salle
+    public String getHeureFinR() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getHeureFin())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                .orElse("Aucune activité");
+    }
+
 //    // 2. Calculer le temps total pour l'activité
 //    public int getTempsTotal() {
 //        return reservations.stream()

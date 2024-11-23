@@ -5,9 +5,9 @@
 
 package sae.statisalle.controller;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -17,11 +17,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import sae.statisalle.modele.objet.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Controleur des statistiques - Classement
@@ -47,6 +49,12 @@ public class Classement {
 
     @FXML
     private Tab feuilleSalle;
+
+    @FXML
+    private Tab feuilleActivite;
+
+    @FXML
+    private Tab feuilleEmploye;
 
     // Table de salle
     @FXML
@@ -224,7 +232,7 @@ public class Classement {
                         employe.getNumTel()
                 );
 
-                //Associer la réservation spécifique
+                // Associer la réservation spécifique
                 employeDetaille.getReservations().add(reservation);
 
                 employesDetaillees.add(employeDetaille);
@@ -260,7 +268,6 @@ public class Classement {
         return activitesDetaillees;
     }
 
-
     public void chargerDonnees() {
         btnAfficherTableaux.setVisible(false);
 
@@ -283,15 +290,18 @@ public class Classement {
             employe.setNom(employe.getNom() + " " + employe.getPrenom());
         }
 
-        //Table employe
+        // Table employe
         idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
         nomPrenomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
         salleE.setCellValueFactory(new PropertyValueFactory<>("sallesReservees"));
         activiteE.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
-        //totalE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        totalE.setCellValueFactory(cellData -> {
+            Employe ligne = cellData.getValue();
+            return new SimpleStringProperty(calculerDureeEmploye(ligne));
+        });
         tabEmploye.setItems(getDetailsDesEmployes());
 
-        //Table salle
+        // Table salle
         idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
         nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
         employeS.setCellValueFactory(new PropertyValueFactory<>("nomEmploye"));
@@ -299,19 +309,33 @@ public class Classement {
         dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
         heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebutR"));
         heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFinR"));
-        //totalS.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        totalS.setCellValueFactory(cellData -> {
+            Salle ligne = cellData.getValue();
+            return new SimpleStringProperty(calculerDureeSalle(ligne));
+        });
         tabSalle.setItems(getDetailsDesReservations());
 
-        //Table activite
+        // Table activite
         idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
         activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
         salleA.setCellValueFactory(new PropertyValueFactory<>("sallesAssociees"));
         employeA.setCellValueFactory(new PropertyValueFactory<>("employeAssocies"));
-        //totalA.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        totalA.setCellValueFactory(cellData -> {
+            Activite ligne = cellData.getValue();
+            return new SimpleStringProperty(calculerDureeActivite(ligne));
+        });
         tabActivite.setItems(getDetailsDesActivites());
 
+        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleActivite) {
+            afficherFiltreActivite(); // Chaque tableau à son filtre
+        }
+
         if (grandTableau.getSelectionModel().getSelectedItem() == feuilleSalle) {
-            afficherFiltre();
+            afficherFiltreSalle(); // Chaque tableau à son filtre
+        }
+
+        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleEmploye) {
+            afficherFiltreEmploye(); // Chaque tableau à son filtre
         }
 
         remplirComboBoxSalles();
@@ -332,6 +356,64 @@ public class Classement {
 
     }
 
+    // TODO
+    /* ---------------------------------------------------------------- */
+    public String calculerDureeSalle(Salle salle) {
+        String heureDebutL = salle.getHeureDebutR();
+        String heureFinL = salle.getHeureFinR();
+
+        LocalTime heureDebut = parseHeure(heureDebutL);
+        LocalTime heureFin = parseHeure(heureFinL);
+
+        if (heureDebut != null && heureFin != null) {
+            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
+            int heure = duree / 60;
+            int minutes = duree % 60;
+
+            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
+        } else {
+            return "N/A";
+        }
+    }
+
+    public String calculerDureeActivite(Activite Activite) {
+        String heureDebutL = Activite.getHeureDebutR();
+        String heureFinL = Activite.getHeureFinR();
+
+        LocalTime heureDebut = parseHeure(heureDebutL);
+        LocalTime heureFin = parseHeure(heureFinL);
+
+        if (heureDebut != null && heureFin != null) {
+            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
+            int heure = duree / 60;
+            int minutes = duree % 60;
+
+            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
+        } else {
+            return "N/A";
+        }
+    }
+
+    public String calculerDureeEmploye(Employe Employe) {
+        String heureDebutL = Employe.getHeureDebutR();
+        String heureFinL = Employe.getHeureFinR();
+
+        LocalTime heureDebut = parseHeure(heureDebutL);
+        LocalTime heureFin = parseHeure(heureFinL);
+
+        if (heureDebut != null && heureFin != null) {
+            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
+            int heure = duree / 60;
+            int minutes = duree % 60;
+
+            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
+        } else {
+            return "N/A";
+        }
+    }
+    /* ---------------------------------------------------- */
+    /* Ligne rajouté par Erwan */
+
     public void setListEmploye(ObservableList<Employe> listEmploye) {
         this.listEmploye = listEmploye;
     }
@@ -345,15 +427,15 @@ public class Classement {
     }
 
     @FXML
-    private void afficherFiltre() {
-        // création d'une liste contenant tous les filtres
+    private void afficherFiltreSalle() {
+        // création d'une liste contenant tous les filtres sauf celui sur les salles
         List<Node> filtres = Arrays.asList(
-                filtreEmploye, filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
-                textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
+                filtreEmploye, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                textfiltreEmploye, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
-        // Détermine la visibilité en fonction de l'état de la checkbox
+        // Détermine la visibilité en fonction de la feuille sélectionnée
         boolean visible = feuilleSalle.isSelected();
 
         // Applique la visibilité à chaque composant si celui-ci n'est pas null
@@ -363,6 +445,74 @@ public class Classement {
                 composantFiltre.setVisible(visible);
             }
         });
+    }
+
+    @FXML
+    private void afficherFiltreActivite() {
+        // création d'une liste contenant tous les filtres sauf celui sur les activités
+        List<Node> filtres = Arrays.asList(
+                filtreEmploye, filtreSalle, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                textfiltreEmploye, textfiltreSalle, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
+                textfiltreHeureF, reinitialiserFiltre
+        );
+
+        // Détermine la visibilité en fonction de la feuille sélectionnée
+        boolean visible = feuilleActivite.isSelected();
+
+        // Applique la visibilité à chaque composant si celui-ci n'est pas null
+        filtres.forEach(composantFiltre -> {
+            //Vérification
+            if (composantFiltre != null) {
+                composantFiltre.setVisible(visible);
+            }
+        });
+
+        // Récupérer la position X et Y
+        double positionX = filtreActivite.getLayoutX();
+        double positionY = filtreActivite.getLayoutY();
+
+        filtreSalle.setLayoutX(positionX);
+        filtreSalle.setLayoutY(positionY);
+
+        positionX = textfiltreActivite.getLayoutX();
+        positionY = textfiltreActivite.getLayoutY();
+
+        textfiltreSalle.setLayoutX(positionX);
+        textfiltreSalle.setLayoutY(positionY);
+    }
+
+    @FXML
+    private void afficherFiltreEmploye() {
+        // création d'une liste contenant tous les filtres sauf celui sur les employés
+        List<Node> filtres = Arrays.asList(
+                filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
+                textfiltreHeureF, reinitialiserFiltre
+        );
+
+        // Détermine la visibilité en fonction de la feuille sélectionnée
+        boolean visible = feuilleEmploye.isSelected();
+
+        // Applique la visibilité à chaque composant si celui-ci n'est pas null
+        filtres.forEach(composantFiltre -> {
+            //Vérification
+            if (composantFiltre != null) {
+                composantFiltre.setVisible(visible);
+            }
+        });
+
+        // Récupérer la position X et Y
+        double positionX = filtreEmploye.getLayoutX();
+        double positionY = filtreEmploye.getLayoutY();
+
+        filtreSalle.setLayoutX(positionX);
+        filtreSalle.setLayoutY(positionY);
+
+        positionX = textfiltreEmploye.getLayoutX();
+        positionY = textfiltreEmploye.getLayoutY();
+
+        textfiltreSalle.setLayoutX(positionX);
+        textfiltreSalle.setLayoutY(positionY);
     }
 
     private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
@@ -381,7 +531,7 @@ public class Classement {
         Set<String> nomsUniques = new HashSet<>();
         if (!listEmploye.isEmpty()) {
             for (Employe employe : listEmploye) {
-                nomsUniques.add(employe.getNom() + " " + employe.getPrenom());
+                nomsUniques.add(employe.getNom());
             }
         } else {
             for (Reservation employe : listReservation) {
@@ -454,17 +604,17 @@ public class Classement {
         grandTableau.getSelectionModel().select(feuilleSalle);
         mettreAJourFiltreHeureFin();
 
-        // Liaisons des ComboBox pour les filtres
-        //filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        // Liaisons des ComboBox pour les filtres sur les salles
+        filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
     }
 
-    //    private void masquerFiltres() {
+//    private void masquerFiltres() {
 //        filtreEmploye.setVisible(false);
 //        textfiltreEmploye.setVisible(false);
 //        filtreSalle.setVisible(false);
@@ -563,7 +713,6 @@ public class Classement {
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
-
     private void mettreAJourFiltreHeureFin() {
         // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
@@ -639,8 +788,8 @@ public class Classement {
             // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
-                            (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
+                    (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) /* &&
+                     (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre))*/;
 
             // Appliquer les filtres de date
             boolean matchesDateDebut = true;
