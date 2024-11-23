@@ -108,7 +108,7 @@
             return listReservation;
         }
 
-        // 1. Obtenir le nom de l'employé qui a réservé la salle
+        //Obtenir le nom de l'employé qui a réservé la salle
         public String getNomEmploye() {
             return listReservation.stream()
                     .map(reservation -> reservation.getEmployeR())
@@ -117,10 +117,37 @@
                     .orElse("Aucun employé");
         }
 
-        // 2. Obtenir les types d'activités associées à la salle
+        //Obtenir les types d'activités associées à la salle
         public String getTypesActivite() {
             return listReservation.stream()
                     .map(reservation -> reservation.getActiviteR())
+                    .distinct()
+                    .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                    .orElse("Aucune activité");
+        }
+
+        //Obtenir les types d'activités associées à la salle
+        public String getDateR() {
+            return listReservation.stream()
+                    .map(reservation -> reservation.getDateR())
+                    .distinct()
+                    .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                    .orElse("Aucune activité");
+        }
+
+        //Obtenir les types d'activités associées à la salle
+        public String getHeureDebutR() {
+            return listReservation.stream()
+                    .map(reservation -> reservation.getHeureDebut())
+                    .distinct()
+                    .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                    .orElse("Aucune activité");
+        }
+
+        //Obtenir les types d'activités associées à la salle
+        public String getHeureFinR() {
+            return listReservation.stream()
+                    .map(reservation -> reservation.getHeureFin())
                     .distinct()
                     .reduce((a, b) -> a + ", " + b) // Combine les types distincts
                     .orElse("Aucune activité");
