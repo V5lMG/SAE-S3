@@ -40,22 +40,7 @@ public class ControleurEnvoyer {
     private List<String> cheminsDesFichiers;
 
     @FXML
-    private Text cheminFx;
-
-    @FXML
-    private Text nomFx;
-
-    @FXML
-    private Text cheminFichier;
-
-    @FXML
-    private Text nomFichier;
-
-    @FXML
-    private Text adresseIP;
-
-    @FXML
-    private Text ipFx;
+    private Text cheminFx, nomFx, cheminFichier, nomFichier, adresseIP, ipFx;
 
     @FXML
     private Button btnEnvoyer;
@@ -177,9 +162,9 @@ public class ControleurEnvoyer {
             String contenuFormate = contenuTotal.toString().replace("\n", "/N").replace("\r", "/R");
 
             // Initialisation Diffie-Hellman
-            int p = DiffieHellman.genererEntierPremier(0,9999);
+            int p = DiffieHellman.genererEntierPremier(1,9999); // TODO passer en BigInteger
             int g = DiffieHellman.genererGenerateur(p);
-            int a = DiffieHellman.genererEntierPremier(0,9999);;
+            int a = DiffieHellman.genererEntierPremier(1,9999);
 
             int clePubliqueClient = DiffieHellman.expoModulaire(g, a, p);
             client.envoyerClePublic(clePubliqueClient + " ; " + p + " ; " + g);

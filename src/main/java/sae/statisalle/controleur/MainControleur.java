@@ -160,6 +160,7 @@ public class MainControleur extends Application {
 
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des vues : " + e.getMessage());
+            System.out.println();
             e.printStackTrace();
         }
     }

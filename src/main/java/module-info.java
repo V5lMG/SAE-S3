@@ -2,6 +2,9 @@ module sae.statisalle {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
+    requires kernel;
+    requires layout;
+    requires io;
 
     // ouverture des packages à JavaFX
     opens sae.statisalle.controleur to javafx.fxml;

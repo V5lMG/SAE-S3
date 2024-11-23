@@ -22,7 +22,7 @@ public class DiffieHellman {
         }
 
         if (exposant < 0) {
-            base = modInverse(base, modulo); // todo TESTER
+            base = modInverse(base, modulo); // todo TEST
             exposant = -exposant;
         }
 
