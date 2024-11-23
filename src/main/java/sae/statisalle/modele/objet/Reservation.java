@@ -66,6 +66,17 @@ public class Reservation {
         this.employeR = employeR;
         this.activiteR = activiteR;
         this.dateR = dateR;
+        if (heureDebut.length() < 5) {
+            heureDebut = "0" + heureDebut;
+        }
+        this.heureDebut = heureDebut;
+
+        if (heureFin.length() < 5) {
+            heureFin = "0" + heureFin;
+        }
+        this.heureFin = heureFin;
+
+
         this.heureDebut = heureDebut;
         this.heureFin = heureFin;
         this.description = description;
