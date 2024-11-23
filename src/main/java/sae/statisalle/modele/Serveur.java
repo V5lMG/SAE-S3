@@ -72,7 +72,7 @@ public class Serveur implements Connexion {
                         int g = Integer.parseInt(parties[2]);
 
                         // génération de la clé publique du serveur
-                        int b = 15; //DiffieHellman.genererEntierPremier(0,999999999);
+                        int b = DiffieHellman.genererEntierPremier(0,9999);
                         int clePubliqueServeur = DiffieHellman.expoModulaire(g, b, p);
                         envoyerClePublic(clePubliqueServeur + " ; " + p + " ; " + g);
 

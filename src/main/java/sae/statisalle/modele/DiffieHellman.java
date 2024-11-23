@@ -11,38 +11,32 @@ import java.util.Random;
 public class DiffieHellman {
 
     public static int expoModulaire(int base, int exposant, int modulo) {
-//        // Vérifier si le modulo est valide
-//        if (modulo <= 0) {
-//            throw new ModuloNegatifException("Le modulo doit être un nombre positif.");
-//        }
-//
-//        /*Vérification de la primalité du modulo*/
-//        if (!estPremier(modulo)) {
-//            throw new IllegalArgumentException("Le modulo 'm' doit être un nombre premier.");
-//        }
-//
-//        //Il faut que la base soit compris entre [1, m-1]
-//        if (base <= 0 || base >= modulo) {
-//            throw new IllegalArgumentException("La base 'a' doit être un entier strictement positif.");
-//        }
-//
-//        if (exposant < 0) {
-//            base = modInverse(base, modulo);
-//            exposant = -exposant;
-//        }
-//
-//        int resultat = 1;
-//
-//        while (exposant > 0) {
-//            if (exposant % 2 == 1) {
-//                resultat = (resultat * base) % modulo;
-//            }
-//            base = (base * base) % modulo;
-//            exposant = exposant / 2;
-//        }
-//
-//        return resultat;
-        return (int) Math.pow(base, exposant) % modulo;
+        // vérifier si le modulo est valide
+        if (modulo <= 0) {
+            throw new ModuloNegatifException("Le modulo doit être un nombre positif.");
+        }
+
+        // il faut que la base soit compris entre [1, m-1]
+        if (base <= 0 || base >= modulo) {
+            throw new IllegalArgumentException("La base 'a' doit être un entier strictement positif.");
+        }
+
+        if (exposant < 0) {
+            base = modInverse(base, modulo); // todo TESTER
+            exposant = -exposant;
+        }
+
+        int resultat = 1;
+        base = base % modulo;
+        while (exposant > 0) {
+            if ((exposant & 1) == 1) {
+                resultat = (resultat * base) % modulo;
+            }
+            exposant = exposant >> 1;
+            base = (base * base) % modulo;
+        }
+
+        return resultat;
     }
 
     public static int modInverse(int a, int m) {

@@ -177,9 +177,9 @@ public class ControleurEnvoyer {
             String contenuFormate = contenuTotal.toString().replace("\n", "/N").replace("\r", "/R");
 
             // Initialisation Diffie-Hellman
-            int p = 23;//DiffieHellman.genererEntierPremier(0,999999999);
-            int g = 5;//DiffieHellman.genererGenerateur(p);
-            int a = 6;//DiffieHellman.genererEntierPremier(0,999999999);;
+            int p = DiffieHellman.genererEntierPremier(0,9999);
+            int g = DiffieHellman.genererGenerateur(p);
+            int a = DiffieHellman.genererEntierPremier(0,9999);;
 
             int clePubliqueClient = DiffieHellman.expoModulaire(g, a, p);
             client.envoyerClePublic(clePubliqueClient + " ; " + p + " ; " + g);
@@ -191,11 +191,11 @@ public class ControleurEnvoyer {
             }
 
             int clePubliqueServeur = Integer.parseInt(parties[0]);
-            BigInteger cleSecretePartagee = BigInteger.valueOf(DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
-            System.out.println("[CLIENT] Clé secrète partagée : " + cleSecretePartagee);
+            BigInteger cleSecreteCalculee = BigInteger.valueOf(DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
+            System.out.println("[CLIENT] Clé secrète calculé : " + cleSecreteCalculee);
 
             // chiffrement et envoi des données
-            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, cleSecretePartagee);
+            String donneesChiffrees = Vigenere.chiffrementDonnees(contenuFormate, cleSecreteCalculee);
             client.envoyer(donneesChiffrees);
 
             String reponse = client.recevoir();
