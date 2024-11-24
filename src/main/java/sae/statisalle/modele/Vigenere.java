@@ -101,7 +101,7 @@ public class Vigenere {
     public static void creerAlphabet() {
 
         // -----------
-        // ATTENTION, ne pas MODIFIER l'aplhpabet sous peine de casser
+        // ATTENTION, ne pas MODIFIER l'aplphabet sous peine de casser
         //            tous les tests.
         // -----------
 

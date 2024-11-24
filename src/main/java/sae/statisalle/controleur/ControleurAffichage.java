@@ -1,34 +1,28 @@
-/*
- * ControleurAffichage.java          14/11/2024
- * IUT DE RODEZ                      Pas de copyrights
- */
-package sae.statisalle.controleur;
+package sae.statisalle.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
+
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import sae.statisalle.modele.objet.*;
-import sae.statisalle.modele.Fichier;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import sae.statisalle.modele.objet.*;
+
+import java.io.IOException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
 
-import sae.statisalle.modele.GenererPdf;
+import java.util.*; // TODO ne jamais mettre d'étoiles
 
 /**
- * Contrôleur qui gère la consultation des données et des filtres
- * de recherche sont applicables sur les reservations.
+ * Contrôleur qui gère la consultation des données et des filtres de recherche sont applicables sur les reservations.
  * Ce contrôleur applique des filtres sur :
  * <ul>
  *     <li>Le nom des salles</li>
@@ -38,21 +32,16 @@ import sae.statisalle.modele.GenererPdf;
  * </ul>
  * et retourne les données filtrées à la vue.
  *
- * @author Montes Robin
- * @author Cambon Mathias
+ * @author robin.montes
+ * @author mathias.cambon
  */
-public class ControleurAffichage {
-
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    //                         TODO Faire la javadoc et !!! colonne 80
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
+public class Affichage {
 
     @FXML
     private Button btnAfficherTableaux;
+
+    @FXML
+    private Button btnClassement;
 
     @FXML
     private TabPane grandTableau;
@@ -61,43 +50,105 @@ public class ControleurAffichage {
     @FXML
     private TableView<Reservation> tabReservation;
     @FXML
-    private TableColumn<Reservation, String> idReservation, salleR, employeR,
-                                             activiteR, dateR, heureDebutR,
-                                             heureFinR, descriptionR, nomR,
-                                             prenomR, numTelR, usageR;
+    private TableColumn<Reservation, String> idReservation;
+    @FXML
+    private TableColumn<Reservation, String> salleR;
+    @FXML
+    private TableColumn<Reservation, String> employeR;
+    @FXML
+    private TableColumn<Reservation, String> activiteR;
+    @FXML
+    private TableColumn<Reservation, String> dateR;
+    @FXML
+    private TableColumn<Reservation, String> heureDebutR;
+    @FXML
+    private TableColumn<Reservation, String> heureFinR;
+    @FXML
+    private TableColumn<Reservation, String> descriptionR;
+    @FXML
+    private TableColumn<Reservation, String> nomR;
+    @FXML
+    private TableColumn<Reservation, String> prenomR;
+    @FXML
+    private TableColumn<Reservation, String> numTelR;
+    @FXML
+    private TableColumn<Reservation, String> usageR;
     @FXML
     private Tab feuilleReservation;
 
     @FXML
-    private ComboBox<String> filtreEmploye, filtreActivite, filtreSalle,
-                             filtreDateDebut, filtreDateFin, filtreHeureD,
-                             filtreHeureF;
+    private ComboBox<String> filtreEmploye;
+    @FXML
+    private ComboBox<String> filtreActivite;
+    @FXML
+    private ComboBox<String> filtreSalle;
+    @FXML
+    private ComboBox<String> filtreDateDebut;
+    @FXML
+    private ComboBox<String> filtreDateFin;
+    @FXML
+    private ComboBox<String> filtreHeureD;
+    @FXML
+    private ComboBox<String> filtreHeureF;
     @FXML
     private Button reinitialiserFiltre;
     @FXML
-    private Text textfiltreEmploye, textfiltreActivite, textfiltreSalle,
-                 textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                 textfiltreHeureF;
+    private Text textfiltreEmploye;
+    @FXML
+    private Text textfiltreActivite;
+    @FXML
+    private Text textfiltreSalle;
+    @FXML
+    private Text textfiltreDateDebut;
+    @FXML
+    private Text textfiltreDateFin;
+    @FXML
+    private Text textfiltreHeureD;
+    @FXML
+    private Text textfiltreHeureF;
 
-    // table des salles
+    // Table des salles
     @FXML
     private TableView<Salle> tabSalle;
     @FXML
-    private TableColumn<Salle, String> idSalle, nomS, capaciteS,
-                                       videoProjS, ecranXXLS, nbrOrdiS,
-                                       typeS, logicielS, imprimanteS;
+    private TableColumn<Salle, String> idSalle;
+    @FXML
+    private TableColumn<Salle, String> nomS;
+    @FXML
+    private TableColumn<Salle, String> capaciteS;
+    @FXML
+    private TableColumn<Salle, String> videoProjS;
+    @FXML
+    private TableColumn<Salle, String> ecranXXLS;
+    @FXML
+    private TableColumn<Salle, String> nbrOrdiS;
+    @FXML
+    private TableColumn<Salle, String> typeS;
+    @FXML
+    private TableColumn<Salle, String> logicielS;
+    @FXML
+    private TableColumn<Salle, String> imprimanteS;
 
-    // table des activités
+    // Table des activités
     @FXML
     private TableView<Activite> tabActivite;
     @FXML
-    private TableColumn<Activite, String> idActivite, activiteA;
+    private TableColumn<Activite, String> idActivite;
+    @FXML
+    private TableColumn<Activite, String> activiteA;
 
-    // table des employés
+    // Table des employés
     @FXML
     private TableView<Employe> tabEmploye;
     @FXML
-    private TableColumn<Employe, String> idEmploye, nomE, prenomE, numTelE;
+    private TableColumn<Employe, String> idEmploye;
+    @FXML
+    private TableColumn<Employe, String> nomE;
+    @FXML
+    private TableColumn<Employe, String> prenomE;
+    @FXML
+    private TableColumn<Employe, String> numTelE;
+
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
@@ -105,21 +156,18 @@ public class ControleurAffichage {
     @FXML
     ObservableList<Salle> listSalle = FXCollections.observableArrayList();
     @FXML
-    ObservableList<Reservation> listReservation = FXCollections
-                                                        .observableArrayList();
+    ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
 
-    // génération de pdf
-    @FXML
-    private Button btnGenererPdf;
-
-
-    // afficher page d'aide
     @FXML
     private void actionAide() {
         MainControleur.activerAideAffichage();
     }
 
-    // bouton retour
+    @FXML
+    private void actionClassement() {
+        MainControleur.activerActionAnalyse();
+    }
+
     @FXML
     void actionRetour() {
         // Rendre les filtres invisibles
@@ -142,212 +190,72 @@ public class ControleurAffichage {
         textfiltreHeureF.setVisible(false);
         grandTableau.setVisible(false);
         btnAfficherTableaux.setVisible(true);
-
-        // Rendre le bouton de génération de pdf invisible
-        btnGenererPdf.setVisible(false);
-
         MainControleur.activerAccueil();
     }
 
-    /**
-     * TODO
-     */
     @FXML
-    private void chargerDonnees() {
+    private void chargerDonnees() throws IOException {
 
         masquerFiltres();
 
-        // Cache le bouton
         btnAfficherTableaux.setVisible(false);
 
-        // Affiche les tableaux
         grandTableau.setVisible(true);
 
-        // Vider les tableaux pour éviter des doublons
         tabEmploye.getItems().clear();
         tabSalle.getItems().clear();
         tabActivite.getItems().clear();
         tabReservation.getItems().clear();
 
-        String URLDossier = "src/main/resources/csv";
-        try {
-            File dossier = new File(URLDecoder.decode(URLDossier, StandardCharsets.UTF_8));
+        // Appel de la méthode centralisée pour charger les fichiers
+        LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
 
-            // Vérifier si le répertoire contient des fichiers
-            if (!dossier.exists() || !dossier.isDirectory()) {
-                System.out.println("Le répertoire 'csv' n'existe pas ou n'est pas un dossier.");
-                return;
-            }
+        // Configurez les tables après avoir chargé les données
+        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
+        nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
+        tabEmploye.setItems(listEmploye);
 
-            File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
+        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
+        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
+        ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
+        typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
+        videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
+        nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
+        logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
+        imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
+        tabSalle.setItems(listSalle);
 
-            // Vérifier si des fichiers ont été trouvés
-            if (fichiers == null || fichiers.length == 0) {
-                System.out.println("Aucun fichier CSV trouvé dans le répertoire.");
-                return;
-            }
+        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
+        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
+        tabActivite.setItems(listActivite);
 
-            // Trier les fichiers pour donner la priorité à "Salle"
-            Arrays.sort(fichiers, (f1, f2) -> {
-                if (f1.getName().contains("Salle") && !f2.getName().contains("Salle")) {
-                    return -1;
-                } else if (!f1.getName().contains("Salle") && f2.getName().contains("Salle")) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-
-            StringBuilder fichiersInvalides = new StringBuilder();
-
-            for (File fichier : fichiers) {
-                try {
-                    Fichier fichierExploite = new Fichier(fichier.getPath());
-                    List<List<String>> contenu = fichierExploite.recupererDonnees();
-
-                    switch (fichierExploite.getTypeFichier()) {
-                        case "Employe" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 4) {
-                                    listEmploye.add(new Employe(ligne.get(0),
-                                            ligne.get(1),
-                                            ligne.get(2),
-                                            ligne.get(3)));
-                                }
-                            }
-                            idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-                            nomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            prenomE.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-                            numTelE.setCellValueFactory(new PropertyValueFactory<>("numTel"));
-                            tabEmploye.setItems(listEmploye);
-                        }
-                        case "Salle" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 9) {
-                                    listSalle.add(new Salle(ligne.get(0),
-                                            ligne.get(1), ligne.get(2),
-                                            ligne.get(3), ligne.get(4),
-                                            ligne.get(5), ligne.get(6),
-                                            ligne.get(7), ligne.get(8)));
-                                }
-                            }
-                            idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-                            nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                            capaciteS.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-                            ecranXXLS.setCellValueFactory(new PropertyValueFactory<>("ecranXXL"));
-                            typeS.setCellValueFactory(new PropertyValueFactory<>("typeMachine"));
-                            videoProjS.setCellValueFactory(new PropertyValueFactory<>("videoProj"));
-                            nbrOrdiS.setCellValueFactory(new PropertyValueFactory<>("nbMachine"));
-                            logicielS.setCellValueFactory(new PropertyValueFactory<>("logiciel"));
-                            imprimanteS.setCellValueFactory(new PropertyValueFactory<>("imprimante"));
-                            tabSalle.setItems(listSalle);
-                        }
-                        case "Activite" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() == 2) {
-                                    listActivite.add(new Activite(ligne.get(0), ligne.get(1)));
-                                } else {
-                                    System.out.println("Ligne incorrecte dans le fichier Activité : " + ligne);
-                                }
-                            }
-                            idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
-                            activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-                            tabActivite.setItems(listActivite);
-                        }
-                        case "Reservation" -> {
-                            for (List<String> ligne : contenu) {
-                                if (ligne.size() >= 12) {
-
-                                    Reservation reservation = new Reservation(
-                                            ligne.get(0), ligne.get(1),
-                                            ligne.get(2), ligne.get(3),
-                                            ligne.get(4), ligne.get(5),
-                                            ligne.get(6), ligne.get(7),
-                                            ligne.get(8), ligne.get(9),
-                                            ligne.get(10), ligne.get(11)
-                                    );
-
-                                    for (Employe employe : listEmploye) {
-                                        if (employe.getIdE().equals(reservation.getEmployeR())) {
-                                            reservation.setEmployeR(employe.getNom() + " " + employe.getPrenom());
-                                            break;
-                                        }
-                                    }
-
-                                    for (Salle salle : listSalle) {
-                                        if (salle.getIdentifiant().equals(reservation.getSalleR())) {
-                                            reservation.setSalleR(salle.getNom());
-                                            break;
-                                        }
-                                    }
-
-                                    listReservation.add(reservation);
-                                }
-                            }
-                            idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
-                            salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
-                            employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-                            activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-                            dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-                            heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
-                            heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
-                            descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
-                            nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
-                            prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
-                            numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
-                            usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
-                            tabReservation.setItems(listReservation);
-                        }
-                        default -> System.out.println("Type de fichier inconnu ou non pris en charge : " + fichier.getName());
-                    }
-
-                    remplirComboBoxSalles();
-                    remplirComboBoxEmployes();
-                    remplirComboBoxDates();
-                    remplirComboBoxActivites();
-                    remplirComboBoxHeuresD();
-                    remplirComboBoxHeuresF();
-                } catch (Exception e) {
-                    System.out.println("Erreur lors du traitement du fichier : " + fichier.getName() + " - " + e.getMessage());
-                    fichiersInvalides.append(fichier.getName()).append("\n");
-                }
-            }
-
-            if (!fichiersInvalides.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Fichiers invalides");
-                alert.setHeaderText("Certains fichiers n'ont pas pu être chargés");
-                alert.setContentText("Les fichiers suivants sont invalides :\n" + fichiersInvalides);
-
-                ButtonType supprimerButton = new ButtonType("Supprimer");
-                ButtonType ignorerButton = new ButtonType("Ignorer", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(supprimerButton, ignorerButton);
-
-                Optional<ButtonType> resultat = alert.showAndWait();
-                if (resultat.isPresent() && resultat.get() == supprimerButton) {
-                    try {
-                        for (String nomFichier : fichiersInvalides.toString().split("\n")) {
-                            File fichierADelete = new File("src/main/resources/csv/" + nomFichier.trim());
-                            if (fichierADelete.exists() && fichierADelete.isFile()) {
-                                if (fichierADelete.delete()) {
-                                    System.out.println("Fichier supprimé : " + fichierADelete.getName());
-                                } else {
-                                    System.out.println("Impossible de supprimer : " + fichierADelete.getName());
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Erreur lors de la suppression des fichiers : " + e.getMessage());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erreur générale : " + e.getMessage());
-        }
+        idReservation.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+        salleR.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+        employeR.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+        activiteR.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
+        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
+        descriptionR.setCellValueFactory(new PropertyValueFactory<>("description"));
+        nomR.setCellValueFactory(new PropertyValueFactory<>("nomIntervenant"));
+        prenomR.setCellValueFactory(new PropertyValueFactory<>("prenomIntervenant"));
+        numTelR.setCellValueFactory(new PropertyValueFactory<>("numTelIntervenant"));
+        usageR.setCellValueFactory(new PropertyValueFactory<>("usage"));
+        tabReservation.setItems(listReservation);
 
         if (grandTableau.getSelectionModel().getSelectedItem() == feuilleReservation) {
             afficherFiltre();
         }
+
+        remplirComboBoxSalles();
+        remplirComboBoxEmployes();
+        remplirComboBoxDates();
+        remplirComboBoxActivites();
+        remplirComboBoxHeuresD();
+        remplirComboBoxHeuresF();
 
         mettreAJourFiltreHeureFin();
         mettreAJourFiltreHeureDebut();
@@ -357,7 +265,6 @@ public class ControleurAffichage {
 
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
-
     }
 
     @FXML
@@ -366,7 +273,7 @@ public class ControleurAffichage {
         List<Node> filtres = Arrays.asList(
                 filtreEmploye, filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre, btnGenererPdf
+                textfiltreHeureF, reinitialiserFiltre
         );
 
         // Détermine la visibilité en fonction de l'état de la checkbox
@@ -395,7 +302,7 @@ public class ControleurAffichage {
 
     private void remplirComboBoxEmployes() {
         Set<String> nomsUniques = new HashSet<>();
-        if (!listEmploye.isEmpty()){
+        if (!listEmploye.isEmpty()) {
             for (Employe employe : listEmploye) {
                 nomsUniques.add(employe.getNom() + " " + employe.getPrenom());
             }
@@ -419,7 +326,7 @@ public class ControleurAffichage {
 
     private void remplirComboBoxSalles() {
         Set<String> nomsUniques = new HashSet<>();
-        if(!listSalle.isEmpty()) {
+        if (!listSalle.isEmpty()) {
             for (Salle salle : listSalle) {
                 nomsUniques.add(salle.getNom());
             }
@@ -496,60 +403,17 @@ public class ControleurAffichage {
         filtreHeureF.setVisible(false);
         textfiltreHeureF.setVisible(false);
         reinitialiserFiltre.setVisible(false);
-        btnGenererPdf.setVisible(false);
     }
 
     @FXML
     private void reinitialiserFiltre() {
-        // Ajouter "Tous" dans les listes de filtres (si ce n'est pas déjà fait)
-        if (filtreSalle != null) {
-            if (!filtreSalle.getItems().contains("Tous")) {
-                filtreSalle.getItems().add(0, "Tous");
-            }
-            filtreSalle.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreEmploye != null) {
-            if (!filtreEmploye.getItems().contains("Tous")) {
-                filtreEmploye.getItems().add(0, "Tous");
-            }
-            filtreEmploye.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreDateDebut != null) {
-            if (!filtreDateDebut.getItems().contains("Tous")) {
-                filtreDateDebut.getItems().add(0, "Tous");
-            }
-            filtreDateDebut.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreDateFin != null) {
-            if (!filtreDateFin.getItems().contains("Tous")) {
-                filtreDateFin.getItems().add(0, "Tous");
-            }
-            filtreDateFin.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreActivite != null) {
-            if (!filtreActivite.getItems().contains("Tous")) {
-                filtreActivite.getItems().add(0, "Tous");
-            }
-            filtreActivite.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureD != null) {
-            if (!filtreHeureD.getItems().contains("Tous")) {
-                filtreHeureD.getItems().add(0, "Tous");
-            }
-            filtreHeureD.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureF != null) {
-            if (!filtreHeureF.getItems().contains("Tous")) {
-                filtreHeureF.getItems().add(0, "Tous");
-            }
-            filtreHeureF.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
+        filtreSalle.getSelectionModel().select("Tous");
+        filtreEmploye.getSelectionModel().select("Tous");
+        filtreDateDebut.getSelectionModel().select("Tous");
+        filtreDateFin.getSelectionModel().select("Tous");
+        filtreActivite.getSelectionModel().select("Tous");
+        filtreHeureD.getSelectionModel().select("Tous");
+        filtreHeureF.getSelectionModel().select("Tous");
 
         // Réaffecter les listes complètes aux tableaux
         if (tabSalle != null) tabSalle.setItems(listSalle);
@@ -561,88 +425,67 @@ public class ControleurAffichage {
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
-
-
-
     private void mettreAJourFiltreHeureDebut() {
-        // Extraire les heures de début uniques des réservations
         Set<String> heuresDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresDebutUniques.add(reservation.getHeureDebut());
         }
 
-        // Convertir en liste et trier les heures de début
         List<String> heuresDebutListe = new ArrayList<>(heuresDebutUniques);
         Collections.sort(heuresDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de début avec la liste d'heures
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
-
     private void mettreAJourFiltreHeureFin() {
-        // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresFinUniques.add(reservation.getHeureFin());
         }
 
-        // Convertir en liste et trier les heures de fin
         List<String> heuresFinListe = new ArrayList<>(heuresFinUniques);
         Collections.sort(heuresFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de fin avec la liste d'heures
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
     private void mettreAJourFiltreDateDebut() {
-        // Extraire les dates de début uniques des réservations
         Set<String> datesDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             datesDebutUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de début
         List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
         Collections.sort(datesDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
-        datesDebutListe.add(0, "Tous");
+        datesDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de début avec la liste de dates
         filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
     }
 
     private void mettreAJourFiltreDateFin() {
-        // Extraire les dates de fin uniques des réservations
         Set<String> datesFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
-            datesFinUniques.add(reservation.getDateR());  // Si tu as une méthode pour récupérer la date de fin, adapte cette ligne
+            datesFinUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de fin
         List<String> datesFinListe = new ArrayList<>(datesFinUniques);
         Collections.sort(datesFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
-        datesFinListe.add(0, "Tous");
+        datesFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de fin avec la liste de dates
         filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
     }
 
     private void appliquerFiltres() {
-        // Récupérer les filtres sélectionnés
         String employeFiltre = filtreEmploye.getValue();
         String activiteFiltre = filtreActivite.getValue();
         String salleFiltre = filtreSalle.getValue();
@@ -651,18 +494,15 @@ public class ControleurAffichage {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
-        // Appliquer les filtres sur les réservations
         ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
         for (Reservation reservation : listReservation) {
 
-            // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
-                            (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
+                    (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
+                    (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-            // Appliquer les filtres de date
             boolean matchesDateDebut = true;
             boolean matchesDateFin = true;
 
@@ -686,7 +526,6 @@ public class ControleurAffichage {
                 }
             }
 
-            // Appliquer les filtres d'heure
             boolean matchesHeureDebut = true;
             boolean matchesHeureFin = true;
 
@@ -710,57 +549,38 @@ public class ControleurAffichage {
                 }
             }
 
-            // Ajouter la réservation si tous les filtres sont validés
             if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
         }
 
-        // Mettre à jour la table avec les résultats filtrés
         tabReservation.setItems(reservationsFiltrees);
     }
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
         try {
-            // Remplacer 'h' par ':' pour correspondre au format attendu par LocalTime
             heure = heure.replace('h', ':');
             return LocalTime.parse(heure);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format d'heure: " + heure);
-            return null; // Si l'heure est invalide, retourner null
+            return null;
         }
     }
 
+    // Méthode utilitaire pour la conversion des date en LocalTime
     private LocalDate parseDate(String date) {
         try {
-            // Créer un DateTimeFormatter avec le format "dd/MM/yyyy"
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-            // Utiliser le formatter pour convertir la chaîne en LocalDate
             return LocalDate.parse(date, formatter);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format de date: " + date);
-            return null; // Si la date est invalide, retourner null
+            return null;
         }
     }
 
     @FXML
     private void handleReinitialiserFiltre() {
         reinitialiserFiltre();
-    }
-
-    @FXML
-    private void handleGenererPdf(){
-        FileChooser choixFichier = new FileChooser();
-        choixFichier.setTitle("Enregistrer le fichier PDF");
-
-        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
-
-        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
-
-        if (fichier != null) {
-            GenererPdf.genererPdfReservation(listReservation, fichier);
-        }
     }
 }

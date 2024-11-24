@@ -4,6 +4,9 @@
  */
 package sae.statisalle.modele.objet;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  * La classe Employe initialise les objets de type Employe.
  * L'objet Employe est composé du :
@@ -17,6 +20,7 @@ package sae.statisalle.modele.objet;
  * Elle gère également toutes les erreurs relatives à l'instantiation
  * des Employés en fonction des contenus des fichiers
  * @author erwan.thierry
+ * @author rodrigo.xaviertaborda
  */
 public class Employe {
 
@@ -32,6 +36,9 @@ public class Employe {
     /* Numéro de téléphone de l'employé */
     String numTel;
 
+    /* Liste des réservations */
+    private ObservableList<Reservation> listReservation;
+
     /**
      * Constructeur pour initialiser un nouvel employé avec son identifiant,
      * son nom, son prénom et son numéro de téléphone.
@@ -46,6 +53,7 @@ public class Employe {
         this.nom = nom;
         this.prenom = prenom;
         this.numTel = numTel;
+        this.listReservation = FXCollections.observableArrayList();
     }
 
     /**
@@ -82,6 +90,54 @@ public class Employe {
      */
     public String getNumTel() {
         return numTel;
+    }
+
+
+    public ObservableList<Reservation> getReservations() {
+        return listReservation;
+    }
+
+//    // 1. Obtenir le temps total de réservation
+//    public int getTempsTotalReservation() {
+//        return reservations.stream()
+//                .mapToInt(Reservation::getDuree)
+//                .sum();
+//    }
+
+    // 2. Obtenir les noms des salles réservées
+    public String getSallesAssociees() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getSalleR())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Aucune salle");
+    }
+
+    // 3. Obtenir les types d'activités associées
+    public String getTypesActivite() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getActiviteR())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                .orElse("Aucune activité");
+    }
+
+    //Obtenir les types d'activités associées à la salle
+    public String getHeureDebutR() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getHeureDebut())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                .orElse("Aucune activité");
+    }
+
+    //Obtenir les types d'activités associées à la salle
+    public String getHeureFinR() {
+        return listReservation.stream()
+                .map(reservation -> reservation.getHeureFin())
+                .distinct()
+                .reduce((a, b) -> a + ", " + b) // Combine les types distincts
+                .orElse("Aucune activité");
     }
 
     /**
