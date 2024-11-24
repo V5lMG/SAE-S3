@@ -1,3 +1,5 @@
+package sae.statisalle;
+
 import sae.statisalle.modele.Vigenere;
 
 import java.math.BigInteger;

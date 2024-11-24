@@ -85,7 +85,8 @@ public class Fichier {
         }
 
         if (!fichierExploite.exists()) {
-            err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier + " : Le fichier n'existe pas.");
+            err.println(ERREUR_OUVERTURE_FICHIER + cheminFichier
+                        + " : Le fichier n'existe pas.");
         } else if (!fichierExploite.canWrite()) {
             err.println(ERREUR_CREATION_FICHIER + cheminFichier);
         }
@@ -111,8 +112,8 @@ public class Fichier {
      * Si une erreur survient pendant la lecture du fichier,
      * un message d'erreur est affiché et la méthode retourne une liste vide.
      *
-     * @return Une liste de chaînes de caractères contenant les lignes du fichier,
-     *         ou Une liste vide si une erreur survient.
+     * @return Une liste de chaînes de caractères contenant les lignes
+     *         du fichier, ou une liste vide si une erreur survient.
      * @author erwan.thierry
      */
     public List<String> contenuFichier() {

@@ -1,3 +1,7 @@
+/*
+ * DiffieHellman.java          30/10/2024
+ * Pas de droits d'auteur ni de copyright
+ */
 package sae.statisalle.modele;
 
 import sae.statisalle.exception.ModuloNegatifException;
@@ -10,15 +14,37 @@ import java.util.Random;
  */
 public class DiffieHellman {
 
+    /**
+     * Calcule l'exponentiation modulaire,
+     * c'est-à-dire (base^exposant) % modulo,
+     * de manière efficace en utilisant
+     * l'algorithme d'exponentiation rapide.
+     * <br>
+     * Si l'exposant est négatif, l'inverse modulaire de la base sera utilisé.
+     * Cette méthode est souvent utilisée en cryptographie (exemple RSA).
+     *
+     * @param base La base de l'exponentiation. Doit être un entier positif et
+     *             strictement inférieur au modulo.
+     * @param exposant L'exposant de l'exponentiation.
+     *                 Peut être positif ou négatif.
+     * @param modulo   Le modulo sous lequel l'opération est effectuée.
+     *                 Doit être un entier strictement positif.
+     * @return Le résultat de (base^exposant) % modulo.
+     * @throws ModuloNegatifException si le modulo est négatif ou nul.
+     * @throws IllegalArgumentException si la base est hors de
+     *                                  l'intervalle [1, modulo - 1].
+     */
     public static int expoModulaire(int base, int exposant, int modulo) {
         // vérifier si le modulo est valide
         if (modulo <= 0) {
-            throw new ModuloNegatifException("Le modulo doit être un nombre positif.");
+            throw new ModuloNegatifException("Le modulo doit être un"
+                                             + " nombre positif.");
         }
 
         // il faut que la base soit compris entre [1, m-1]
         if (base <= 0 || base >= modulo) {
-            throw new IllegalArgumentException("La base 'a' doit être un entier strictement positif.");
+            throw new IllegalArgumentException("La base 'a' doit être un "
+                                              + "entier strictement positif.");
         }
 
         if (exposant < 0) {
@@ -39,6 +65,22 @@ public class DiffieHellman {
         return resultat;
     }
 
+    /**
+     * Calcule l'inverse modulaire d'un entier donné dans un modulo spécifique.
+     * L'inverse modulaire d'un entier a sous un modulo m est un entier x
+     * tel que (a * x) % m == 1.
+     * <p>
+     * Cette méthode utilise l'algorithme
+     * étendu d'Euclide pour trouver l'inverse modulaire.
+     * Elle suppose que a et m sont premiers
+     * entre eux (PGCD(a, m) = 1).
+     *
+     * @param a l'entier pour lequel on veut calculer l'inverse modulaire.
+     * @param m le modulo sous lequel l'inverse est calculé.
+     * @return l'inverse modulaire de a sous m.
+     * @throws IllegalArgumentException si l'inverse modulaire n'existe pas
+     *         (quand a et m ne sont pas premiers entre eux).
+     */
     public static int modInverse(int a, int m) {
         int m0 = m, t, q;
         int x0 = 0, x1 = 1;
@@ -51,20 +93,34 @@ public class DiffieHellman {
             x0 = x1 - q * x0;
             x1 = t;
         }
-        if (x1 < 0) x1 += m0;
+        if (x1 < 0) {
+            x1 += m0;
+        }
         return x1;
     }
 
-    public static boolean estPremier(int p){
+    /**
+     * Vérifie si un nombre est un nombre premier.
+     * Un nombre premier est un entier strictement
+     * supérieur à 1 qui n'est divisible que par 1
+     * et par lui-même.
+     *
+     * @param p le nombre entier à vérifier.
+     * @return true si le nombre est premier, false sinon.
+     */
+    public static boolean estPremier(int p) {
+        boolean result = true;
         if (p == 0) {
-            return false;
-        }
-        for (int i = 2; i < p; i++) {
-            if (p % i == 0) {
-                return false;
+            result = false;
+        } else {
+            for (int i = 2; i < p; i++) {
+                if (p % i == 0) {
+                    result = false;
+                    break;
+                }
             }
         }
-        return true;
+        return result;
     }
 
     /**
@@ -75,13 +131,11 @@ public class DiffieHellman {
      */
     public static int genererEntierPremier(int min, int max) {
         Random random = new Random();
-
-        // générer un nombre aléatoire entre min et max
         int p = min + random.nextInt(max - min + 1);
 
-        // vérifier si ce nombre est premier
         while (!estPremier(p)) {
-            p = min + random.nextInt(max - min + 1);  // réessayer avec un autre nombre
+            // réessayer avec un autre nombre
+            p = min + random.nextInt(max - min + 1);
         }
 
         return p;
@@ -95,7 +149,8 @@ public class DiffieHellman {
      */
     public static int genererGenerateur(int p) {
         if (!estPremier(p)) {
-            throw new IllegalArgumentException("Le nombre 'p' doit être un nombre premier.");
+            throw new IllegalArgumentException("Le nombre 'p' doit être "
+                                               + "un nombre premier.");
         }
 
         // Cas trivial pour p = 2
@@ -107,11 +162,14 @@ public class DiffieHellman {
         for (int g = 2; g < p; g++) {
             boolean estGenerateur = true;
 
-            // Vérifier si g^k mod p produit des résultats distincts pour k dans [1, p-1]
+            // Vérifier si g^k mod p produit des résultats distincts
+            // pour k dans [1, p-1]
             for (int k = 1; k < p - 1; k++) {
                 int resultat = expoModulaire(g, k, p);
                 if (resultat == 1 && k < (p - 1)) {
-                    estGenerateur = false; // Si g^k mod p == 1 avant k = p-1, ce n'est pas un générateur
+                    // Si g^k mod p == 1 avant k = p-1,
+                    // ce n'est pas un générateur.
+                    estGenerateur = false;
                     break;
                 }
             }
