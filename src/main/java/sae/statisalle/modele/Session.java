@@ -9,8 +9,10 @@ import sae.statisalle.modele.objet.Serveur;
 
 /**
  * La classe Session gère les informations relatives à une session réseau
- * telles que l'adresse IP, le contenu de la session, les objets réseau et la clé associée.
- * Elle permet de centraliser et d'accéder aux informations de la session à travers des méthodes statiques.
+ * telles que l'adresse IP, le contenu de la session,
+ * les objets réseau et la clé associée.
+ * Elle permet de centraliser et d'accéder aux informations
+ * de la session à travers des méthodes statiques.
  * @author Cambon Mathias
  * @author valentin.munier-genie
  * @author rodrigo.xavier-taborda
@@ -72,16 +74,18 @@ public class Session {
     }
 
     /**
-     * TODO
-     * @return
+     * Récupère l'instance actuelle du serveur.
+     * @return l'objet Serveur associé à la session,
+     *         ou null si aucun serveur n'est défini.
      */
     public static Serveur getServeur() {
         return serveur;
     }
 
     /**
-     * TODO
-     * @param serveur
+     * Définit l'instance du serveur pour la session.
+     * @param serveur l'objet Serveur à associer à la session.
+     *                Peut être null pour supprimer l'association actuelle.
      */
     public static void setServeur(Serveur serveur) {
         Session.serveur = serveur;

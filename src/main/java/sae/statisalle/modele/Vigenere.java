@@ -3,7 +3,6 @@ package sae.statisalle.modele;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * La classe Vigenere gère les opérations de cryptage et décryptage
@@ -26,18 +25,27 @@ public class Vigenere {
             if (codeDonnees != -1) {
                 BigInteger codeCle = cleAjustee.mod(tailleAlphabet);
                 BigInteger codeDonneesBI = BigInteger.valueOf(codeDonnees);
-                BigInteger codeCharChiffre = codeDonneesBI.add(codeCle).mod(tailleAlphabet);
+                BigInteger codeCharChiffre = codeDonneesBI.add(codeCle)
+                                                          .mod(tailleAlphabet);
                 messChiffre.append(alphabet.get(codeCharChiffre.intValue()));
             } else {
                 messChiffre.append(caractere);
             }
 
-            // Décale la clé
+            // décale la clé
             cleAjustee = cleAjustee.divide(BigInteger.TEN);
         }
         return messChiffre.toString();
     }
 
+    /**
+     * Déchiffre une chaîne de données en utilisant une clé de chiffrement.
+     *
+     * @param donnees la chaîne de données chiffrées à déchiffrer.
+     * @param cle la clé de chiffrement utilisée pour décrypter les données,
+     *            exprimée sous forme de BigInteger.
+     * @return une chaîne représentant les données déchiffrées.
+     */
     public static String dechiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messDechiffre = new StringBuilder();
         creerAlphabet();
@@ -51,31 +59,24 @@ public class Vigenere {
             if (codeDonnees != -1) {
                 BigInteger codeCle = cleAjustee.mod(tailleAlphabet);
                 BigInteger codeDonneesBI = BigInteger.valueOf(codeDonnees);
-                BigInteger codeCharDechiffre = codeDonneesBI.subtract(codeCle).mod(tailleAlphabet);
+                BigInteger codeCharDechiffre = codeDonneesBI.subtract(codeCle)
+                                                          .mod(tailleAlphabet);
 
-                // Gestion des indices négatifs dans modulo
+                // gestion des indices négatifs dans modulo
                 if (codeCharDechiffre.compareTo(BigInteger.ZERO) < 0) {
                     codeCharDechiffre = codeCharDechiffre.add(tailleAlphabet);
                 }
 
-                messDechiffre.append(alphabet.get(codeCharDechiffre.intValue()));
+                messDechiffre.append(alphabet.get(
+                                                codeCharDechiffre.intValue()));
             } else {
                 messDechiffre.append(caractere);
             }
 
-            // Décale la clé
+            // décale la clé
             cleAjustee = cleAjustee.divide(BigInteger.TEN);
         }
         return messDechiffre.toString();
-    }
-
-    public static int genererCleAleatoire(String donnees) {
-        Random random = new Random();
-        int tailleDonnees = donnees.length();
-        if (tailleDonnees == 0) {
-            throw new IllegalArgumentException("Les données sont vides.");
-        }
-        return random.nextInt(tailleDonnees) + 1;
     }
 
     /**
@@ -132,6 +133,17 @@ public class Vigenere {
         alphabet.add('~');
     }
 
+    /**
+     * Ajuste la taille d'une clé en fonction de la longueur des données.
+     *
+     * @param donnees la chaîne de données à laquelle la clé doit être ajustée.
+     * @param cle la clé d'origine, exprimée en tant que BigInteger.
+     * @return une clé ajustée sous forme de BigInteger,
+     *         ayant la même longueur que la chaîne donnees.
+     *
+     * @throws NumberFormatException si la clé ajustée contient des caractères
+     *                               invalides pour une conversion en BigInt.
+     */
     public static BigInteger ajusterTailleClef(String donnees, BigInteger cle) {
         int tailleDonnees = donnees.length();
         String cleStr = String.valueOf(cle);

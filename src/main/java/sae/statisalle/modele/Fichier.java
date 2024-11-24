@@ -119,7 +119,9 @@ public class Fichier {
     public List<String> contenuFichier() {
         List<String> contenu = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(this.fichierExploite))) {
+        try (BufferedReader br = new BufferedReader(
+                new FileReader(this.fichierExploite))) {
+
             String line;
             while ((line = br.readLine()) != null) {
                 contenu.add(line);
@@ -144,7 +146,8 @@ public class Fichier {
      * @return une liste de listes de chaînes de caractères représentant les
      *         données du fichier CSV.
      *         Chaque sous-liste suivante représente une ligne de données.
-     *         Si le fichier est vide ou ne contient pas de données, une liste vide est retournée.
+     *         Si le fichier est vide ou ne contient pas de données,
+     *         une liste vide est retournée.
      * @author erwan.thierry
      */
     public List<List<String>> recupererDonnees() {
@@ -155,17 +158,17 @@ public class Fichier {
             return tableau3D;
         }
 
-        // Récupérer les entêtes de colonnes pour déterminer la taille des lignes
-        String[] entetes = contenu.get(0).split(";", -1); // Ajout de -1 pour gérer les colonnes vides à la fin
+        // Ajout de -1 pour gérer les colonnes vides à la fin
+        String[] entetes = contenu.get(0).split(";", -1);
 
-        // Parcourt les lignes de données du fichier
         for (int i = 1; i < contenu.size(); i++) {
-            String[] ligne = contenu.get(i).split(";", -1); // Ajout de -1 ici également
+            // Ajout de -1 ici également
+            String[] ligne = contenu.get(i).split(";", -1);
             List<String> ligneTraitee = new ArrayList<>();
 
-            // Traite chaque cellule de la ligne
             for (String cellule : ligne) {
-                // Remplace les cellules vides au milieu de la ligne par un espace
+                // Remplace les cellules vides au milieu de la ligne
+                // par un espace.
                 if (cellule.isEmpty()) {
                     ligneTraitee.add(" ");
                 } else {
@@ -173,7 +176,8 @@ public class Fichier {
                 }
             }
 
-            // Complète la ligne avec des espaces afin de faire la même taille que l'en-tête
+            // Complète la ligne avec des espaces
+            // afin de faire la même taille que l'en-tête.
             while (ligneTraitee.size() < entetes.length) {
                 ligneTraitee.add(" ");
             }
@@ -183,17 +187,23 @@ public class Fichier {
     }
 
     /**
-     * Réécrit le contenu du fichier avec une nouvelle liste de chaînes de caractères.
+     * Réécrit le contenu du fichier avec une nouvelle liste de
+     * chaînes de caractères.
      * <br>
-     * Chaque chaîne dans la liste représente une ligne qui sera écrite dans le fichier.
-     * Si une erreur survient lors de l'écriture, un message d'erreur est affiché.
+     * Chaque chaîne dans la liste représente une ligne qui
+     * sera écrite dans le fichier.
+     * Si une erreur survient lors de l'écriture,
+     * un message d'erreur est affiché.
      * <br>
      * Le fichier d'origine est écrasé et remplacé par les nouvelles lignes.
      *
-     * @param ContenuFichier : La liste de chaînes de caractères à écrire dans le fichier.
+     * @param ContenuFichier La liste de chaînes de caractères
+     *                       à écrire dans le fichier.
      */
     public void reecritureFichier(List<String> ContenuFichier) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fichierExploite))) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(this.fichierExploite))) {
+
             for (String ligne : ContenuFichier) {
                 writer.write(ligne);
                 writer.newLine();
@@ -218,8 +228,11 @@ public class Fichier {
      *                         le fichier.
      * @param cheminFichier le chemin du fichier dans lequel il faut écrire.
      */
-    public static void ecritureFichier(List<String> contenuFichier, String cheminFichier) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichier))) {
+    public static void ecritureFichier(List<String> contenuFichier,
+                                       String cheminFichier) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(cheminFichier))) {
+
             for (String ligne : contenuFichier) {
                 writer.write(ligne);
                 if (contenuFichier.size() >= 2) {
@@ -236,7 +249,7 @@ public class Fichier {
      * @return nom du fichier
      * @author erwan.thierry
      */
-    public String nomFichier(){
+    public String nomFichier() {
         String nomFichier = this.fichierExploite.getName();
         int pointIndex = nomFichier.lastIndexOf(".");
 
@@ -247,6 +260,12 @@ public class Fichier {
         return nomFichier.substring(0, pointIndex);
     }
 
+    /**
+     * Vérifie si un fichier existe et n'est pas un répertoire.
+     * @param fichier le chemin du fichier à vérifier.
+     * @return true si le fichier existe et n'est pas un répertoire,
+     *         false sinon.
+     */
     public static boolean fichierExiste(String fichier) {
         Path path = Paths.get(fichier);
         return Files.exists(path) && !Files.isDirectory(path);
@@ -263,66 +282,53 @@ public class Fichier {
     }
 
     /**
-     * Prend la premiere ligne du contenu du fichier et renvoie le type en
-     * fonction de ce qu'il contient.
-     * @return typeFichier est soit Salle, Employe, Activite ou Reservation
-     * @author erwan.thierry
+     * Détermine le type d'un fichier en fonction
+     * de la première ligne de son contenu.
+     * Les types possibles sont :
+     * "Salle", "Employe", "Activite", ou "Reservation".
+     *
+     * @return une chaîne représentant le type du fichier,
+     *         ou null si aucun type ne correspond.
+     * @throws IllegalStateException si le contenu du fichier est vide
+     *                               ou non valide.
      */
     public String getTypeFichier() {
-
-        String typeFichier;
-        List<String> contenu;
-
-        typeFichier = null;
-        contenu = contenuFichier();
-
-        if (contenu.get(0).contains("Ident;Nom;Capacite;videoproj;"
-                          + "ecranXXL;ordinateur;type;logiciels;imprimante")) {
-            typeFichier = "Salle";
+        List<String> contenu = contenuFichier();
+        if (contenu == null || contenu.isEmpty()) {
+            throw new IllegalStateException("Le contenu du fichier est vide "
+                                            + "ou non valide.");
         }
-        if (contenu.get(0).contains("Ident;Nom;Prenom;Telephone")){
-            typeFichier = "Employe";
-        }
-        if (contenu.get(0).contains("Ident;Activité")){
-            typeFichier = "Activite";
-        }
-        if (contenu.get(0).contains("Ident;salle;employe;activite;"
-                                        + "date;heuredebut;heurefin")) {
-            typeFichier = "Reservation";
-        } // else
-
-        return typeFichier;
+        return getTypeDepuisContenu(contenu);
     }
 
     /**
-     * Détermine le type de contenu d'un fichier en fonction de la première ligne.
-     * Cette méthode analyse le contenu d'une liste de chaînes et renvoie un type correspondant
-     * si la première ligne contient une structure prédéfinie. Les types possibles sont :
+     * Analyse la première ligne d'une liste de chaînes pour
+     * déterminer un type prédéfini.
+     * Les types possibles sont :
      * "Salle", "Employe", "Activite", ou "Reservation".
      *
-     * @param contenu la liste des lignes d'un fichier
-     * @return une chaîne représentant le type du contenu
+     * @param contenu la liste des lignes d'un fichier.
+     * @return une chaîne représentant le type du contenu,
+     *         ou null si aucun type ne correspond.
+     *
      * @author valentin.munier-genie
      */
     public static String getTypeDepuisContenu(List<String> contenu) {
-        if (contenu.isEmpty()) {
+        if (contenu == null || contenu.isEmpty()) {
             return null;
         }
 
         String premiereLigne = contenu.get(0);
-
-        if (premiereLigne.contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante")) {
-            return "Salle";
-        }
-        if (premiereLigne.contains("Ident;Nom;Prenom;Telephone")) {
-            return "Employe";
-        }
-        if (premiereLigne.contains("Ident;Activité")) {
-            return "Activite";
-        }
-        if (premiereLigne.contains("Ident;salle;employe;activite;date;heuredebut;heurefin")) {
-            return "Reservation";
-        }
-        return null;
+        return switch (premiereLigne) {
+            case String line when line.contains("Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante") ->
+                    "Salle";
+            case String line when line.contains("Ident;Nom;Prenom;Telephone") ->
+                    "Employe";
+            case String line when line.contains("Ident;Activité") ->
+                    "Activite";
+            case String line when line.contains("Ident;salle;employe;activite;date;heuredebut;heurefin") ->
+                    "Reservation";
+            default -> null;
+        };
     }
 }
