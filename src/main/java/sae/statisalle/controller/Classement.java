@@ -30,17 +30,15 @@ import java.util.stream.IntStream;
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
  */
+
 public class Classement {
 
     @FXML
     private Button reinitialiserFiltre;
-
     @FXML
     private Button btnAide;
-
     @FXML
     private Button btnRetour;
-
     @FXML
     private Button btnAfficherTableaux;
 
@@ -49,10 +47,8 @@ public class Classement {
 
     @FXML
     private Tab feuilleSalle;
-
     @FXML
     private Tab feuilleActivite;
-
     @FXML
     private Tab feuilleEmploye;
 
@@ -168,7 +164,7 @@ public class Classement {
 
     @FXML
     void handleReinitialiserFiltre(ActionEvent event) {
-
+        reinitialiserFiltre();
     }
 
     @FXML
@@ -204,7 +200,6 @@ public class Classement {
                         salle.getImprimante()
                 );
 
-                //Associer la réservation spécifique
                 salleDetaillee.getReservations().add(reservation);
 
                 sallesDetaillees.add(salleDetaillee);
@@ -232,7 +227,6 @@ public class Classement {
                         employe.getNumTel()
                 );
 
-                // Associer la réservation spécifique
                 employeDetaille.getReservations().add(reservation);
 
                 employesDetaillees.add(employeDetaille);
@@ -258,7 +252,6 @@ public class Classement {
                         activite.getIdActivite()
                 );
 
-                //Associer la réservation spécifique
                 activiteDetaillee.getReservations().add(reservation);
 
                 activitesDetaillees.add(activiteDetaillee);
@@ -268,6 +261,11 @@ public class Classement {
         return activitesDetaillees;
     }
 
+    /**
+     * Chargement des données dans les tableaux, en appelant la méthode
+     * chargerDonneesCSV() de LireFichier qui récupère le contenu des fichiers
+     * dans des listes
+     */
     public void chargerDonnees() {
         btnAfficherTableaux.setVisible(false);
 
@@ -280,12 +278,6 @@ public class Classement {
         // Appel de la méthode centralisée pour charger les fichiers
         LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
 
-//        List<Reservation> listeSimple = new ArrayList<>(listReservation);
-//        Reservation reservation;
-//        reservation = listeSimple.getFirst();
-//        System.out.print(reservation);
-
-        // Concatène le nom et prénom de chaque employé
         for (Employe employe : listEmploye) {
             employe.setNom(employe.getNom() + " " + employe.getPrenom());
         }
@@ -293,7 +285,7 @@ public class Classement {
         // Table employe
         idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
         nomPrenomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        salleE.setCellValueFactory(new PropertyValueFactory<>("sallesReservees"));
+        salleE.setCellValueFactory(new PropertyValueFactory<>("s    allesAssociees"));
         activiteE.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
         totalE.setCellValueFactory(cellData -> {
             Employe ligne = cellData.getValue();
@@ -353,10 +345,9 @@ public class Classement {
 
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
-
     }
 
-    // TODO
+    // TODO Mettre les durée par odre décroissant et par ordre chronologique si durée égale
     /* ---------------------------------------------------------------- */
     public String calculerDureeSalle(Salle salle) {
         String heureDebutL = salle.getHeureDebutR();
@@ -428,19 +419,16 @@ public class Classement {
 
     @FXML
     private void afficherFiltreSalle() {
-        // création d'une liste contenant tous les filtres sauf celui sur les salles
         List<Node> filtres = Arrays.asList(
                 filtreEmploye, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
-        // Détermine la visibilité en fonction de la feuille sélectionnée
         boolean visible = feuilleSalle.isSelected();
 
         // Applique la visibilité à chaque composant si celui-ci n'est pas null
         filtres.forEach(composantFiltre -> {
-            //Vérification
             if (composantFiltre != null) {
                 composantFiltre.setVisible(visible);
             }
@@ -449,19 +437,16 @@ public class Classement {
 
     @FXML
     private void afficherFiltreActivite() {
-        // création d'une liste contenant tous les filtres sauf celui sur les activités
         List<Node> filtres = Arrays.asList(
                 filtreEmploye, filtreSalle, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreSalle, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
-        // Détermine la visibilité en fonction de la feuille sélectionnée
         boolean visible = feuilleActivite.isSelected();
 
         // Applique la visibilité à chaque composant si celui-ci n'est pas null
         filtres.forEach(composantFiltre -> {
-            //Vérification
             if (composantFiltre != null) {
                 composantFiltre.setVisible(visible);
             }
@@ -483,19 +468,16 @@ public class Classement {
 
     @FXML
     private void afficherFiltreEmploye() {
-        // création d'une liste contenant tous les filtres sauf celui sur les employés
         List<Node> filtres = Arrays.asList(
                 filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
-        // Détermine la visibilité en fonction de la feuille sélectionnée
         boolean visible = feuilleEmploye.isSelected();
 
         // Applique la visibilité à chaque composant si celui-ci n'est pas null
         filtres.forEach(composantFiltre -> {
-            //Vérification
             if (composantFiltre != null) {
                 composantFiltre.setVisible(visible);
             }
@@ -594,11 +576,8 @@ public class Classement {
 
     @FXML
     private void initialize() {
-        // Vérifier l'initialisation des composants
-        System.out.println(filtreEmploye); // Devrait retourner l'objet associé
 
-      //  // Appel de méthodes
-      //  masquerFiltres();
+        masquerFiltres();
 
         // Configurations additionnelles
         grandTableau.getSelectionModel().select(feuilleSalle);
@@ -614,164 +593,121 @@ public class Classement {
         filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
     }
 
-//    private void masquerFiltres() {
-//        filtreEmploye.setVisible(false);
-//        textfiltreEmploye.setVisible(false);
-//        filtreSalle.setVisible(false);
-//        textfiltreSalle.setVisible(false);
-//        filtreActivite.setVisible(false);
-//        textfiltreActivite.setVisible(false);
-//        filtreDateDebut.setVisible(false);
-//        filtreDateFin.setVisible(false);
-//        textfiltreDateDebut.setVisible(false);
-//        textfiltreDateFin.setVisible(false);
-//        filtreHeureD.setVisible(false);
-//        textfiltreHeureD.setVisible(false);
-//        filtreHeureF.setVisible(false);
-//        textfiltreHeureF.setVisible(false);
-//        reinitialiserFiltre.setVisible(false);
-//    }
+    private void masquerFiltres() {
+        filtreEmploye.setVisible(false);
+        textfiltreEmploye.setVisible(false);
+        filtreSalle.setVisible(false);
+        textfiltreSalle.setVisible(false);
+        filtreActivite.setVisible(false);
+        textfiltreActivite.setVisible(false);
+        filtreDateDebut.setVisible(false);
+        filtreDateFin.setVisible(false);
+        textfiltreDateDebut.setVisible(false);
+        textfiltreDateFin.setVisible(false);
+        filtreHeureD.setVisible(false);
+        textfiltreHeureD.setVisible(false);
+        filtreHeureF.setVisible(false);
+        textfiltreHeureF.setVisible(false);
+        reinitialiserFiltre.setVisible(false);
+    }
 
     @FXML
     private void reinitialiserFiltre() {
-        // Ajouter "Tous" dans les listes de filtres (si ce n'est pas déjà fait)
-        if (filtreSalle != null) {
-            if (!filtreSalle.getItems().contains("Tous")) {
-                filtreSalle.getItems().addFirst("Tous");
-            }
-            filtreSalle.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
 
-        if (filtreEmploye != null) {
-            if (!filtreEmploye.getItems().contains("Tous")) {
-                filtreEmploye.getItems().addFirst("Tous");
-            }
-            filtreEmploye.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
+        filtreSalle.getSelectionModel().select("Tous");
+        filtreEmploye.getSelectionModel().select("Tous");
+        filtreActivite.getSelectionModel().select("Tous");
+        filtreDateDebut.getSelectionModel().select("Tous");
+        filtreDateFin.getSelectionModel().select("Tous");
+        filtreHeureD.getSelectionModel().select("Tous");
+        filtreHeureF.getSelectionModel().select("Tous");
 
-        if (filtreDateDebut != null) {
-            if (!filtreDateDebut.getItems().contains("Tous")) {
-                filtreDateDebut.getItems().addFirst("Tous");
-            }
-            filtreDateDebut.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
+        if (tabSalle != null) tabSalle.setItems(getDetailsDesReservations());
+        if (tabEmploye != null) tabEmploye.setItems(getDetailsDesEmployes());
+        if (tabActivite != null) tabActivite.setItems(getDetailsDesActivites());
 
-        if (filtreDateFin != null) {
-            if (!filtreDateFin.getItems().contains("Tous")) {
-                filtreDateFin.getItems().addFirst("Tous");
-            }
-            filtreDateFin.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreActivite != null) {
-            if (!filtreActivite.getItems().contains("Tous")) {
-                filtreActivite.getItems().addFirst("Tous");
-            }
-            filtreActivite.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureD != null) {
-            if (!filtreHeureD.getItems().contains("Tous")) {
-                filtreHeureD.getItems().addFirst("Tous");
-            }
-            filtreHeureD.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureF != null) {
-            if (!filtreHeureF.getItems().contains("Tous")) {
-                filtreHeureF.getItems().addFirst("Tous");
-            }
-            filtreHeureF.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        // Réaffecter les listes complètes aux tableaux
-        if (tabSalle != null) tabSalle.setItems(listSalle);
-        if (tabEmploye != null) tabEmploye.setItems(listEmploye);
-        if (tabActivite != null) tabActivite.setItems(listActivite);
-
-        // Afficher un message de confirmation ou notifier l'utilisateur
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
 
     private void mettreAJourFiltreHeureDebut() {
-        // Extraire les heures de début uniques des réservations
         Set<String> heuresDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresDebutUniques.add(reservation.getHeureDebut());
         }
 
-        // Convertir en liste et trier les heures de début
         List<String> heuresDebutListe = new ArrayList<>(heuresDebutUniques);
         Collections.sort(heuresDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de début avec la liste d'heures
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
     private void mettreAJourFiltreHeureFin() {
-        // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresFinUniques.add(reservation.getHeureFin());
         }
 
-        // Convertir en liste et trier les heures de fin
         List<String> heuresFinListe = new ArrayList<>(heuresFinUniques);
         Collections.sort(heuresFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de fin avec la liste d'heures
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
     private void mettreAJourFiltreDateDebut() {
-        // Extraire les dates de début uniques des réservations
         Set<String> datesDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             datesDebutUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de début
         List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
         Collections.sort(datesDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         datesDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de début avec la liste de dates
         filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
     }
 
     private void mettreAJourFiltreDateFin() {
-        // Extraire les dates de fin uniques des réservations
         Set<String> datesFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
-            datesFinUniques.add(reservation.getDateR());  // Si tu as une méthode pour récupérer la date de fin, adapte cette ligne
+            datesFinUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de fin
         List<String> datesFinListe = new ArrayList<>(datesFinUniques);
         Collections.sort(datesFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         datesFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de fin avec la liste de dates
         filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
     }
 
+    /**
+     * Applique les filtres sélectionnés pour filtrer les réservations en fonction
+     * de plusieurs critères : employé, activité, salle, date et heures de début/fin.
+     * <p>
+     * Critères de filtre :
+     * <ul>
+     *   <li>Employé : Le nom de l'employé responsable de la réservation.</li>
+     *   <li>Activité : L'activité associée à la réservation.</li>
+     *   <li>Salle : La salle associée à la réservation.</li>
+     *   <li>Date de début et de fin : Les dates de réservation doivent être comprises dans cette période.</li>
+     *   <li>Heure de début et de fin : Les heures de réservation doivent correspondre à ces heures.</li>
+     * <p>
+     *
+     * La méthode parcourt la liste des réservations et vérifie si chaque réservation
+     * correspond aux filtres définis. Si une réservation satisfait tous les critères,
+     * elle est ajoutée à la liste des réservations filtrées.
+     */
     private void appliquerFiltres() {
-        // Récupérer les filtres sélectionnés
         String employeFiltre = filtreEmploye.getValue();
         String activiteFiltre = filtreActivite.getValue();
         String salleFiltre = filtreSalle.getValue();
@@ -780,18 +716,15 @@ public class Classement {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
-        // Appliquer les filtres sur les réservations
         ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
         for (Reservation reservation : listReservation) {
 
-            // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
                     (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) /* &&
-                     (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre))*/;
+                    (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre))*/;
 
-            // Appliquer les filtres de date
             boolean matchesDateDebut = true;
             boolean matchesDateFin = true;
 
@@ -815,7 +748,6 @@ public class Classement {
                 }
             }
 
-            // Appliquer les filtres d'heure
             boolean matchesHeureDebut = true;
             boolean matchesHeureFin = true;
 
@@ -849,30 +781,21 @@ public class Classement {
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
         try {
-            // Remplacer 'h' par ':' pour correspondre au format attendu par LocalTime
             heure = heure.replace('h', ':');
             return LocalTime.parse(heure);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format d'heure: " + heure);
-            return null; // Si l'heure est invalide, retourner null
+            return null;
         }
     }
 
     private LocalDate parseDate(String date) {
         try {
-            // Créer un DateTimeFormatter avec le format "dd/MM/yyyy"
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-            // Utiliser le formatter pour convertir la chaîne en LocalDate
             return LocalDate.parse(date, formatter);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format de date: " + date);
-            return null; // Si la date est invalide, retourner null
+            return null;
         }
-    }
-
-    @FXML
-    private void handleReinitialiserFiltre() {
-        reinitialiserFiltre();
     }
 }

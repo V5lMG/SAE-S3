@@ -153,13 +153,6 @@
                     .orElse("Aucune activité");
         }
 
-    //    // 3. Calculer le temps total de réservation
-    //    public int getTempsTotalReservation() {
-    //        return listReservation.stream()
-    //                .mapToInt(Reservation::getDuree)
-    //                .sum();
-    //    }
-
         public void setIdentifiant(String identifiant) {
             this.identifiant = identifiant;
         }

@@ -407,55 +407,13 @@ public class Affichage {
 
     @FXML
     private void reinitialiserFiltre() {
-        // Ajouter "Tous" dans les listes de filtres (si ce n'est pas déjà fait)
-        if (filtreSalle != null) {
-            if (!filtreSalle.getItems().contains("Tous")) {
-                filtreSalle.getItems().addFirst("Tous");
-            }
-            filtreSalle.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreEmploye != null) {
-            if (!filtreEmploye.getItems().contains("Tous")) {
-                filtreEmploye.getItems().addFirst("Tous");
-            }
-            filtreEmploye.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreDateDebut != null) {
-            if (!filtreDateDebut.getItems().contains("Tous")) {
-                filtreDateDebut.getItems().addFirst("Tous");
-            }
-            filtreDateDebut.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreDateFin != null) {
-            if (!filtreDateFin.getItems().contains("Tous")) {
-                filtreDateFin.getItems().addFirst("Tous");
-            }
-            filtreDateFin.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreActivite != null) {
-            if (!filtreActivite.getItems().contains("Tous")) {
-                filtreActivite.getItems().addFirst("Tous");
-            }
-            filtreActivite.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureD != null) {
-            if (!filtreHeureD.getItems().contains("Tous")) {
-                filtreHeureD.getItems().addFirst("Tous");
-            }
-            filtreHeureD.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
-
-        if (filtreHeureF != null) {
-            if (!filtreHeureF.getItems().contains("Tous")) {
-                filtreHeureF.getItems().addFirst("Tous");
-            }
-            filtreHeureF.getSelectionModel().select("Tous");  // Sélectionner "Tous" par défaut
-        }
+        filtreSalle.getSelectionModel().select("Tous");
+        filtreEmploye.getSelectionModel().select("Tous");
+        filtreDateDebut.getSelectionModel().select("Tous");
+        filtreDateFin.getSelectionModel().select("Tous");
+        filtreActivite.getSelectionModel().select("Tous");
+        filtreHeureD.getSelectionModel().select("Tous");
+        filtreHeureF.getSelectionModel().select("Tous");
 
         // Réaffecter les listes complètes aux tableaux
         if (tabSalle != null) tabSalle.setItems(listSalle);
@@ -467,86 +425,67 @@ public class Affichage {
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
-
     private void mettreAJourFiltreHeureDebut() {
-        // Extraire les heures de début uniques des réservations
         Set<String> heuresDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresDebutUniques.add(reservation.getHeureDebut());
         }
 
-        // Convertir en liste et trier les heures de début
         List<String> heuresDebutListe = new ArrayList<>(heuresDebutUniques);
         Collections.sort(heuresDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de début avec la liste d'heures
         filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
     }
 
-
     private void mettreAJourFiltreHeureFin() {
-        // Extraire les heures de fin uniques des réservations
         Set<String> heuresFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             heuresFinUniques.add(reservation.getHeureFin());
         }
 
-        // Convertir en liste et trier les heures de fin
         List<String> heuresFinListe = new ArrayList<>(heuresFinUniques);
         Collections.sort(heuresFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         heuresFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre d'heure de fin avec la liste d'heures
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
     private void mettreAJourFiltreDateDebut() {
-        // Extraire les dates de début uniques des réservations
         Set<String> datesDebutUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
             datesDebutUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de début
         List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
         Collections.sort(datesDebutListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         datesDebutListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de début avec la liste de dates
         filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
     }
 
     private void mettreAJourFiltreDateFin() {
-        // Extraire les dates de fin uniques des réservations
         Set<String> datesFinUniques = new HashSet<>();
 
         for (Reservation reservation : listReservation) {
-            datesFinUniques.add(reservation.getDateR());  // Si tu as une méthode pour récupérer la date de fin, adapte cette ligne
+            datesFinUniques.add(reservation.getDateR());
         }
 
-        // Convertir en liste et trier les dates de fin
         List<String> datesFinListe = new ArrayList<>(datesFinUniques);
         Collections.sort(datesFinListe);
 
-        // Ajouter l'option "Tous" en tête de liste
         datesFinListe.addFirst("Tous");
 
-        // Mettre à jour le filtre de date de fin avec la liste de dates
         filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
     }
 
     private void appliquerFiltres() {
-        // Récupérer les filtres sélectionnés
         String employeFiltre = filtreEmploye.getValue();
         String activiteFiltre = filtreActivite.getValue();
         String salleFiltre = filtreSalle.getValue();
@@ -555,18 +494,15 @@ public class Affichage {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
-        // Appliquer les filtres sur les réservations
         ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
         for (Reservation reservation : listReservation) {
 
-            // Appliquer les filtres de base
             boolean matchesFiltre =
                     (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
-                            (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                            (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
+                    (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
+                    (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-            // Appliquer les filtres de date
             boolean matchesDateDebut = true;
             boolean matchesDateFin = true;
 
@@ -590,7 +526,6 @@ public class Affichage {
                 }
             }
 
-            // Appliquer les filtres d'heure
             boolean matchesHeureDebut = true;
             boolean matchesHeureFin = true;
 
@@ -614,38 +549,33 @@ public class Affichage {
                 }
             }
 
-            // Ajouter la réservation si tous les filtres sont validés
             if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
         }
 
-        // Mettre à jour la table avec les résultats filtrés
         tabReservation.setItems(reservationsFiltrees);
     }
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
         try {
-            // Remplacer 'h' par ':' pour correspondre au format attendu par LocalTime
             heure = heure.replace('h', ':');
             return LocalTime.parse(heure);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format d'heure: " + heure);
-            return null; // Si l'heure est invalide, retourner null
+            return null;
         }
     }
 
+    // Méthode utilitaire pour la conversion des date en LocalTime
     private LocalDate parseDate(String date) {
         try {
-            // Créer un DateTimeFormatter avec le format "dd/MM/yyyy"
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-            // Utiliser le formatter pour convertir la chaîne en LocalDate
             return LocalDate.parse(date, formatter);
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format de date: " + date);
-            return null; // Si la date est invalide, retourner null
+            return null;
         }
     }
 

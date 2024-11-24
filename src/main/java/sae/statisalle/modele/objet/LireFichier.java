@@ -37,7 +37,6 @@ public class LireFichier {
         try {
             File dossier = new File(URLDecoder.decode(URLDossier, StandardCharsets.UTF_8));
 
-            // Vérifier si le répertoire contient des fichiers
             if (!dossier.exists() || !dossier.isDirectory()) {
                 System.out.println("Le répertoire 'csv' n'existe pas ou n'est pas un dossier.");
                 return;
@@ -45,7 +44,6 @@ public class LireFichier {
 
             File[] fichiers = dossier.listFiles((dir, name) -> name.endsWith(".csv"));
 
-            // Vérifier si des fichiers ont été trouvés
             if (fichiers == null || fichiers.length == 0) {
                 System.out.println("Aucun fichier CSV trouvé dans le répertoire.");
                 return;
@@ -161,13 +159,11 @@ public class LireFichier {
             System.out.println("Erreur générale : " + e.getMessage());
         }
 
-        // Étape 2 : Établir les relations entre les entités
         for (Reservation reservation : listReservation) {
             // Associer les réservations aux salles
             for (Salle salle : listSalle) {
                 if (salle.getNom().equals(reservation.getSalleR())) {
                     salle.getReservations().add(reservation);
-                    System.out.println("Réservation ajoutée à la salle : " + salle.getIdentifiant());
                     break;
                 }
             }

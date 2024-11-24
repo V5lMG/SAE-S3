@@ -5,6 +5,7 @@
 package sae.statisalle.modele.objet;
 
 /**
+ * TODO Changer les commentaires
  * La classe Reservation initialise les objets de type Reservation.
  * L'objet Reservation est composé de :
  * <ul>
@@ -106,12 +107,12 @@ public class Reservation {
         return heureDebut;
     }
 
-    public String getDateR() {
-        return dateR;
-    }
-
     public String getHeureFin() {
         return heureFin;
+    }
+
+    public String getDateR() {
+        return dateR;
     }
 
     public String getDescription() {
