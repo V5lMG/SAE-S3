@@ -40,6 +40,14 @@ public class MainControleur extends Application {
     private static Scene Envoyer;
     private static Scene Importer;
     private static Scene Visualiser;
+    private static Scene DonneesCalculees;
+    private static Scene ActionAnalyse;
+    private static Scene Classement;
+    private static Scene Pourcentage;
+    private static Scene AideActionAnalyse;
+    private static Scene AideClassement;
+    private static Scene AideDonneesCalculees;
+    private static Scene AidePourcentage;
 
     /* déclaration du stage */
     private static Stage fenetrePrincipale;
@@ -118,6 +126,62 @@ public class MainControleur extends Application {
     }
 
     /**
+     * Change la scène pour afficher l'écran de choix d'une action d'analyse
+     */
+    public static void activerActionAnalyse () {
+        fenetrePrincipale.setScene(ActionAnalyse);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des données calculés simples
+     */
+    public static void activerDonneesCalculees () {
+        fenetrePrincipale.setScene(DonneesCalculees);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des statistiques par classement
+     */
+    public static void activerClassement () {
+        fenetrePrincipale.setScene(Classement);
+    }
+
+    /**
+     * Change la scène pour afficher l'écran des statistiques par pourcentage
+     */
+    public static void activerPourcentage() {
+        fenetrePrincipale.setScene(Pourcentage);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur le choix d'une action d'analyse
+     */
+    public static void activerAideActionAnalyse () {
+        fenetrePrincipale.setScene(AideActionAnalyse);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les statistiques de classement
+     */
+    public static void activerAideClassement() {
+        fenetrePrincipale.setScene(AideClassement);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les données calculées simples
+     */
+    public static void activerAideDonneesCalculees() {
+        fenetrePrincipale.setScene(AideDonneesCalculees);
+    }
+
+    /**
+     * Change la scène pour afficher l'aide sur les statistiques de pourcentages
+     */
+    public static void activerAidePourcentage() {
+        fenetrePrincipale.setScene(AidePourcentage);
+    }
+
+    /**
      * Renvoie la fenêtre principale de l'application.
      * @return l'objet Stage de la fenêtre principale.
      */
@@ -129,18 +193,24 @@ public class MainControleur extends Application {
     public void start(Stage primaryStage) {
         try {
             // Tableau des noms et chemins des vues
-            Map<String, String> vues = Map.of(
-                    "Accueil", "/sae/statisalle/vue/accueil.fxml",
-                    "AideAccueil", "/sae/statisalle/vue/aide/aideAccueil.fxml",
-                    "AideConnexion", "/sae/statisalle/vue/aide/aideConnexion.fxml",
-                    "AideEnvoyer", "/sae/statisalle/vue/aide/aideEnvoyer.fxml",
-                    "AideImporter", "/sae/statisalle/vue/aide/aideImporter.fxml",
-                    "Connexion", "/sae/statisalle/vue/connexion.fxml",
-                    "Envoyer", "/sae/statisalle/vue/envoyer.fxml",
-                    "Importer", "/sae/statisalle/vue/importer.fxml",
-                    "Visualiser", "/sae/statisalle/vue/affichage.fxml",
-                    "AideAffichage", "/sae/statisalle/vue/aide/aideAffichage.fxml"
-            );
+            Map<String, String> vues = new HashMap<>();
+            vues.put("Accueil", "/sae/statisalle/vue/accueil.fxml");
+            vues.put("AideAccueil", "/sae/statisalle/vue/aide/aideAccueil.fxml");
+            vues.put("AideConnexion", "/sae/statisalle/vue/aide/aideConnexion.fxml");
+            vues.put("AideEnvoyer", "/sae/statisalle/vue/aide/aideEnvoyer.fxml");
+            vues.put("AideImporter", "/sae/statisalle/vue/aide/aideImporter.fxml");
+            vues.put("Connexion", "/sae/statisalle/vue/connexion.fxml");
+            vues.put("Envoyer", "/sae/statisalle/vue/envoyer.fxml");
+            vues.put("Importer", "/sae/statisalle/vue/importer.fxml");
+            vues.put("Visualiser", "/sae/statisalle/vue/affichage.fxml");
+            vues.put("AideAffichage", "/sae/statisalle/vue/aide/aideAffichage.fxml");
+            vues.put("DonneesCalculees", "/sae/statisalle/vue/donneesCalculees.fxml");
+            vues.put("Classement", "/sae/statisalle/vue/classement.fxml");
+            vues.put("Pourcentage", "/sae/statisalle/vue/pourcentage.fxml");
+            vues.put("AideActionAnalyse", "/sae/statisalle/vue/aide/aideActionAnalyse.fxml");
+            vues.put("AideClassement", "/sae/statisalle/vue/aide/aideClassement.fxml");
+            vues.put("AideDonneesCalculees", "/sae/statisalle/vue/aide/aideDonneesCalculees.fxml");
+            vues.put("AidePourcentage", "/sae/statisalle/vue/aide/aidePourcentage.fxml");
 
             // Chargement des scènes dans une boucle
             for (Map.Entry<String, String> entry : vues.entrySet()) {

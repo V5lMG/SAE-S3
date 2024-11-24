@@ -24,10 +24,10 @@
                         <Font size="30.0" />
                     </font>
                 </Text>
-                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../img/LogoStatisalle.jpg" />
-                    </image>
+                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0"
+                           layoutY="14.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../img/LogoStatisalle.jpg"/>
                 </ImageView>
                 <Button fx:id="btnAide" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#actionAide" prefHeight="16.0" prefWidth="106.0" style="-fx-background-color: #21618C;" text="Besoin d'aide ?" textFill="WHITE" />
             </AnchorPane>

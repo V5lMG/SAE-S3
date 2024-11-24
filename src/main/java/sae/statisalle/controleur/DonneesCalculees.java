@@ -1,4 +1,4 @@
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

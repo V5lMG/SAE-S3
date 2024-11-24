@@ -3,7 +3,7 @@
  * IUT DE RODEZ               Pas de copyrights
  */
 
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

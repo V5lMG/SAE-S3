@@ -1,4 +1,4 @@
-package sae.statisalle.controller;
+package sae.statisalle.controleur;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,8 +10,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
+import javafx.stage.FileChooser;
+import sae.statisalle.modele.GenererPdf;
 import sae.statisalle.modele.objet.*;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.time.LocalDate;
@@ -35,7 +38,7 @@ import java.util.*; // TODO ne jamais mettre d'étoiles
  * @author robin.montes
  * @author mathias.cambon
  */
-public class Affichage {
+public class ControleurAffichage {
 
     @FXML
     private Button btnAfficherTableaux;
@@ -46,42 +49,23 @@ public class Affichage {
     @FXML
     private TabPane grandTableau;
 
+    // génération de pdf
+    @FXML
+    private Button btnGenererPdf;
+
     // Table de réservations
     @FXML
     private TableView<Reservation> tabReservation;
     @FXML
-    private TableColumn<Reservation, String> idReservation;
-    @FXML
-    private TableColumn<Reservation, String> salleR;
-    @FXML
-    private TableColumn<Reservation, String> employeR;
-    @FXML
-    private TableColumn<Reservation, String> activiteR;
-    @FXML
-    private TableColumn<Reservation, String> dateR;
-    @FXML
-    private TableColumn<Reservation, String> heureDebutR;
-    @FXML
-    private TableColumn<Reservation, String> heureFinR;
-    @FXML
-    private TableColumn<Reservation, String> descriptionR;
-    @FXML
-    private TableColumn<Reservation, String> nomR;
-    @FXML
-    private TableColumn<Reservation, String> prenomR;
-    @FXML
-    private TableColumn<Reservation, String> numTelR;
-    @FXML
-    private TableColumn<Reservation, String> usageR;
+    private TableColumn<Reservation, String> idReservation, salleR, employeR,
+                                             activiteR, dateR, heureDebutR,
+                                             heureFinR, descriptionR, nomR,
+                                             prenomR, numTelR, usageR;
     @FXML
     private Tab feuilleReservation;
 
     @FXML
-    private ComboBox<String> filtreEmploye;
-    @FXML
-    private ComboBox<String> filtreActivite;
-    @FXML
-    private ComboBox<String> filtreSalle;
+    private ComboBox<String> filtreEmploye, filtreActivite, filtreSalle;
     @FXML
     private ComboBox<String> filtreDateDebut;
     @FXML
@@ -582,5 +566,19 @@ public class Affichage {
     @FXML
     private void handleReinitialiserFiltre() {
         reinitialiserFiltre();
+    }
+
+    @FXML
+    private void handleGenererPdf(){
+        FileChooser choixFichier = new FileChooser();
+        choixFichier.setTitle("Enregistrer le fichier PDF");
+
+        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+
+        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
+
+        if (fichier != null) {
+            GenererPdf.genererPdfReservation(listReservation, fichier);
+        }
     }
 }
