@@ -211,6 +211,7 @@ public class MainControleur extends Application {
             vues.put("AideClassement", "/sae/statisalle/vue/aide/aideClassement.fxml");
             vues.put("AideDonneesCalculees", "/sae/statisalle/vue/aide/aideDonneesCalculees.fxml");
             vues.put("AidePourcentage", "/sae/statisalle/vue/aide/aidePourcentage.fxml");
+            vues.put("ActionAnalyse", "/sae/statisalle/vue/actionAnalyse.fxml");
 
             // Chargement des scènes dans une boucle
             for (Map.Entry<String, String> entry : vues.entrySet()) {
@@ -233,6 +234,7 @@ public class MainControleur extends Application {
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des vues : "
                                + e.getMessage());
+            e.printStackTrace();
         }
     }
 

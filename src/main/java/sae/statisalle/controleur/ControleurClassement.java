@@ -1,5 +1,5 @@
 /*
- * Classement.java               21/11/2024
+ * ControleurClassement.java               21/11/2024
  * IUT DE RODEZ               Pas de copyrights
  */
 
@@ -26,12 +26,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
- * Controleur des statistiques - Classement
+ * Controleur des statistiques - ControleurClassement
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
  */
 
-public class Classement {
+public class ControleurClassement {
 
     @FXML
     private Button reinitialiserFiltre;

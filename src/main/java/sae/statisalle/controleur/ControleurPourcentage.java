@@ -18,11 +18,11 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
- * Controleur des statistiques - Pourcentage
+ * Controleur des statistiques - ControleurPourcentage
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
  */
-public class Pourcentage {
+public class ControleurPourcentage {
 
     @FXML
     private Button btnAide;

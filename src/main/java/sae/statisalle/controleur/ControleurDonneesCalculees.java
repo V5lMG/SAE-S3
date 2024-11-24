@@ -8,10 +8,9 @@ import javafx.scene.control.TableView;
 import javafx.event.ActionEvent;
 import sae.statisalle.modele.objet.Activite;
 import sae.statisalle.modele.objet.Employe;
-import sae.statisalle.modele.objet.Reservation;
 import sae.statisalle.modele.objet.Salle;
 
-public class DonneesCalculees {
+public class ControleurDonneesCalculees {
 
     @FXML
     private ComboBox<String> filtreDateDebut;
