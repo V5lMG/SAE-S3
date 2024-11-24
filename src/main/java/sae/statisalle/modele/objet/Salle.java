@@ -84,6 +84,7 @@ public class Salle {
         this.nbMachine = nbMachine;
         this.logiciel = logiciel;
         this.imprimante = imprimante;
+        this.listReservation = FXCollections.observableArrayList();
     }
 
     /**
@@ -174,7 +175,7 @@ public class Salle {
     //Obtenir le nom de l'employé qui a réservé la salle
     public String getNomEmploye() {
         return listReservation.stream()
-                .map(reservation -> reservation.getEmployeR())
+                .map(Reservation::getEmployeR)
                 .distinct()
                 .reduce((a, b) -> a + ", " + b) // Combine les noms distincts
                 .orElse("Aucun employé");
@@ -183,7 +184,7 @@ public class Salle {
     //Obtenir les types d'activités associées à la salle
     public String getTypesActivite() {
         return listReservation.stream()
-                .map(reservation -> reservation.getActiviteR())
+                .map(Reservation::getActiviteR)
                 .distinct()
                 .reduce((a, b) -> a + ", " + b) // Combine les types distincts
                 .orElse("Aucune activité");
@@ -192,7 +193,7 @@ public class Salle {
     //Obtenir les types d'activités associées à la salle
     public String getDateR() {
         return listReservation.stream()
-                .map(reservation -> reservation.getDateR())
+                .map(Reservation::getDateR)
                 .distinct()
                 .reduce((a, b) -> a + ", " + b) // Combine les types distincts
                 .orElse("Aucune activité");
@@ -201,7 +202,7 @@ public class Salle {
     //Obtenir les types d'activités associées à la salle
     public String getHeureDebutR() {
         return listReservation.stream()
-                .map(reservation -> reservation.getHeureDebut())
+                .map(Reservation::getHeureDebut)
                 .distinct()
                 .reduce((a, b) -> a + ", " + b) // Combine les types distincts
                 .orElse("Aucune activité");
@@ -210,7 +211,7 @@ public class Salle {
     //Obtenir les types d'activités associées à la salle
     public String getHeureFinR() {
         return listReservation.stream()
-                .map(reservation -> reservation.getHeureFin())
+                .map(Reservation::getHeureFin)
                 .distinct()
                 .reduce((a, b) -> a + ", " + b) // Combine les types distincts
                 .orElse("Aucune activité");

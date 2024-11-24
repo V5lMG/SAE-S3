@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
 import java.time.Duration;
@@ -23,7 +24,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Controleur des statistiques - Classement

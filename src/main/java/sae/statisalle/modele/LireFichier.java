@@ -2,8 +2,7 @@
  * LireFichier.java               22/11/2024
  * IUT DE RODEZ               Pas de copyrights
  */
-
-package sae.statisalle.modele.objet;
+package sae.statisalle.modele;
 
 import javafx.collections.ObservableList;
 
@@ -11,7 +10,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 
-import sae.statisalle.modele.Fichier;
+import sae.statisalle.modele.objet.Activite;
+import sae.statisalle.modele.objet.Employe;
+import sae.statisalle.modele.objet.Reservation;
+import sae.statisalle.modele.objet.Salle;
 
 import java.io.File;
 import java.net.URLDecoder;

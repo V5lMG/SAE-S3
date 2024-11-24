@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 
 import javafx.stage.FileChooser;
 import sae.statisalle.modele.GenererPdf;
+import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
 import java.io.File;
