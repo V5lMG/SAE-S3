@@ -708,6 +708,7 @@ public class Classement {
      * elle est ajoutée à la liste des réservations filtrées.
      */
     private void appliquerFiltres() {
+        // Récupérer les valeurs des filtres
         String employeFiltre = filtreEmploye.getValue();
         String activiteFiltre = filtreActivite.getValue();
         String salleFiltre = filtreSalle.getValue();
@@ -716,67 +717,59 @@ public class Classement {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
-        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+        // Vérifier si tous les filtres sont sur "Tous"
+        boolean aucunFiltreApplique =
+                (employeFiltre == null || employeFiltre.equals("Tous")) &&
+                        (activiteFiltre == null || activiteFiltre.equals("Tous")) &&
+                        (salleFiltre == null || salleFiltre.equals("Tous")) &&
+                        (dateFiltreDebut == null || dateFiltreDebut.equals("Tous")) &&
+                        (dateFiltreFin == null || dateFiltreFin.equals("Tous")) &&
+                        (heureDebutFiltre == null || heureDebutFiltre.equals("Tous")) &&
+                        (heureFinFiltre == null || heureFinFiltre.equals("Tous"));
 
-        for (Reservation reservation : listReservation) {
+        if (aucunFiltreApplique) {
+            // Si aucun filtre n'est appliqué, réinitialiser les items de la table avec toutes les salles disponibles
+            tabSalle.setItems(listSalle); // Revenir aux données d'origine sans filtrage
+        } else {
+            // Appliquer le filtrage des salles
+            ObservableList<Salle> sallesFiltrees = FXCollections.observableArrayList();
 
-            boolean matchesFiltre =
-                    (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
-                    (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) /* &&
-                    (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre))*/;
+            for (Salle salle : listSalle) {
+                // Filtrage basé sur les valeurs sélectionnées
+                boolean matchesFiltre =
+                        (salleFiltre == null || salleFiltre.equals("Tous") || salle.getNom().equalsIgnoreCase(salleFiltre));
 
-            boolean matchesDateDebut = true;
-            boolean matchesDateFin = true;
+                // Filtrage des réservations
+                ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+                for (Reservation reservation : salle.getReservations()) {
+                    boolean matches = true;
+                    // Appliquer les autres filtres (employé, activité, date, heure)
+                    matches &= (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre));
+                    matches &= (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre));
+                    matches &= (dateFiltreDebut == null || dateFiltreDebut.equals("Tous") || reservation.getDateR().equals(dateFiltreDebut));
+                    matches &= (heureDebutFiltre == null || heureDebutFiltre.equals("Tous") || reservation.getHeureDebut().equals(heureDebutFiltre));
 
-            if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
-                LocalDate dateDebut = parseDate(dateFiltreDebut);
-                if (dateDebut != null) {
-                    LocalDate dateReservation = parseDate(reservation.getDateR());
-                    if (dateReservation != null) {
-                        matchesDateDebut = !dateReservation.isBefore(dateDebut);
+                    if (matches) {
+                        reservationsFiltrees.add(reservation);
                     }
                 }
-            }
 
-            if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
-                LocalDate dateFin = parseDate(dateFiltreFin);
-                if (dateFin != null) {
-                    LocalDate dateReservation = parseDate(reservation.getDateR());
-                    if (dateReservation != null) {
-                        matchesDateFin = !dateReservation.isAfter(dateFin);
-                    }
+                // Ajouter la salle filtrée si elle a des réservations valides
+                if (!reservationsFiltrees.isEmpty()) {
+                    Salle salleFiltree = new Salle(salle.getIdentifiant(), salle.getNom(), salle.getCapacite(),
+                            salle.getVideoProj(), salle.getEcranXXL(), salle.getNbMachine(),
+                            salle.getTypeMachine(), salle.getLogiciel(), salle.getImprimante());
+                    salleFiltree.getReservations().setAll(reservationsFiltrees);
+                    sallesFiltrees.add(salleFiltree);
                 }
             }
-
-            boolean matchesHeureDebut = true;
-            boolean matchesHeureFin = true;
-
-            if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
-                LocalTime heureDebut = parseHeure(heureDebutFiltre);
-                if (heureDebut != null) {
-                    LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
-                    if (heureDebutReservation != null) {
-                        matchesHeureDebut = !heureDebutReservation.isBefore(heureDebut);
-                    }
-                }
-            }
-
-            if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
-                LocalTime heureFin = parseHeure(heureFinFiltre);
-                if (heureFin != null) {
-                    LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
-                    if (heureFinReservation != null) {
-                        matchesHeureFin = !heureFinReservation.isAfter(heureFin);
-                    }
-                }
-            }
-
-            // Ajouter la réservation si tous les filtres sont validés
-            if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
-                reservationsFiltrees.add(reservation);
-            }
+            //TODO Cette ligne casse l'affichage des classements à l'initialisation, guette quand tu cliques sur le bouton "reset" pour avoir l'affichage qu'il faut
+            // Mettre à jour la table avec les salles filtrées
+            tabSalle.setItems(sallesFiltrees);
         }
     }
+
+
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
