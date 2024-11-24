@@ -7,11 +7,26 @@ import java.util.List;
 /**
  * La classe Vigenere gère les opérations de cryptage et décryptage
  * utilisant uniquement l'algorithme de Vigenère.
+ * @author valentin.munier-genie
+ * @author mathias cambon
+ * @author rodrigo xavier-taborda
  */
 public class Vigenere {
 
+    /**
+     * Liste des caractères utilisés comme alphabet
+     * pour le chiffrement/déchiffrement.
+     */
     private static List<Character> alphabet;
 
+    /**
+     * Chiffre une chaîne de données en utilisant une clé numérique.
+     *
+     * @param donnees la chaîne de données à chiffrer.
+     * @param cle la clé utilisée pour le chiffrement,
+     *            exprimée sous forme de BigInteger.
+     * @return une chaîne représentant les données chiffrées.
+     */
     public static String chiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messChiffre = new StringBuilder();
         creerAlphabet();

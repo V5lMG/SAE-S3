@@ -191,7 +191,8 @@ public class ControleurEnvoyer {
             int clePubliqueServeur = Integer.parseInt(parties[0]);
             BigInteger cleSecreteCalculee = BigInteger.valueOf(
                     DiffieHellman.expoModulaire(clePubliqueServeur, a, p));
-            System.out.println("[CLIENT] Clé secrète calculé : " + cleSecreteCalculee);
+            System.out.println("[CLIENT] Clé secrète calculé : "
+                               + cleSecreteCalculee);
 
             // chiffrement et envoi des données
             String donneesChiffrees =

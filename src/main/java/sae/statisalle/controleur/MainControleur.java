@@ -185,7 +185,8 @@ public class MainControleur extends Application {
                 System.out.println("[MAIN] Serveur démarré sur le "
                                   + "port 54321, en attente de connexions...");
 
-                // lancer un thread pour accepter les connexions client en continu
+                // lancer un thread pour accepter
+                // les connexions client en continu
                 Thread acceptClientThread =
                         new Thread(serveur::accepterClients);
                 acceptClientThread.start();
@@ -205,7 +206,8 @@ public class MainControleur extends Application {
         });
 
         serveurThread.start();
-        System.out.println("[MAIN] Serveur thread lancé : " + serveurThread.isAlive());
+        System.out.println("[MAIN] Serveur thread lancé : "
+                           + serveurThread.isAlive());
     }
 
     /**

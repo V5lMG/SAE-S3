@@ -11,6 +11,8 @@ import java.util.Random;
 /**
  * Classe contenant les méthodes de Diffie-Hellman nécessaire à la
  * génération d'une clé de chiffrement sécurisé.
+ * @author valentin.munier-genie
+ * @author rodrigo xavier-taborda
  */
 public class DiffieHellman {
 

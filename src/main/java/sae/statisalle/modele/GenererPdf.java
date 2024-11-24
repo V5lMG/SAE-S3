@@ -25,8 +25,6 @@ import java.io.IOException;
  * contenant des informations de réservations.
  * Cette classe utilise la bibliothèque iText
  * pour créer et structurer le contenu PDF.
- *
- * @author robin montes
  */
 public class GenererPdf {
 

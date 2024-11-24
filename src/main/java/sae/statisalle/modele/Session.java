@@ -13,16 +13,21 @@ import sae.statisalle.modele.objet.Serveur;
  * les objets réseau et la clé associée.
  * Elle permet de centraliser et d'accéder aux informations
  * de la session à travers des méthodes statiques.
- * @author Cambon Mathias
  * @author valentin.munier-genie
- * @author rodrigo.xavier-taborda
  */
 public class Session {
-    private static Client client;
-    private static Serveur serveur;
-    private static String ipServeur;
-    private static String portServeur = "54321";
 
+    /** Instance du client utilisé pour interagir avec le serveur. */
+    private static Client client;
+
+    /** Instance du serveur connecté. */
+    private static Serveur serveur;
+
+    /** Adresse IP du serveur utilisé pour la connexion. */
+    private static String ipServeur;
+
+    /** Port du serveur utilisé pour la connexion (par défaut : 54321). */
+    private static String portServeur = "54321";
 
     /**
      * Récupère l'instance de la session.
