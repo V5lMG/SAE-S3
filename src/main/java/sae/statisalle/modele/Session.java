@@ -26,9 +26,6 @@ public class Session {
     /** Adresse IP du serveur utilisé pour la connexion. */
     private static String ipServeur;
 
-    /** Adresse IP du client utilisé pour la connexion. */
-    private static String ipClient;
-
     /** Port du serveur utilisé pour la connexion (par défaut : 54321). */
     private static String portServeur = "54321";
 

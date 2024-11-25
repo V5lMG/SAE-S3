@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * La classe Serveur implémente l'interface Connexion pour établir
@@ -114,9 +115,9 @@ public class Serveur implements Connexion {
                 fluxEntree = new BufferedReader(
                         new InputStreamReader(clientSocket.getInputStream())
                 );
-                Client client = new Client();
-                System.out.println("[SERVEUR] Client connecté : "
-                        + client.renvoyerIP().getHostAddress());
+                String clientIP = clientSocket.getInetAddress()
+                                              .getHostAddress();
+                System.out.println("[SERVEUR] Client connecté : " + clientIP);
 
                 // Créer un thread pour gérer cette connexion client
                 Thread clientThread = new Thread(() -> {
@@ -172,15 +173,24 @@ public class Serveur implements Connexion {
 
                         String reponse = traiterRequete(requeteDechiffree);
                         envoyer(reponse);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("[SERVEUR] Erreur attendue lors de "
+                                + "la gestion du client : " + e.getMessage());
                     } catch (Exception e) {
-                        System.err.println("[SERVEUR] Erreur lors de la "
-                                + "gestion du client : " + e.getMessage());
+                        System.err.println("[SERVEUR] Erreur inattendue lors "
+                                           + "de la gestion du client : "
+                                           + e.getMessage());
                     } finally {
                         fermer();
                     }
                 });
 
                 clientThread.start();
+            } catch (SocketException e) {
+                // cas où le client se déconnecte brutalement
+                System.err.println("[SERVEUR] Le client s'est "
+                        + "déconnecté brusquement : "
+                        + e.getMessage());
             } catch (IOException e) {
                 if (isClosed) {
                     System.out.println("[SERVEUR] Le serveur est arrêté, "
