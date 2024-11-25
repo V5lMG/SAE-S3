@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideAccueil">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideAccueil">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -44,22 +49,35 @@
     <center>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                <ImageView fitHeight="35.0" fitWidth="40.0" layoutX="51.0" layoutY="-11.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../../img/importer_logo.png" />
-                </ImageView>
-                <Text layoutX="110.0" layoutY="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Importer un fichier ou des fichiers de données concernant les salles, les employés, les activités possible dans les salles et les réservations pour pouvoir ensuite consulter les statistiques concernant ces données" wrappingWidth="439.1366958618164" />
-                <Button layoutX="34.0" layoutY="58.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" style="-fx-background-color: #9a9999;" />
-                <Text layoutX="108.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton gris permet d'accéder à notre site web pour avoir plus d'information sur la totalité de l'entreprise StatiSalle." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
-                <Button layoutX="31.0" layoutY="113.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Quitter" textFill="WHITE" />
-                <Text layoutX="107.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton quitter permet de quitter le logiciel et revenir au bureaux de votre ordinateur." textAlignment="JUSTIFY" wrappingWidth="445.13671875" />
-                <Button fx:id="btnReglage" layoutX="49.0" layoutY="155.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color: #21618C;">
+                <Button layoutX="19.0" layoutY="35.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #60BCFB;" text="Envoyer" textFill="#030303">
+               <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../../img/envoyer_logo.png" />
+                        </ImageView>
+               </graphic>
+                </Button>
+                <Button layoutX="3.0" layoutY="127.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" style="-fx-background-color: #60BCFB;" text="Afficher les données" />
+                <Button layoutX="19.0" layoutY="83.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #60BCFB;" text="Importer">
+               <graphic>
+                      <ImageView fitHeight="22.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                          <Image url="@../../img/importer_logo.png" />
+                      </ImageView>
+               </graphic></Button>
+                <Text layoutX="140.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Importer&quot; envoie vers la page qui permet d'importer des fichiers .csv sur l'application." wrappingWidth="439.1366958618164" />
+                <Text layoutX="138.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Afficher les données&quot; permet d'accéder à la visualisation des données dans un tableau avec la possibilité de filtrer." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
+                <Button layoutX="39.0" layoutY="200.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Quitter" textFill="WHITE" />
+                <Text layoutX="140.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Quitter&quot; permet de fermer l'application et de revenir au bureau de votre ordinateur." textAlignment="JUSTIFY" wrappingWidth="413.13671875" />
+                <Button layoutX="49.0" layoutY="242.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="28.0" style="-fx-background-color: #21618C;">
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../../img/parametre.png" />
                         </ImageView>
                     </graphic>
                 </Button>
-                <Text layoutX="107.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton permettant d'accèder au paramètre pour configurer le serveur manuellement." textAlignment="JUSTIFY" wrappingWidth="445.13671875" />
+                <Text layoutX="140.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton permettant d'accéder aux paramètres pour configurer le serveur manuellement." textAlignment="JUSTIFY" wrappingWidth="413.13671875" />
+            <Text layoutX="140.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Envoyer&quot; dirige vers la page permettant d'envoyer des fichiers .csv dans l'application." wrappingWidth="439.1366958618164" />
+            <Button layoutX="1.0" layoutY="164.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" style="-fx-background-color: #bebebe;" text="Qui sommes-nous ?" textFill="WHITE" />
+            <Text layoutX="140.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Qui sommes-nous ?&quot; dirige vers le site web de l'agence à laquelle appartient cette application." textAlignment="JUSTIFY" wrappingWidth="443.73046875" />
             </AnchorPane>
         </VBox>
     </center>

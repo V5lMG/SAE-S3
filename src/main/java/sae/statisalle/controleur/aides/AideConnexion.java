@@ -5,6 +5,7 @@
 package sae.statisalle.controleur.aides;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import sae.statisalle.controleur.MainControleur;
 
 /**
@@ -13,11 +14,23 @@ import sae.statisalle.controleur.MainControleur;
  */
 public class AideConnexion {
 
+    @FXML
+    private TextField textPort;
+
+    @FXML
+    private TextField textIp;
+
     /**
      * Gère l'action de retour à l'écran d'affichage principal.
      */
     @FXML
     void actionRetour(){
         MainControleur.activerConnexion();
+    }
+
+    @FXML
+    private void initialize(){
+        textPort.setDisable(true);
+        textIp.setDisable(true);
     }
 }
