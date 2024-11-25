@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import sae.statisalle.modele.objet.Serveur;
@@ -226,7 +227,10 @@ public class MainControleur extends Application {
                 champScene.set(this, new Scene(conteneur));
             }
 
+            Image logo = new Image(getClass().getResourceAsStream("/sae/statisalle/img/LogoStatisalle.jpg"));
+
             primaryStage.setScene(Accueil);
+            primaryStage.getIcons().add(logo);
             fenetrePrincipale = primaryStage;
             primaryStage.setResizable(false);
             primaryStage.show();
@@ -266,9 +270,11 @@ public class MainControleur extends Application {
                 // Continuer à accepter des connexions
                 // jusqu'à l'execution du .stop()
                 acceptClientThread.join();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 System.err.println("[MAIN] Erreur lors de l'initialisation"
                                    + " du serveur : " + e.getMessage());
+            } catch (InterruptedException e) {
+                System.out.println("[MAIN] Serveur arrêté.");
             } finally {
                 if (serveur != null) {
                     serveur.fermerServeur();
