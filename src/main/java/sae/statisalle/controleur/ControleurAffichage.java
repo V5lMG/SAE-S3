@@ -176,6 +176,7 @@ public class ControleurAffichage {
         grandTableau.setVisible(false);
         btnAfficherTableaux.setVisible(true);
         btnGenererPdf.setVisible(false);
+        btnClassement.setVisible(false);
         MainControleur.activerAccueil();
     }
 
@@ -259,7 +260,7 @@ public class ControleurAffichage {
         List<Node> filtres = Arrays.asList(
                 filtreEmploye, filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre, btnGenererPdf
+                textfiltreHeureF, reinitialiserFiltre, btnGenererPdf, btnClassement
         );
 
         // Détermine la visibilité en fonction de l'état de la checkbox
