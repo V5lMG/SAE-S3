@@ -10,6 +10,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import sae.statisalle.controleur.ControleurPopup;
 import sae.statisalle.modele.objet.Activite;
 import sae.statisalle.modele.objet.Employe;
 import sae.statisalle.modele.objet.Reservation;
@@ -20,6 +23,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -131,6 +135,11 @@ public class LireFichier {
             if (!fichiersInvalides.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Fichiers invalides");
+                Image logo = new Image(Objects.requireNonNull(
+                        ControleurPopup.class.getResourceAsStream(
+                                "/sae/statisalle/img/LogoStatisalle.jpg")));
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(logo);
                 alert.setHeaderText("Certains fichiers n'ont pas pu être chargés");
                 alert.setContentText("Les fichiers suivants sont invalides :\n" + fichiersInvalides);
 
