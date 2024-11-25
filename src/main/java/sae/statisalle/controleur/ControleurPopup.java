@@ -5,15 +5,14 @@
 package sae.statisalle.controleur;
 
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import sae.statisalle.modele.Fichier;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * La classe ControleurPopup est responsable
@@ -53,6 +52,13 @@ public class ControleurPopup {
     public static void afficherPopupFichierRecu(String donnees) {
 
         Alert popup = new Alert(Alert.AlertType.CONFIRMATION);
+
+        Image logo = new Image(Objects.requireNonNull(
+                               ControleurPopup.class.getResourceAsStream(
+                         "/sae/statisalle/img/LogoStatisalle.jpg")));
+        Stage stage = (Stage) popup.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(logo);
+
         popup.setTitle("Fichier Reçu");
         popup.setHeaderText("Vous avez reçu un (ou plusieurs) fichier(s).");
         popup.setContentText("Que souhaitez-vous faire ?");

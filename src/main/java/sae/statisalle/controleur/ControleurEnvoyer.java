@@ -7,6 +7,7 @@ package sae.statisalle.controleur;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Contrôleur pour gérer l'envoi de fichiers dans l'application StatiSalle.
@@ -230,12 +232,22 @@ public class ControleurEnvoyer {
             alert.setTitle("Envoi réussi (local)");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
+            Image logo = new Image(Objects.requireNonNull(
+                                   ControleurPopup.class.getResourceAsStream(
+                             "/sae/statisalle/img/LogoStatisalle.jpg")));
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(logo);
             alert.showAndWait();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Envoi réussi");
             alert.setHeaderText(null);
             alert.setContentText("Les fichiers ont été envoyés avec succès.");
+            Image logo = new Image(Objects.requireNonNull(
+                             ControleurPopup.class.getResourceAsStream(
+                       "/sae/statisalle/img/LogoStatisalle.jpg")));
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(logo);
 
             alert.setOnHidden(event -> MainControleur.activerConnexion());
             alert.showAndWait();

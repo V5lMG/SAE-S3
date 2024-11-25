@@ -227,7 +227,9 @@ public class MainControleur extends Application {
                 champScene.set(this, new Scene(conteneur));
             }
 
-            Image logo = new Image(getClass().getResourceAsStream("/sae/statisalle/img/LogoStatisalle.jpg"));
+            Image logo = new Image(Objects.requireNonNull(
+                                  ControleurPopup.class.getResourceAsStream(
+                            "/sae/statisalle/img/LogoStatisalle.jpg")));
 
             primaryStage.setScene(Accueil);
             primaryStage.getIcons().add(logo);
@@ -238,7 +240,6 @@ public class MainControleur extends Application {
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement des vues : "
                                + e.getMessage());
-            e.printStackTrace();
         }
     }
 

@@ -12,11 +12,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sae.statisalle.modele.Session;
+
+import java.util.Objects;
 
 /**
  * Contrôleur de l'écran d'accueil de l'application.
@@ -84,6 +87,10 @@ public class ControleurAccueil {
         grid.setHgap(10);
         grid.setPadding(new Insets(20));
         grid.setAlignment(Pos.CENTER);
+        Image logo = new Image(Objects.requireNonNull(
+                               ControleurPopup.class.getResourceAsStream(
+                         "/sae/statisalle/img/LogoStatisalle.jpg")));
+        popupStage.getIcons().add(logo);
 
         // champs pour l'IP et le port
         Label ipLabel = new Label("Adresse IP :");
