@@ -5,82 +5,91 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideAffichage">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideAffichage">
     <top>
-        <HBox prefHeight="100.0" prefWidth="200.0"
-              BorderPane.alignment="CENTER">
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                <Text fill="#26a4f8" layoutX="67.0" layoutY="45.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="StatiSalle">
+                <Text fill="#26a4f8" layoutX="67.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatiSalle">
                     <font>
-                        <Font size="30.0"/>
+                        <Font size="30.0" />
                     </font>
                 </Text>
-                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0"
-                           layoutY="12.0" pickOnBounds="true"
-                           preserveRatio="true">
-                    <Image url="@../../img/LogoStatisalle.jpg"/>
+                <ImageView fitHeight="45.0" fitWidth="49.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../../img/LogoStatisalle.jpg" />
                 </ImageView>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0"/>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                <Text layoutX="9.0" layoutY="46.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="Aide - Accueil">
+                <Text layoutX="9.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Aide - Affichage">
                     <font>
-                        <Font size="30.0"/>
+                        <Font size="30.0" />
                     </font>
                 </Text>
             </AnchorPane>
         </HBox>
     </top>
     <bottom>
-        <HBox prefHeight="100.0" prefWidth="200.0"
-              BorderPane.alignment="CENTER">
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <HBox prefHeight="100.0" prefWidth="200.0">
                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                    <Button fx:id="btnRetour" layoutX="14.0"
-                            layoutY="60.0" mnemonicParsing="false"
-                            onAction="#actionRetour"
-                            style="-fx-background-color: #CD4043;"
-                            text="Retour" textFill="WHITE"/>
+                    <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
                 </AnchorPane>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
-                <AnchorPane prefHeight="200.0" prefWidth="200.0"/>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" />
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0"/>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
         </HBox>
     </bottom>
    <center>
        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-           <AnchorPane prefHeight="200.0" prefWidth="200.0">
-               <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="68.0"
-                          layoutY="23.0" pickOnBounds="true"
-                          preserveRatio="true">
-                   <Image url="@../../img/BoutonChargerDonnees.png"/>
+           <AnchorPane prefHeight="583.0" prefWidth="650.0">
+               <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="68.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+                   <Image url="@../../img/BoutonChargerDonnees.png" />
                </ImageView>
-               <Text layoutX="241.0" layoutY="34.0" strokeType="OUTSIDE"
-                     strokeWidth="0.0"
-                     text="Ce bouton permet de charger les données des fichiers CSV(point virgule) préalablement importés"
-                     wrappingWidth="331.1366958618164"/>
-               <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="28.0"
-                          layoutY="114.0" pickOnBounds="true"
-                          preserveRatio="true">
-                   <Image url="@../../img/OngletVisualisationTable.png"/>
+               <Text layoutX="241.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de charger les données des fichiers CSV(point virgule) préalablement importés" wrappingWidth="331.1366958618164" />
+               <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="27.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
+                   <Image url="@../../img/OngletVisualisationTable.png" />
                </ImageView>
-               <Text layoutX="241.0" layoutY="125.0" strokeType="OUTSIDE"
-                     strokeWidth="0.0"
-                     text="Naviguer entre chaque tableau de façon simple et rapide à l'aide d'onglet nommé selon la table voulu"
-                     wrappingWidth="309.1366958618164"/>
-               <Button fx:id="btnRetour1" layoutX="91.0" layoutY="186.0"
-                       mnemonicParsing="false"
-                       style="-fx-background-color: #CD4043;" text="Retour"
-                       textFill="WHITE"/>
-               <Text layoutX="241.0" layoutY="203.0" strokeType="OUTSIDE"
-                     strokeWidth="0.0"
-                     text="Ce bouton permet de revenir à la fenètre précédente"
-                     wrappingWidth="309.1366958618164"/>
+               <Text layoutX="241.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Naviguer entre chaque tableau de façon simple et rapide à l'aide d'onglet nommé selon la table voulu" wrappingWidth="309.1366958618164" />
+               <Button fx:id="btnRetour1" layoutX="90.0" layoutY="138.0" mnemonicParsing="false" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
+               <Text layoutX="241.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de revenir à la fenètre précédente" wrappingWidth="309.1366958618164" />
+            <ImageView fitHeight="55.0" fitWidth="176.0" layoutX="28.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/debutFiltre.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="280.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il est possible de filtrer selon les activités, les dates de début ainsi que les dates de fin" wrappingWidth="309.1366958618164" />
+            <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="18.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/filtre2.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="41.0" fitWidth="196.0" layoutX="25.0" layoutY="337.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/filtre3.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="241.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il est possible de filtrer selon le début et la fin des créneaux" wrappingWidth="309.1366958618164" />
+            <Text layoutX="241.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quand l'onglet &quot;Réservation&quot; est sélectionné, il est possible d'utiliser des filtres. Vous pouvez filtrer les réservations par employé ou par salle." wrappingWidth="309.1366958618164" />
+            <ImageView fitHeight="41.0" fitWidth="196.0" layoutX="61.0" layoutY="386.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/resetFiltre.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="241.0" layoutY="402.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il est possible de réinitialiser les filtres à l'aide du bouton &quot;Réinitialiser filtre&quot;" wrappingWidth="309.1366958618164" />
+            <Text layoutX="241.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Action d'analyse&quot; permet à l'utilisateur d'avoir des données analysées" wrappingWidth="309.1366958618164" />
+            <Text layoutX="241.0" layoutY="515.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le bouton &quot;Générer en PDF&quot; permet à l'utilisateur de visualiser ses données, filtrées ou non, au format PDF." wrappingWidth="309.1366958618164" />
+            <ImageView fitHeight="29.0" fitWidth="409.0" layoutX="43.0" layoutY="453.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/ActionAnalyse.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="39.0" fitWidth="104.0" layoutX="71.0" layoutY="500.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/GenererPDF.png" />
+               </image>
+            </ImageView>
            </AnchorPane>
        </VBox>
    </center>

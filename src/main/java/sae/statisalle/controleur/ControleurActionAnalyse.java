@@ -1,6 +1,7 @@
 package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
@@ -52,5 +53,10 @@ public class ControleurActionAnalyse {
     @FXML
     void actionRetour(ActionEvent event) {
         MainControleur.activerAffichage();
+    }
+
+    @FXML
+    private void initialize() {
+        btnDonneesCalculees.setDisable(true);
     }
 }
