@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideClassement">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.aides.AideClassement">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -25,13 +25,13 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-            <children>
-                   <Text layoutX="-71.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Aide - Pourcentage" wrappingWidth="270.92620849609375">
-                       <font>
-                           <Font size="30.0" />
-                       </font>
-                   </Text>
-            </children>
+                <Text layoutX="-71.0" layoutY="47.0" strokeType="OUTSIDE"
+                      strokeWidth="0.0" text="Aide - Pourcentage"
+                      wrappingWidth="270.92620849609375">
+                    <font>
+                        <Font size="30.0"/>
+                    </font>
+                </Text>
             </AnchorPane>
         </HBox>
     </top>
@@ -54,21 +54,21 @@
                 <Text layoutX="160.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de charger les données des fichiers CSV(point virgule) préalablement importés" wrappingWidth="439.1366958618164" />
                 <Button layoutX="45.0" layoutY="212.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
                 <Text layoutX="160.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ce bouton permet de revenir à la fenètre précédente" textAlignment="JUSTIFY" wrappingWidth="337.9367370605469" />
-                <ImageView fitHeight="32.0" fitWidth="135.0" layoutX="21.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../img/BoutonChargerDonnees.png" />
-                    </image>
+                <ImageView fitHeight="32.0" fitWidth="135.0" layoutX="21.0"
+                           layoutY="-2.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../../img/BoutonChargerDonnees.png"/>
                 </ImageView>
-                <ImageView fitHeight="60.0" fitWidth="185.0" layoutX="11.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../img/filtre3.png" />
-                    </image>
+                <ImageView fitHeight="60.0" fitWidth="185.0" layoutX="11.0"
+                           layoutY="72.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../../img/filtre3.png"/>
                 </ImageView>
                 <Text layoutX="214.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vous avez la possibilité de filtrer les données selon différents critère, selon les onglets sur lequel vous êtes, tel que les employés, salle, date début, date fin, activité..." textAlignment="JUSTIFY" wrappingWidth="353.3304901123047" />
-                <ImageView fitHeight="42.0" fitWidth="142.0" layoutX="18.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../img/resetFiltre.png" />
-                    </image>
+                <ImageView fitHeight="42.0" fitWidth="142.0" layoutX="18.0"
+                           layoutY="129.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@../../img/resetFiltre.png"/>
                 </ImageView>
                 <Text layoutX="160.0" layoutY="154.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Il est possible de réinitialiser les filtres à l'aide du bouton &quot;Réinitialiser filtre&quot;" textAlignment="JUSTIFY" wrappingWidth="415.7305145263672" />
             </AnchorPane>
