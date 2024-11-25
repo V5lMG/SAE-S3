@@ -345,6 +345,8 @@ public class ControleurClassement {
 
         // Afficher le bouton réinitialiser filtre après le chargement des données
         reinitialiserFiltre.setVisible(true);
+
+        reinitialiserFiltre();
     }
 
     // TODO Mettre les durée par odre décroissant et par ordre chronologique si durée égale
@@ -591,8 +593,6 @@ public class ControleurClassement {
         filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-
-        reinitialiserFiltre();
     }
 
     private void masquerFiltres() {
