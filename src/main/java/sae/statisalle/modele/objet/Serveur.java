@@ -81,11 +81,7 @@ public class Serveur implements Connexion {
             serverSocket = new ServerSocket(port);
         }
 
-        // TODO tester l'efficacité
-        String ipEffective = serverSocket.getInetAddress().getHostAddress();
-        if (ipEffective.equals("0.0.0.0")) {
-            ipEffective = InetAddress.getLocalHost().getHostAddress();
-        }
+        String ipEffective = InetAddress.getLocalHost().getHostAddress();
         System.out.println("[SERVEUR] Démarré sur " + ipEffective + ":" + port);
     }
 
@@ -130,7 +126,7 @@ public class Serveur implements Connexion {
                                 + "reçue : " + initialisationDiffieHellman);
 
                         String[] parties = initialisationDiffieHellman
-                                .split(" ; ");
+                                           .split(" ; ");
                         if (parties.length != 3) {
                             throw new IllegalArgumentException("Format de clé "
                                     + "publique invalide : "
@@ -144,10 +140,10 @@ public class Serveur implements Connexion {
                         // génération de la clé publique du serveur
                         int b = DiffieHellman.genererEntierPremier(1,9999);
                         int clePubliqueServeur = DiffieHellman.expoModulaire(g,
-                                b,
-                                p);
+                                                                             b,
+                                                                             p);
                         envoyerClePublic(clePubliqueServeur + " ; "
-                                + p + " ; " + g);
+                                         + p + " ; " + g);
 
                         // calcul de la clé secrète partagée
                         BigInteger cleSecretePartagee =

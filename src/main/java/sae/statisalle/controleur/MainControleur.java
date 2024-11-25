@@ -260,10 +260,11 @@ public class MainControleur extends Application {
                 String port = Session.getPortServeur();
                 serveur.demarrer(Integer.parseInt(port), ip);
                 System.out.println("[MAIN] Serveur démarré sur le "
-                                  + "port 54321, en attente de connexions...");
+                                  + "port " + port + ", en attente de "
+                                  + "connexions...");
 
-                // lancer un thread pour accepter
-                // les connexions client en continu
+                // Lancer un thread pour accepter
+                // les connexions client en continu.
                 Thread acceptClientThread =
                         new Thread(serveur::accepterClients);
                 acceptClientThread.start();
@@ -275,7 +276,7 @@ public class MainControleur extends Application {
                 System.err.println("[MAIN] Erreur lors de l'initialisation"
                                    + " du serveur : " + e.getMessage());
             } catch (InterruptedException e) {
-                System.out.println("[MAIN] Serveur arrêté.");
+                // se déclenche quand le serveur s'arrête
             } finally {
                 if (serveur != null) {
                     serveur.fermerServeur();

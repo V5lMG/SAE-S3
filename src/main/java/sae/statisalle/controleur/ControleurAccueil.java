@@ -1,6 +1,6 @@
 /*
  * ControleurAccueil.java                 14/11/2024
- * IUT DE RODEZ                            Pas de copyrights
+ * IUT DE RODEZ                           Pas de copyrights
  */
 package sae.statisalle.controleur;
 
@@ -157,9 +157,19 @@ public class ControleurAccueil {
                     MainControleur.stopThreadServeur();
                     System.out.println("[MAIN] Serveur stoppé pour changement "
                                        + "de l'IP ou du PORT.");
+
+                    try {
+                        Thread.sleep(2000); // pause de 2 secondes
+                    } catch (InterruptedException erreur) {
+                        System.err.println("[MAIN] Interruption pendant le " +
+                                           "délai d'attente : "
+                                           + erreur.getMessage());
+                        Thread.currentThread().interrupt();
+                    }
+
                     MainControleur.initServeur();
                     System.out.println("[MAIN] Serveur redémarré avec "
-                                       + "la nouvelle l'IP.");
+                            + "la nouvelle IP.");
                 }
 
                 popupStage.close();
@@ -188,7 +198,8 @@ public class ControleurAccueil {
             return false;
         }
 
-        if (ip.equals("127.0.0.1") || ip.equalsIgnoreCase("localhost")) {
+        if (ip.equals("127.0.0.1")
+                || ip.equalsIgnoreCase("localhost")) {
             return true;
         }
 

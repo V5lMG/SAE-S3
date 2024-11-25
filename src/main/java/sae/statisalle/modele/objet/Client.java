@@ -5,6 +5,7 @@
 package sae.statisalle.modele.objet;
 
 import sae.statisalle.modele.Connexion;
+import sae.statisalle.modele.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,13 +54,14 @@ public class Client implements Connexion {
     public void connecter(String adresse, int port) throws IOException {
         clientSocket = new Socket();
         clientSocket.connect(new InetSocketAddress(adresse, port),
-                      5000); // Timeout de 5 secondes
+                      5000); // timeout de 5 secondes
         fluxSortie = new PrintWriter(clientSocket.getOutputStream(),
                             true);
         fluxEntree = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
-        System.out.println("[CLIENT] Connecté au serveur " + adresse
-                           + ":" + port);
+
+        System.out.println("[CLIENT] Connecté au serveur "
+                           + adresse + ":" + port);
     }
 
     /**
@@ -149,7 +151,8 @@ public class Client implements Connexion {
         try (Socket socket = new Socket("8.8.8.8", 53)) {
             return socket.getLocalAddress();
         } catch (IOException e) {
-            System.err.println("[CLIENT] Erreur lors de la récupération de l'IP : " + e.getMessage());
+            System.err.println("[CLIENT] Erreur lors de la récupération de "
+                               + "l'IP : " + e.getMessage());
             return null; // retourne null pour éviter les erreurs
         }
     }

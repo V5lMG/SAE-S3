@@ -116,9 +116,9 @@ public class ControleurConnexion {
         // envoie de donnée dans un thread séparé pour éviter les bloquages
         new Thread(() -> {
             try {
-                client.connecter(ip, port);
                 Session.setClient(client);
                 Session.setIpServeur(ip);
+                client.connecter(ip, port);
 
                 // revenir sur le thread principal pour mettre à jour l'UI
                 javafx.application.Platform.runLater(() -> {
