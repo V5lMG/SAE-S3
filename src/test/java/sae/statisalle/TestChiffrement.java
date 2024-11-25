@@ -53,24 +53,24 @@ public class TestChiffrement {
         BigInteger clePartageeAlice = BigInteger.valueOf(
                 DiffieHellman.expoModulaire(gbModP, a, p));
         System.out.println("Clé partagée calculée par Alice : "
-                           + clePartageeAlice);
+                + clePartageeAlice);
 
         // Étape 4: Bob calcule (g^a)^b mod p
         BigInteger clePartageeBob = BigInteger.valueOf(
                 DiffieHellman.expoModulaire(gaModP, b, p));
         System.out.println("Clé partagée calculée par Bob : "
-                           + clePartageeBob);
+                + clePartageeBob);
 
         // Vérification que les deux clés partagées sont identiques
         if (clePartageeAlice.equals(clePartageeBob)) {
             System.out.println("Les clés partagées sont identiques : "
-                              + clePartageeAlice);
+                    + clePartageeAlice);
         } else {
             System.out.println("Les clés partagées ne correspondent pas.");
         }
 
         String donneesChiffrees = Vigenere.chiffrementDonnees("Test",
-                                                             clePartageeAlice);
+                clePartageeAlice);
         System.out.println("Donnees: " + donneesChiffrees);
         String donneesDechiffrees = Vigenere.dechiffrementDonnees(
                 donneesChiffrees, clePartageeBob);

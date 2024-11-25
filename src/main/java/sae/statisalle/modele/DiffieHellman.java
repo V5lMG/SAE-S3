@@ -43,25 +43,36 @@ public class DiffieHellman {
                                              + " nombre positif.");
         }
 
+        if (modulo == 1) {
+            return 0;
+        }
+
+        if (base == 1) {
+            return 1;
+        }
+
         // il faut que la base soit compris entre [1, m-1]
-        if (base <= 0 || base >= modulo) {
+        if (base < 1 || base >= modulo) {
             throw new IllegalArgumentException("La base 'a' doit être un "
                                               + "entier strictement positif.");
         }
 
+        // si l'exposant est négatif, on utilise l'inverse modulaire de la base
         if (exposant < 0) {
-            base = modInverse(base, modulo); // todo TEST
+            base = modInverse(base, modulo);
             exposant = -exposant;
         }
 
         int resultat = 1;
+        // s'assurer que la base est dans l'intervalle [0, modulo-1]
         base = base % modulo;
+
         while (exposant > 0) {
             if ((exposant & 1) == 1) {
-                resultat = (resultat * base) % modulo;
+                resultat = (resultat * base) % modulo; // si exposant impair
             }
-            exposant = exposant >> 1;
-            base = (base * base) % modulo;
+            exposant = exposant >> 1; // division par 2 de l'exposant
+            base = (base * base) % modulo; // calcul de base^2 % modulo
         }
 
         return resultat;
@@ -85,20 +96,63 @@ public class DiffieHellman {
      */
     public static int modInverse(int a, int m) {
         int m0 = m, t, q;
-        int x0 = 0, x1 = 1;
+        int x0 = 0;
+        int x1 = 1;
+
+        // si a et m ne sont pas premiers, l'inverse modulaire n'existe pas.
+        if (pgcd(a, m) != 1) {
+            throw new IllegalArgumentException("L'inverse modulaire n'existe "
+                    + "pas quand a et m ne sont "
+                    + "pas premiers entre eux.");
+        }
+
+        // cas trivial: inverse modulaire de n mod 1 est 0
+        if (m == 1) {
+            return 0;
+        }
+
         while (a > 1) {
+            // calcul de q (quotient) et t (reste)
             q = a / m;
             t = m;
             m = a % m;
             a = t;
             t = x0;
+
+            // mise à jour de x0 et x1
             x0 = x1 - q * x0;
             x1 = t;
         }
+
+        // si x1 est négatif, on ajoute m pour obtenir l'inverse positif
         if (x1 < 0) {
             x1 += m0;
         }
+
         return x1;
+    }
+
+    /**
+     * Calcule le plus grand commun diviseur (PGCD) de deux entiers a et b
+     * en utilisant l'algorithme d'Euclide.
+     * <p>
+     * L'algorithme d'Euclide permet de trouver le PGCD de deux entiers en
+     * répétant l'opération de division avec reste jusqu'à ce que le reste
+     * soit nul. Le PGCD est alors le dernier diviseur non nul.
+     *
+     * @param a Le premier entier.
+     * @param b Le deuxième entier.
+     * @return Le PGCD de a et b.
+     * @throws IllegalArgumentException si a ou b est égal à 0, car le PGCD
+     *         n'est pas défini pour 0.
+     */
+    private static int pgcd(int a, int b) {
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
     }
 
     /**
@@ -112,7 +166,7 @@ public class DiffieHellman {
      */
     public static boolean estPremier(int p) {
         boolean result = true;
-        if (p == 0) {
+        if (p == 0 || p == 1) {
             result = false;
         } else {
             for (int i = 2; i < p; i++) {

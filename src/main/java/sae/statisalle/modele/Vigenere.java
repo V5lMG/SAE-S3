@@ -16,8 +16,9 @@ public class Vigenere {
     /**
      * Liste des caractères utilisés comme alphabet
      * pour le chiffrement/déchiffrement.
+     * (public pour les tests)
      */
-    private static List<Character> alphabet;
+    public static List<Character> alphabet;
 
     /**
      * Chiffre une chaîne de données en utilisant une clé numérique.
@@ -160,20 +161,27 @@ public class Vigenere {
      *                               invalides pour une conversion en BigInt.
      */
     public static BigInteger ajusterTailleClef(String donnees, BigInteger cle) {
-        int tailleDonnees = donnees.length();
-        String cleStr = String.valueOf(cle);
+        // si les données ou la clé sont nulles ou vides, retourne 0
+        if (donnees == null || donnees.isEmpty() || cle == null) {
+            return BigInteger.ZERO;
+        }
+
+        String cleStr = cle.toString();
         StringBuilder cleAjustee = new StringBuilder();
 
-        // Répéter la clé jusqu'à atteindre la taille des données
-        while (cleAjustee.length() < tailleDonnees) {
+        int longueurDonnees = donnees.length();
+        int longueurCle = cleStr.length();
+
+        // répète ou tronque la clé pour correspondre à la longueur des données
+        while (cleAjustee.length() < longueurDonnees) {
             cleAjustee.append(cleStr);
         }
 
-        // Tronquer la clé à la taille exacte nécessaire
-        String cleFinale = cleAjustee.substring(0, tailleDonnees);
+        // tronque la clé à la longueur exacte des données
+        cleAjustee.setLength(longueurDonnees);
 
-        // Convertir la clé ajustée en BigInteger
-        return new BigInteger(cleFinale);
+        return new BigInteger(cleAjustee.toString());
     }
+
 }
 
