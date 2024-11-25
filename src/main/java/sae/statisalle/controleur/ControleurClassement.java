@@ -591,6 +591,8 @@ public class ControleurClassement {
         filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+
+        reinitialiserFiltre();
     }
 
     private void masquerFiltres() {
@@ -763,7 +765,7 @@ public class ControleurClassement {
                     sallesFiltrees.add(salleFiltree);
                 }
             }
-            //TODO Cette ligne casse l'affichage des classements à l'initialisation, guette quand tu cliques sur le bouton "reset" pour avoir l'affichage qu'il faut
+            // TODO Cette ligne casse l'affichage des classements à l'initialisation, guette quand tu cliques sur le bouton "reset" pour avoir l'affichage qu'il faut
             // Mettre à jour la table avec les salles filtrées
             tabSalle.setItems(sallesFiltrees);
         }

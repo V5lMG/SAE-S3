@@ -121,8 +121,8 @@ public class MainControleur extends Application {
      * Change la scène pour afficher l'écran d'affichage des données.
      */
     public static void activerAffichage() {
-        fenetrePrincipale.setX(250);
-        fenetrePrincipale.setY(150);
+        fenetrePrincipale.setX(50);
+        fenetrePrincipale.setY(50);
         fenetrePrincipale.setScene(Visualiser);
     }
 

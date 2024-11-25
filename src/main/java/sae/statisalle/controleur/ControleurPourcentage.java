@@ -413,12 +413,12 @@ public class ControleurPourcentage {
     @FXML
     private void initialize(){
         // Liaisons des ComboBox pour les filtres sur les salles
-        filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
         // filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+        //filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
     }
 }
