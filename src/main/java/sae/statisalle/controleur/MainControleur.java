@@ -193,7 +193,7 @@ public class MainControleur extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Tableau des noms et chemins des vues
+            // tableau des noms et chemins des vues
             Map<String, String> vues = new HashMap<>();
             vues.put("Accueil", "/sae/statisalle/vue/accueil.fxml");
             vues.put("AideAccueil", "/sae/statisalle/vue/aide/aideAccueil.fxml");

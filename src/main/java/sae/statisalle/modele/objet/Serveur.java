@@ -95,7 +95,7 @@ public class Serveur implements Connexion {
      * @param clePublique La clé publique du serveur à envoyer.
      */
     public void envoyerClePublic(String clePublique) {
-        envoyer(clePublique);  // Envoie la clé publique au client
+        envoyer(clePublique);  // envoie la clé publique au client
         System.out.println("[SERVEUR] Clé publique envoyée : " + clePublique);
 
     }
