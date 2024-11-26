@@ -279,7 +279,7 @@ public class Serveur implements Connexion {
      * @param requete La requête reçue du client.
      * @return La réponse générée en fonction de la requête.
      */
-    private static String traiterRequete(String requete) {
+    public static String traiterRequete(String requete) {
         if (requete == null || requete.isEmpty()) {
             return "Requête invalide.";
         }

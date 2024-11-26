@@ -43,7 +43,8 @@ public class TestUnitaireDiffieHellman {
     }
 
     /**
-     * TODO
+     * Test de la méthode expoModulaire.
+     * Vérifie que l'exponentiation modulaire fonctionne quand la base est égale à un.
      */
     @Test
     public void testExpoModulaireBase1() {
@@ -52,7 +53,9 @@ public class TestUnitaireDiffieHellman {
     }
 
     /**
-     * TODO
+     * Test de la méthode ModInverse.
+     * Vérifie que le calcul de l'inverse modulaire ne fonctionne pas quand les deux nombres ne sont pas premier entre
+     * eux
      */
     @Test
     public void testModInversePasPremiers() {
@@ -70,7 +73,7 @@ public class TestUnitaireDiffieHellman {
 
     // Cas 4 : Test d'un nombre composé (pas premier)
     @Test
-    public void testEstPremierComposé() {
+    public void testEstPremierCompose() {
         assertFalse(DiffieHellman.estPremier(9), "9 n'est pas un nombre premier");
         assertFalse(DiffieHellman.estPremier(15), "15 n'est pas un nombre premier");
     }
@@ -126,7 +129,7 @@ public class TestUnitaireDiffieHellman {
 
     // Cas 12 : Test de l'exponentiation modulaire avec un grand exposant
     @Test
-    public void testExpoModulaireGrandExponent() {
+    public void testExpoModulaireGrandExposant() {
         assertEquals(2, DiffieHellman.expoModulaire(2, 100, 7), "2^100 mod 7 doit être égal à 2");
     }
 
