@@ -245,22 +245,6 @@ public class Fichier {
     }
 
     /**
-     * Recupère le nom du fichier sans son extention
-     * @return nom du fichier
-     * @author erwan.thierry
-     */
-    public String nomFichier() {
-        String nomFichier = this.fichierExploite.getName();
-        int pointIndex = nomFichier.lastIndexOf(".");
-
-        if (pointIndex == -1) {
-            return nomFichier;
-        }
-
-        return nomFichier.substring(0, pointIndex);
-    }
-
-    /**
      * Vérifie si un fichier existe et n'est pas un répertoire.
      * @param fichier le chemin du fichier à vérifier.
      * @return true si le fichier existe et n'est pas un répertoire,
