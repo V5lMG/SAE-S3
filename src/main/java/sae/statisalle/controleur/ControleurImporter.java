@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static sae.statisalle.controleur.MainControleur.showAlert;
+
 /**
  * Classe du controller Importer,
  * Permet de faire le lien entre la vue Importer et le modèle
@@ -165,8 +167,8 @@ public class ControleurImporter {
             System.out.println("Fichiers sélectionnés : \n" + chemins);
 
         } else if (fichiers != null) {
-            System.out.println("Vous devez sélectionner "
-                    + "au maximum 4 fichiers.");
+            showAlert(Alert.AlertType.WARNING, "Limite de fichiers dépassée",
+                    "Vous devez sélectionner au maximum 4 fichiers.");;
         } else {
             System.out.println("Aucun fichier sélectionné.");
         }
