@@ -31,7 +31,7 @@ public class Vigenere {
     public static String chiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messChiffre = new StringBuilder();
         creerAlphabet();
-        BigInteger cleAjustee = ajusterTailleClef(donnees, cle);
+        BigInteger cleAjustee = ajusterTailleCle(donnees, cle);
         BigInteger tailleAlphabet = BigInteger.valueOf(alphabet.size());
 
         for (int i = 0; i < donnees.length(); i++) {
@@ -65,7 +65,7 @@ public class Vigenere {
     public static String dechiffrementDonnees(String donnees, BigInteger cle) {
         StringBuilder messDechiffre = new StringBuilder();
         creerAlphabet();
-        BigInteger cleAjustee = ajusterTailleClef(donnees, cle);
+        BigInteger cleAjustee = ajusterTailleCle(donnees, cle);
         BigInteger tailleAlphabet = BigInteger.valueOf(alphabet.size());
 
         for (int i = 0; i < donnees.length(); i++) {
@@ -160,7 +160,7 @@ public class Vigenere {
      * @throws NumberFormatException si la clé ajustée contient des caractères
      *                               invalides pour une conversion en BigInt.
      */
-    public static BigInteger ajusterTailleClef(String donnees, BigInteger cle) {
+    public static BigInteger ajusterTailleCle(String donnees, BigInteger cle) {
         // si les données ou la clé sont nulles ou vides, retourne 0
         if (donnees == null || donnees.isEmpty() || cle == null) {
             return BigInteger.ZERO;
