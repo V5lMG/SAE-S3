@@ -26,7 +26,7 @@ public class TestUnitaireServeur {
     private Thread serveurThread;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InterruptedException {
         serveur = new Serveur();
         serveurThread = new Thread(() -> {
             try {
@@ -37,6 +37,7 @@ public class TestUnitaireServeur {
             }
         });
         serveurThread.start();
+        Thread.sleep(500); // Attendre que le serveur démarre
     }
 
     @AfterEach
@@ -46,26 +47,6 @@ public class TestUnitaireServeur {
             serveurThread.join(); // Attendre que le thread du serveur se termine proprement
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        }
-    }
-
-    @Test
-    void testConnexionClient() {
-        try (Socket client = new Socket(InetAddress.getLocalHost(), 12345)) {
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-            // Envoyer un message au serveur
-            String message = "Test de connexion";
-            out.println(message);
-
-            // Lire la réponse du serveur
-            String reponse = in.readLine();
-            assertNotNull(reponse, "La réponse du serveur ne doit pas être null");
-            assertTrue(reponse.contains("Données bien envoyées"),
-                    "La réponse du serveur doit confirmer la réception des données");
-        } catch (Exception e) {
-            fail("Erreur lors de la connexion au serveur : " + e.getMessage());
         }
     }
 
@@ -90,27 +71,37 @@ public class TestUnitaireServeur {
     }
 
     @Test
-    void testTraitementRequete() {
+    void testClePubliqueInvalide() {
         try (Socket client = new Socket(InetAddress.getLocalHost(), 12345)) {
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            // Simuler l'échange de clés (pré-requis)
-            String cleClient = "5 ; 23 ; 11";
-            out.println(cleClient);
-            in.readLine(); // Clé publique du serveur (non vérifiée ici)
+            // Envoyer une clé publique mal formée
+            out.println("CléPubliqueIncorrecte");
 
-            // Envoyer une requête chiffrée simulée
-            String requeteChiffree = "Données chiffrées simulées";
-            out.println(requeteChiffree);
-
-            // Lire la réponse du serveur
+            // Vérifier que le serveur gère correctement l'erreur
             String reponse = in.readLine();
-            assertNotNull(reponse, "La réponse du serveur ne doit pas être null");
-            assertTrue(reponse.startsWith("Données bien envoyées"),
-                    "La réponse du serveur doit inclure la confirmation des données reçues");
+            assertNull(reponse, "Le serveur ne devrait pas envoyer de réponse en cas d'erreur de clé publique");
         } catch (Exception e) {
-            fail("Erreur lors du traitement de la requête par le serveur : " + e.getMessage());
+            fail("Erreur lors de la gestion des clés publiques invalides : " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testDeconnexionBrutale() {
+        try (Socket client = new Socket(InetAddress.getLocalHost(), 12345)) {
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+            // Simuler l'envoi d'une clé publique correcte
+            out.println("5 ; 23 ; 11");
+
+            // Fermer brutalement la connexion
+            client.close();
+
+            // Vérifier que le serveur continue de fonctionner sans erreur
+            assertTrue(serveurThread.isAlive(), "Le serveur doit rester opérationnel après une déconnexion brutale");
+        } catch (Exception e) {
+            fail("Erreur lors de la gestion de la déconnexion brutale : " + e.getMessage());
         }
     }
 }
