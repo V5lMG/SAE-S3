@@ -5,7 +5,6 @@
 package sae.statisalle.modele.objet;
 
 import sae.statisalle.modele.Connexion;
-import sae.statisalle.modele.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
