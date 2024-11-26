@@ -14,7 +14,7 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Classe qui teste chaque méthode de la classe Vigenere.
+ * Classe qui teste chaque méthode de la classe Vigenère.
  * Couvre les cas normaux, limites, et erreurs potentielles.
  */
 public class TestUnitaireVigenere {
@@ -97,27 +97,27 @@ public class TestUnitaireVigenere {
      * Test pour ajuster la taille de la clé (avec BigInteger).
      */
     @Test
-    public void testAjusterTailleClefBigInteger() {
+    public void testAjusterTailleCleBigInteger() {
         // Cas 1 : clé plus courte que les données
         String donnees = "Bonjour";
         BigInteger cle = new BigInteger("123");
-        BigInteger cleAjustee = Vigenere.ajusterTailleClef(donnees, cle);
+        BigInteger cleAjustee = Vigenere.ajusterTailleCle(donnees, cle);
         assertEquals(new BigInteger("1231231"), cleAjustee, "La clé ajustée doit répéter '123'.");
 
         // Cas 2 : clé de la même taille que les données
         cle = new BigInteger("1234567");
-        cleAjustee = Vigenere.ajusterTailleClef(donnees, cle);
+        cleAjustee = Vigenere.ajusterTailleCle(donnees, cle);
         assertEquals(new BigInteger("1234567"), cleAjustee, "La clé ajustée doit rester identique si elle correspond déjà à la taille.");
 
         // Cas 3 : clé plus longue que les données
         cle = new BigInteger("123456789012");
-        cleAjustee = Vigenere.ajusterTailleClef(donnees, cle);
+        cleAjustee = Vigenere.ajusterTailleCle(donnees, cle);
         assertEquals(new BigInteger("1234567"), cleAjustee, "La clé ajustée doit être tronquée à la taille des données.");
 
         // Cas 4 : données vides
         donnees = "";
         cle = new BigInteger("123");
-        cleAjustee = Vigenere.ajusterTailleClef(donnees, cle);
+        cleAjustee = Vigenere.ajusterTailleCle(donnees, cle);
         assertEquals(BigInteger.ZERO, cleAjustee, "Si les données sont vides, la clé ajustée doit être 0.");
     }
 

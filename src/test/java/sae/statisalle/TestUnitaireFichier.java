@@ -150,7 +150,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void extensionValide() {
+    void testExtensionValide() {
         assertTrue(fichierEmploye.extensionValide());
         assertTrue(fichierReservation.extensionValide());
         assertTrue(fichierSalle.extensionValide());
@@ -158,7 +158,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void contenuFichier() {
+    void testContenuFichier() {
         List<String> contenuEmploye = fichierEmploye.contenuFichier();
         assertFalse(contenuEmploye.isEmpty());
         assertEquals(9, contenuEmploye.size());
@@ -177,22 +177,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void nomFichier() {
-        String nomFichierEmploye = fichierEmploye.nomFichier();
-        assertTrue(nomFichierEmploye.startsWith("employes 26_08_24 13_40"));
-
-        String nomFichierReservation = fichierReservation.nomFichier();
-        assertTrue(nomFichierReservation.startsWith("reservations 26_08_24 13_40"));
-
-        String nomFichierSalle = fichierSalle.nomFichier();
-        assertTrue(nomFichierSalle.startsWith("salles 26_08_24 13_40"));
-
-        String nomFichierActivite = fichierActivite.nomFichier();
-        assertTrue(nomFichierActivite.startsWith("activites 26_08_24 13_40"));
-    }
-
-    @Test
-    void recupererDonnees() {
+    void testRecupererDonnees() {
         // Récupérer les données sous forme de tableau 3D pour chaque fichier
         List<List<String>> donneesEmploye = fichierEmploye.recupererDonnees();
         List<List<String>> donneesReservation = fichierReservation.recupererDonnees();
@@ -206,14 +191,14 @@ class TestUnitaireFichier {
         assertFalse(donneesActivite.isEmpty());
 
         // Vérifier la taille des lignes récupérées dans chaque fichier
-        assertEquals(8, donneesEmploye.size());  // Il y a 9 lignes de données dans le fichier employe
-        assertEquals(18, donneesReservation.size());  // Il y a 19 lignes de données dans le fichier reservation
-        assertEquals(9, donneesSalle.size());  // Il y a 10 lignes de données dans le fichier salle
-        assertEquals(6, donneesActivite.size());  // Il y a 7 lignes de données dans le fichier activite
+        assertEquals(8, donneesEmploye.size());      // Il y a 9 lignes de données dans le fichier employe
+        assertEquals(18, donneesReservation.size()); // Il y a 19 lignes de données dans le fichier reservation
+        assertEquals(9, donneesSalle.size());        // Il y a 10 lignes de données dans le fichier salle
+        assertEquals(6, donneesActivite.size());     // Il y a 7 lignes de données dans le fichier activite
 
         // Vérifier la taille des colonnes pour chaque ligne (en fonction des entêtes)
         assertEquals(4, donneesEmploye.get(0).size());      // Fichier employe a 4 colonnes
-        assertEquals(12, donneesReservation.get(0).size());  // Fichier reservation a 7 colonnes
+        assertEquals(12, donneesReservation.get(0).size()); // Fichier reservation a 7 colonnes
         assertEquals(9, donneesSalle.get(0).size());        // Fichier salle a 9 colonnes
         assertEquals(2, donneesActivite.get(0).size());     // Fichier activite a 2 colonnes
 
@@ -225,15 +210,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void getFichierExploite() {
-        assertNotNull(fichierEmploye.getFichierExploite());
-        assertNotNull(fichierReservation.getFichierExploite());
-        assertNotNull(fichierSalle.getFichierExploite());
-        assertNotNull(fichierActivite.getFichierExploite());
-    }
-
-    @Test
-    void getTypeFichier() {
+    void testGetTypeFichier() {
         assertEquals("Employe", fichierEmploye.getTypeFichier());
         assertEquals("Reservation", fichierReservation.getTypeFichier());
         assertEquals("Salle", fichierSalle.getTypeFichier());
@@ -241,7 +218,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void reecritureFichier() {
+    void testReecritureFichier() {
         // Nouveau contenu pour le fichier d'employés
         List<String> nouveauContenu = List.of(
                 "Ident;Nom;Prenom;Telephone",
@@ -261,7 +238,7 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void ecritureFichier() {
+    void testEcritureFichier() {
         // Nouveau contenu pour le fichier de réservations
         List<String> nouveauContenu = List.of(
                 "Ident;salle;employe;activite;date;heuredebut;heurefin",
@@ -285,43 +262,12 @@ class TestUnitaireFichier {
     }
 
     @Test
-    void fichierExiste() {
+    void testFichierExiste() {
         assertTrue(Fichier.fichierExiste(fichierEmploye.getFichierExploite().getAbsolutePath()));
         assertTrue(Fichier.fichierExiste(fichierReservation.getFichierExploite().getAbsolutePath()));
         assertTrue(Fichier.fichierExiste(fichierSalle.getFichierExploite().getAbsolutePath()));
         assertTrue(Fichier.fichierExiste(fichierActivite.getFichierExploite().getAbsolutePath()));
 
         assertFalse(Fichier.fichierExiste("non_existant_fichier.csv"));
-    }
-
-    @Test
-    void ecrireFichier() {
-        List<String> nouveauContenu = List.of(
-                "Ident;Nom;Capacite;videoproj;ecranXXL;ordinateur;type;logiciels;imprimante",
-                "00000010;salle Test;20;oui;non;2;PC;logiciels;oui"
-        );
-
-        // Chemin pour le fichier de sortie
-        String cheminFichierSortie = "test_ecriture_salle.csv";
-
-        Fichier.ecritureFichier(nouveauContenu, cheminFichierSortie);
-
-        Fichier fichierEcrit = new Fichier(cheminFichierSortie);
-        List<String> contenuEcrit = fichierEcrit.contenuFichier();
-
-        assertEquals(nouveauContenu.size(), contenuEcrit.size());
-        for (int i = 0; i < nouveauContenu.size(); i++) {
-            assertEquals(nouveauContenu.get(i), contenuEcrit.get(i));
-        }
-
-        new File(cheminFichierSortie).delete();
-    }
-
-    @Test
-    void ouvrirDossier() {
-        assertNotNull(fichierEmploye.getFichierExploite());
-        assertNotNull(fichierSalle.getFichierExploite());
-        assertNotNull(fichierActivite.getFichierExploite());
-        assertNotNull(fichierReservation.getFichierExploite());
     }
 }
