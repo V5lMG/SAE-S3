@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -126,7 +127,7 @@ public class ControleurAccueil {
 
             try {
                 if (!ip.isEmpty() && !isValidIp(ip)) {
-                    MainControleur.showAlert("Erreur",
+                    MainControleur.showAlert(Alert.AlertType.WARNING, "Erreur",
                             "L'adresse IP saisie n'est pas valide !");
                     return;
                 }
@@ -134,7 +135,7 @@ public class ControleurAccueil {
                 if (!portText.isEmpty()) {
                     int port = Integer.parseInt(portText);
                     if (port < 1 || port > 65535) {
-                        MainControleur.showAlert("Erreur",
+                        MainControleur.showAlert(Alert.AlertType.WARNING, "Erreur",
                                 "Le port doit être compris entre "
                                         + "1 et 65535 !");
                         return;
@@ -174,7 +175,7 @@ public class ControleurAccueil {
 
                 popupStage.close();
             } catch (NumberFormatException ex) {
-                MainControleur.showAlert("Erreur",
+                MainControleur.showAlert(Alert.AlertType.WARNING, "Erreur",
                         "Le port doit être un nombre valide.");
             }
         });

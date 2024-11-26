@@ -116,7 +116,7 @@ public class ControleurPopup {
                     // renvoie l'utilisateur vers l'affichage des données
                     MainControleur.activerAffichage();
                 } catch (IOException e) {
-                    MainControleur.showAlert("Erreur d'importation",
+                    MainControleur.showAlert(Alert.AlertType.WARNING, "Erreur d'importation",
                             "Impossible de charger les données "
                                     + "dans l'application : "
                                     + e.getMessage());

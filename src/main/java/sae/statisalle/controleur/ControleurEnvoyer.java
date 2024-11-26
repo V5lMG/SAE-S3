@@ -121,11 +121,11 @@ public class ControleurEnvoyer {
         } else if (fichiers != null) {
             System.out.println("Vous devez sélectionner "
                                + "au maximum 4 fichiers.");
-            MainControleur.showAlert("Trop de fichier",
+            MainControleur.showAlert(Alert.AlertType.WARNING, "Trop de fichier",
                     "Vous devez sélectionner au maximum 4 fichiers.");
         } else {
             System.out.println("Aucun fichier sélectionné.");
-            MainControleur.showAlert("Pas de fichier",
+            MainControleur.showAlert(Alert.AlertType.WARNING, "Pas de fichier",
                     "Aucun fichier sélectionné.");
         }
     }
@@ -207,7 +207,7 @@ public class ControleurEnvoyer {
 
             afficherConfirmationEtRetour();
         } catch (Exception e) {
-            MainControleur.showAlert("Erreur d'envoi",
+            MainControleur.showAlert(Alert.AlertType.WARNING, "Erreur d'envoi",
                             "Une erreur est survenue.");
             System.out.println("[CLIENT] Une erreur est survenue :"
                                + e.getMessage());
