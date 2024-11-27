@@ -137,6 +137,12 @@ public class ControleurPopup {
         Dialog<ButtonType> popupVisualiser = new Dialog<>();
         popupVisualiser.setTitle("Visualisation des données");
         popupVisualiser.setHeaderText("Données reçues");
+        Image logo = new Image(Objects.requireNonNull(
+                ControleurPopup.class.getResourceAsStream(
+                        "/sae/statisalle/img/LogoStatisalle.jpg")));
+        Stage stage = (Stage) popupVisualiser.getDialogPane().getScene()
+                                                             .getWindow();
+        stage.getIcons().add(logo);
 
         // création du contenu de la popup
         String contenu = donnees.replace("/EOF", "\n\n");

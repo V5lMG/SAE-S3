@@ -301,9 +301,15 @@ public class MainControleur extends Application {
     /**
      * Affiche une alerte d'erreur en cas de problème.
      */
-    public static void showAlert(Alert.AlertType warning, String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    public static void showAlert(Alert.AlertType typeAlert, String title, String message) {
+        Alert alert = new Alert(typeAlert);
         alert.setTitle(title);
+        Image logo = new Image(Objects.requireNonNull(
+                ControleurPopup.class.getResourceAsStream(
+                        "/sae/statisalle/img/LogoStatisalle.jpg")));
+        Stage stage = (Stage) alert.getDialogPane().getScene()
+                                                   .getWindow();
+        stage.getIcons().add(logo);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
