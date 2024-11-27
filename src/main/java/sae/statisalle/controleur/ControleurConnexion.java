@@ -6,18 +6,14 @@ package sae.statisalle.controleur;
 
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import sae.statisalle.modele.objet.Client;
 import sae.statisalle.modele.Session;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Objects;
 
 /**
  * Contrôleur de la connexion pour l'application StatiSalle.
