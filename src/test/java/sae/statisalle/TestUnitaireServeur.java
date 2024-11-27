@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Classe de tests unitaires pour la classe Serveur.
+ * @author valentin.munier-genie
+ * @author rodrigo xavier-taborda
  */
 public class TestUnitaireServeur {
 
@@ -38,7 +40,8 @@ public class TestUnitaireServeur {
             }
         });
         serveurThread.start();
-        Thread.sleep(500); // Attendre que le serveur démarre
+        // attendre que le serveur démarre
+        Thread.sleep(500);
     }
 
     @AfterEach
@@ -76,11 +79,11 @@ public class TestUnitaireServeur {
             BufferedReader in = new BufferedReader(new InputStreamReader
                     (client.getInputStream()));
 
-            // Simuler l'envoi de la clé publique du client
-            String cleClient = "5 ; 23 ; 11"; // Clé publique au format attendu
+            // simuler l'envoi de la clé publique du client
+            String cleClient = "5 ; 23 ; 11";
             out.println(cleClient);
 
-            // Reçoit la clé publique du serveur
+            // reçoit la clé publique du serveur
             String cleServeur = in.readLine();
             assertNotNull(cleServeur, "La clé publique du serveur ne "
                     + "doit pas être null");

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import sae.statisalle.modele.objet.Client;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -32,7 +33,7 @@ public class TestUnitaireClient {
     void setUp() throws Exception {
         client = new Client();
 
-        // Démarrage d'un serveur fictif pour les tests
+        // démarrage d'un serveur fictif pour les tests
         serveurTest = new ServerSocket(65432);
         serveurThread = new Thread(() -> {
             try (Socket socket = serveurTest.accept();
@@ -45,6 +46,8 @@ public class TestUnitaireClient {
                 if (clePubliqueClient != null) {
                     // Simule une clé publique du serveur
                     out.println("7 ; 23 ; 11");
+                } else {
+                    System.err.println("[SERVEUR TEST] Aucune clé publique reçue.");
                 }
 
                 String donneesRecues = in.readLine();
@@ -62,47 +65,55 @@ public class TestUnitaireClient {
     void tearDown() throws Exception {
         client.fermer();
         serveurTest.close();
-        // Attendre que le thread serveur se termine
+        // attendre que le thread serveur se termine
         serveurThread.join();
     }
 
     @Test
     void testConnexionEtDeconnexion() {
-        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432), "La connexion au serveur doit réussir");
+        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432),
+                "La connexion au serveur doit réussir");
         client.fermer();
     }
 
     @Test
+    void testErreurConnexion() {
+        // avec une adresse IP invalide
+        assertThrows(Exception.class, () -> client.connecter("192.0.2.0",
+                        65432),
+                "Une connexion à une adresse IP inexistante doit échouer");
+    }
+
+    @Test
     void testEnvoiEtReceptionClePublique() {
-        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432), "La connexion au serveur doit réussir");
+        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432),
+                "La connexion au serveur doit réussir");
 
         client.envoyerClePublic("5 ; 23 ; 11");
         String clePubliqueServeur = client.recevoirClePublic();
 
-        assertNotNull(clePubliqueServeur, "La clé publique reçue du serveur ne doit pas être null");
+        assertNotNull(clePubliqueServeur, "La clé publique reçue du "
+                + "serveur ne doit pas être null");
         assertTrue(clePubliqueServeur.matches("\\d+ ; \\d+ ; \\d+"),
                 "La clé publique reçue doit respecter le format attendu");
     }
 
     @Test
     void testReceptionDonneesInvalide() {
-        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432), "La connexion au serveur doit réussir");
+        assertDoesNotThrow(() -> client.connecter("127.0.0.1", 65432),
+                "La connexion au serveur doit réussir");
 
         client.fermer(); // Fermer avant de recevoir
         String donneesReçues = client.recevoir();
 
-        assertNull(donneesReçues, "Aucune donnée ne doit être reçue après la fermeture de la connexion");
+        assertNull(donneesReçues, "Aucune donnée ne doit être reçue "
+                + "après la fermeture de la connexion");
     }
 
     @Test
-    void testGestionErreurConnexion() {
-        assertThrows(Exception.class, () -> client.connecter("192.0.2.0", 12345),
-                "Une connexion à une adresse IP inexistante doit échouer");
-    }
-
-    @Test
-    void testRenvoyerIP() {
+    void testRenvoyerIP() throws IOException {
         InetAddress ip = client.renvoyerIP();
         assertNotNull(ip, "L'IP retournée ne doit pas être null");
+        System.out.println("[TEST] IP locale trouvée : " + ip.getHostAddress());
     }
 }

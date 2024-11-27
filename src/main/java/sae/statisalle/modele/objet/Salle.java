@@ -12,8 +12,9 @@ import javafx.collections.ObservableList;
  * L'objet Salle est constitué de :
  * <ul>
  *     <li>Un identifiant</li>
+ *     <li>Un nom</li>
  *     <li>Une capacité</li>
- *     <li>Un indicateur de la présence d'un video projecteur</li>
+ *     <li>Un indicateur de la présence d'un vidéo projecteur</li>
  *     <li>Un indicateur de la présence d'un écran XXL</li>
  *     <li>Le nombre de machine</li>
  *     <li>Une description</li>
@@ -21,7 +22,7 @@ import javafx.collections.ObservableList;
  *     <li>Un indicateur de la présence d'une imprimante</li>
  * </ul>
  * <br>
- * Elle gère également toutes les erreurs relatives à l'instantiation
+ * Elle gère également toutes les erreurs relatives à l'instanciation
  * des salles en fonction des contenus des fichiers
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
