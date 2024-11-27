@@ -134,6 +134,8 @@ public class ControleurAffichage {
     @FXML
     private TableColumn<Employe, String> numTelE;
 
+    private boolean filtreSet = false;
+
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
     @FXML
@@ -142,6 +144,8 @@ public class ControleurAffichage {
     ObservableList<Salle> listSalle = FXCollections.observableArrayList();
     @FXML
     ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
     @FXML
     private void actionAide() {
@@ -410,6 +414,7 @@ public class ControleurAffichage {
 
         // Afficher un message de confirmation ou notifier l'utilisateur
         System.out.println("Filtres réinitialisés avec succès.");
+        filtreSet = false;
     }
 
     private void mettreAJourFiltreHeureDebut() {
@@ -481,7 +486,7 @@ public class ControleurAffichage {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
-        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+        reservationsFiltrees.clear();
 
         for (Reservation reservation : listReservation) {
 
@@ -539,6 +544,7 @@ public class ControleurAffichage {
             if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
                 reservationsFiltrees.add(reservation);
             }
+            filtreSet = true;
         }
 
         tabReservation.setItems(reservationsFiltrees);
@@ -555,7 +561,7 @@ public class ControleurAffichage {
         }
     }
 
-    // Méthode utilitaire pour la conversion des date en LocalTime
+    // Méthode utilitaire pour la conversion des dates en LocalTime
     private LocalDate parseDate(String date) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -581,7 +587,11 @@ public class ControleurAffichage {
         File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
 
         if (fichier != null) {
-            GenererPdf.genererPdfReservation(listReservation, fichier);
+            if(!filtreSet) {
+                GenererPdf.genererPdfReservation(listReservation, fichier);
+            } else {
+                GenererPdf.genererPdfReservation(reservationsFiltrees, fichier);
+            }
         }
     }
 }
