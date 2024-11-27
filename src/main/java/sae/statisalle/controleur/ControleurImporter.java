@@ -7,6 +7,7 @@ package sae.statisalle.controleur;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -17,8 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static sae.statisalle.controleur.MainControleur.showAlert;
+import java.util.Objects;
 
 /**
  * Classe du controller Importer,
@@ -117,6 +117,12 @@ public class ControleurImporter {
 
         Alert information = new Alert(Alert.AlertType.INFORMATION);
         information.setTitle("Validation");
+        Image logo = new Image(Objects.requireNonNull(
+                ControleurPopup.class.getResourceAsStream(
+                        "/sae/statisalle/img/LogoStatisalle.jpg")));
+        Stage stage = (Stage) information.getDialogPane().getScene()
+                                                         .getWindow();
+        stage.getIcons().add(logo);
         information.setHeaderText(null);
         information.setContentText("Le/Les fichier(s) a/ont bien été "
                                    + "importé(s)");
@@ -167,8 +173,9 @@ public class ControleurImporter {
             System.out.println("Fichiers sélectionnés : \n" + chemins);
 
         } else if (fichiers != null) {
-            showAlert(Alert.AlertType.WARNING, "Limite de fichiers dépassée",
-                    "Vous devez sélectionner au maximum 4 fichiers.");;
+            MainControleur.showAlert(Alert.AlertType.WARNING,
+                    "Limite de fichiers dépassée",
+                    "Vous devez sélectionner au maximum 4 fichiers.");
         } else {
             System.out.println("Aucun fichier sélectionné.");
         }
