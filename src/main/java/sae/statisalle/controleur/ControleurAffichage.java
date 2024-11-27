@@ -34,7 +34,7 @@ import java.util.*; // TODO ne jamais mettre d'étoiles
  *     <li>Les dates de réservation</li>
  *     <li>Les créneaux horaires</li>
  * </ul>
- * et retourne les données filtrées à la vue.
+ * Retourne les données filtrées à la vue.
  *
  * @author robin.montes
  * @author mathias.cambon
@@ -64,6 +64,12 @@ public class ControleurAffichage {
                                              prenomR, numTelR, usageR;
     @FXML
     private Tab feuilleReservation;
+    @FXML
+    private Tab feuilleSalle;
+    @FXML
+    private Tab feuilleEmploye;
+    @FXML
+    private Tab feuilleActivite;
 
     @FXML
     private ComboBox<String> filtreEmploye, filtreActivite, filtreSalle;
@@ -169,7 +175,7 @@ public class ControleurAffichage {
         filtreHeureF.setVisible(false);
         reinitialiserFiltre.setVisible(false);
 
-        // Rendre les textes de filtre invisibles
+        // Rendre les textes de filtre et boutons invisibles
         textfiltreEmploye.setVisible(false);
         textfiltreSalle.setVisible(false);
         textfiltreActivite.setVisible(false);
@@ -190,6 +196,8 @@ public class ControleurAffichage {
         masquerFiltres();
 
         btnAfficherTableaux.setVisible(false);
+
+        btnGenererPdf.setVisible(true);
 
         grandTableau.setVisible(true);
 
@@ -260,21 +268,21 @@ public class ControleurAffichage {
 
     @FXML
     private void afficherFiltre() {
-        // création d'une liste contenant tous les filtres
-        List<Node> filtres = Arrays.asList(
+        // création d'une liste contenant tous les éléments d'affichage
+        List<Node> affichage = Arrays.asList(
                 filtreEmploye, filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre, btnGenererPdf, btnClassement
+                textfiltreHeureF, reinitialiserFiltre, btnClassement
         );
 
         // Détermine la visibilité en fonction de l'état de la checkbox
         boolean visible = feuilleReservation.isSelected();
 
         // Applique la visibilité à chaque composant si celui-ci n'est pas null
-        filtres.forEach(composantFiltre -> {
+        affichage.forEach(composantAffichage -> {
             //Vérification
-            if (composantFiltre != null) {
-                composantFiltre.setVisible(visible);
+            if (composantAffichage != null) {
+                composantAffichage.setVisible(visible);
             }
         });
     }
@@ -587,10 +595,19 @@ public class ControleurAffichage {
         File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
 
         if (fichier != null) {
-            if(!filtreSet) {
-                GenererPdf.genererPdfReservation(listReservation, fichier);
+            if (feuilleReservation.isSelected()) {
+                if (!filtreSet) {
+                    GenererPdf.genererPdfReservation(listReservation, fichier);
+                } else {
+                    GenererPdf.genererPdfReservation(reservationsFiltrees, fichier);
+                }
+            } else if(feuilleSalle.isSelected()){
+                GenererPdf.genererPdfSalle(listSalle, fichier);
+
+            } else if(feuilleEmploye.isSelected()){
+                GenererPdf.genererPdfEmploye(listEmploye, fichier);
             } else {
-                GenererPdf.genererPdfReservation(reservationsFiltrees, fichier);
+                GenererPdf.genererPdfActivite(listActivite, fichier);
             }
         }
     }
