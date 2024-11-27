@@ -47,10 +47,14 @@ public class ControleurConnexion {
     @FXML
     void initialize() {
         btnConnexion.setDisable(true);
-        textIp.textProperty().addListener((observable, oldValue, newValue) ->
-                verifierLesChamps());
-        textPort.textProperty().addListener((observable, oldValue, newValue) ->
-                verifierLesChamps());
+        textIp.textProperty().addListener(
+                (observable,
+                 oldValue,
+                 newValue) -> verifierLesChamps());
+        textPort.textProperty().addListener(
+                (observable,
+                 oldValue,
+                 newValue) -> verifierLesChamps());
     }
 
     /**
@@ -91,7 +95,8 @@ public class ControleurConnexion {
 
         // validation de l'adresse IP
         if (!isValidIPv4(ip)) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
+            MainControleur.showAlert(AlertType.ERROR,
+                    "Erreur de connexion",
                     "L'adresse IP n'est pas valide. " +
                             "Veuillez saisir une adresse IPv4.");
             return;
@@ -104,7 +109,8 @@ public class ControleurConnexion {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Erreur de connexion",
+            MainControleur.showAlert(AlertType.ERROR,
+                    "Erreur de connexion",
                     "Le numéro de port n'est pas valide. " +
                             "Veuillez saisir un port entre 0 et 65535.");
             return;
@@ -124,7 +130,8 @@ public class ControleurConnexion {
                 javafx.application.Platform.runLater(() -> {
                     MainControleur.getFenetrePrincipale().getScene()
                                   .setCursor(Cursor.DEFAULT);
-                    showAlert(AlertType.INFORMATION, "Connexion réussie",
+                    MainControleur.showAlert(AlertType.INFORMATION,
+                            "Connexion réussie",
                             "Connexion établie avec l'adresse IP : "
                                      + ip + " : " + port);
                     MainControleur.activerEnvoyer();
@@ -133,7 +140,8 @@ public class ControleurConnexion {
                 javafx.application.Platform.runLater(() -> {
                     MainControleur.getFenetrePrincipale().getScene()
                                   .setCursor(Cursor.DEFAULT);
-                    showAlert(AlertType.ERROR, "Erreur de connexion",
+                    MainControleur.showAlert(AlertType.ERROR,
+                            "Erreur de connexion",
                             "Impossible de se connecter au serveur.");
                 });
             }
@@ -161,8 +169,9 @@ public class ControleurConnexion {
             btnAfficherIp.setText(ipAddress);
         } else {
             btnAfficherIp.setText("Pas de connexion");
-            showAlert(AlertType.INFORMATION,"Impossible d'afficher l'IP",
-                             "Absence de connexion a un réseau.");
+            MainControleur.showAlert(AlertType.INFORMATION,"Impossible "
+                            + "d'afficher l'IP",
+                    "Absence de connexion a un réseau.");
             System.err.println("Erreur lors de la récupération "
                                + "de l'adresse IP.");
         }
@@ -180,26 +189,5 @@ public class ControleurConnexion {
                 "[0-1]?[0-9]{1,2})\\.){3}(25[0-5]|2[0-4][0-9]|" +
                 "[0-1]?[0-9]{1,2}))$";
         return ip.matches(ipv4Pattern);
-    }
-
-    /**
-     * Affiche une alerte pour informer l'utilisateur
-     * d'une situation spécifique.
-     *
-     * @param alertType le type de l'alerte.
-     * @param title le titre de l'alerte.
-     * @param message le message de l'alerte.
-     */
-    private void showAlert(AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        Image logo = new Image(Objects.requireNonNull(
-                               ControleurPopup.class.getResourceAsStream(
-                         "/sae/statisalle/img/LogoStatisalle.jpg")));
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(logo);
-        alert.showAndWait();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Connexion.java              30/10/2024
+ * Connexion.java              15/11/2024
  * Pas de droits d'auteur ni de copyright
  */
 package sae.statisalle.modele;
