@@ -2,7 +2,6 @@
  * TestUnitaireClient.java            24/10/2024
  * IUT DE RODEZ                        Pas de copyrights
  */
-
 package sae.statisalle;
 
 import org.junit.jupiter.api.AfterEach;
@@ -104,9 +103,9 @@ public class TestUnitaireClient {
                 "La connexion au serveur doit réussir");
 
         client.fermer(); // Fermer avant de recevoir
-        String donneesReçues = client.recevoir();
+        String donneesRecues = client.recevoir();
 
-        assertNull(donneesReçues, "Aucune donnée ne doit être reçue "
+        assertNull(donneesRecues, "Aucune donnée ne doit être reçue "
                 + "après la fermeture de la connexion");
     }
 

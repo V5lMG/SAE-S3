@@ -2,7 +2,6 @@
  * Serveur.java                 21/10/2024
  * IUT DE RODEZ                 Pas de copyrights
  */
-
 package sae.statisalle.modele.objet;
 
 import javafx.application.Platform;
@@ -245,9 +244,15 @@ public class Serveur implements Connexion {
     @Override
     public void fermer() {
         try {
-            if (fluxEntree != null) fluxEntree.close();
-            if (fluxSortie != null) fluxSortie.close();
-            if (clientSocket != null) clientSocket.close();
+            if (fluxEntree != null) {
+                fluxEntree.close();
+            }
+            if (fluxSortie != null) {
+                fluxSortie.close();
+            }
+            if (clientSocket != null) {
+                clientSocket.close();
+            }
         } catch (IOException e) {
             System.err.println("[SERVEUR] Erreur lors de la fermeture de "
                                + "la connexion : " + e.getMessage());

@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import sae.statisalle.modele.objet.Serveur;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +62,7 @@ public class TestUnitaireServeur {
         try {
             Serveur serveurAvecIP = new Serveur();
             // test avec localhost
-            serveurAvecIP.demarrer(65432, "127.0.0.1");
+            serveurAvecIP.demarrer(55557, "127.0.0.1");
             assertNotNull(serveurAvecIP.renvoyerIP(), "L'adresse IP "
                     + "ne doit pas être null");
             serveurAvecIP.fermerServeur();
@@ -144,5 +146,47 @@ public class TestUnitaireServeur {
     void testRenvoyerIP() {
         InetAddress ip = serveur.renvoyerIP();
         assertNotNull(ip, "L'IP retournée ne doit pas être null");
+    }
+
+
+    @Test
+    void testFermerResourcesProprement() throws IOException {
+        // Création d'un ServerSocket et d'un Socket client
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            // Création d'un thread pour simuler un client se connectant au serveur
+            Thread clientThread = new Thread(() -> {
+                try {
+                    new Socket("localhost", serverSocket.getLocalPort());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            clientThread.start();
+
+            // Accepter la connexion du client
+            Socket clientSocket = serverSocket.accept();
+
+            // Instancier le Serveur
+            Serveur serveur = new Serveur();
+
+            // Initialisation des flux
+            serveur.demarrer(55588, "127.0.0.1");
+            serveur.accepterClients();
+
+            // Vérification que fermer ne lève pas d'exception
+            assertDoesNotThrow(serveur::fermer, "La méthode fermer ne doit pas lever d'exception.");
+
+            // Vérification que le socket est bien fermé
+            assertTrue(clientSocket.isClosed(), "Le clientSocket doit être fermé.");
+        }
+    }
+
+    @Test
+    void testFermerSansRessources() {
+        // Création d'une instance de Serveur sans initialisation de flux
+        Serveur serveur = new Serveur();
+
+        // Vérification que fermer ne lève pas d'exception même sans ressources
+        assertDoesNotThrow(serveur::fermer, "La méthode fermer ne doit pas lever d'exception lorsqu'aucune ressource n'est initialisée.");
     }
 }
