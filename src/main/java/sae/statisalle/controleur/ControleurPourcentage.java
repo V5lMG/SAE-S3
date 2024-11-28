@@ -57,9 +57,11 @@ public class ControleurPourcentage {
     @FXML
     ObservableList<Salle> listSalle = FXCollections.observableArrayList();
     @FXML
-    ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+    ObservableList<Reservation> listReservation =
+            FXCollections.observableArrayList();
     @FXML
-    ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+    ObservableList<Reservation> reservationsFiltrees =
+            FXCollections.observableArrayList();
 
     @FXML
     void actionAide(ActionEvent event) {
@@ -126,7 +128,8 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Filtrage du contenu du tableau "reservation" selon les critères sélectionnés.
+     * Filtrage du contenu du tableau "reservation" selon les
+     * critères sélectionnés.
      */
     @FXML
     private void appliquerFiltre() {
@@ -139,11 +142,15 @@ public class ControleurPourcentage {
         // filtrage des réservations en fonction des critères choisis
         for (Reservation reservation : listReservation) {
             boolean matchesFiltre =
-                    ("Tous".equals(salle) || reservation.getSalleR().equals(salle)) &&
-                    ("Tous".equals(employe) || reservation.getEmployeR().equals(employe)) &&
-                    ("Tous".equals(activite) || reservation.getActiviteR().equals(activite));
+                    ("Tous".equals(salle) ||
+                            reservation.getSalleR().equals(salle)) &&
+                    ("Tous".equals(employe) ||
+                            reservation.getEmployeR().equals(employe)) &&
+                    ("Tous".equals(activite) ||
+                            reservation.getActiviteR().equals(activite));
 
-            // Si la réservation correspond à tous les filtres, on l'ajoute à la liste filtrée
+            // si la réservation correspond à tous les filtres,
+            // on l'ajoute à la liste filtrée
             if (matchesFiltre) {
                 reservationsFiltrees.add(reservation);
             }
@@ -165,11 +172,14 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Méthode utilitaire pour convertir une chaîne représentant une heure en un objet LocalTime.
-     * La chaîne d'entrée peut utiliser le caractère 'h' comme séparateur des heures et des minutes.
+     * Méthode utilitaire pour convertir une chaîne représentant une heure en
+     * un objet LocalTime.
+     * La chaîne d'entrée peut utiliser le caractère 'h' comme séparateur
+     * des heures et des minutes.
      * Ce caractère sera remplacé par ':' avant la tentative de conversion.
      * @param heure la chaîne représentant une heure à convertir
-     * @return un objet LocalTime représentant l'heure ou bien "null" si la chaîne est mal formatée
+     * @return un objet LocalTime représentant l'heure ou bien "null"
+     *         si la chaîne est mal formatée
      */
     private LocalTime parseHeure(String heure) {
         try {
@@ -182,36 +192,34 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Méthode pour charger et afficher les données nécessaires à l'application.
-     * Cette méthode effectue les opérations suivantes :
-     * <ul>
-     *   <li>Cache le bouton d'affichage du tableau et affiche le tableau des salles.</li>
-     *   <li>Charge les données depuis un fichier CSV en utilisant la méthode LireFichier</li>
-     *   <li>Met à jour les ComboBox de filtres avec les données extraites des réservations, y compris les salles, employés, activités, dates et heures.</li>
-     *   <li>Met à jour les filtres de date et d'heure pour la recherche dans l'interface.</li>
-     *   <li>Affiche un message de succès dans la console lorsque les données sont correctement chargées.</li>
-     *   <li>Configure les colonnes du tableau des salles, notamment les noms et pourcentages d'occupation.</li>
-     *   <li>Effectue les calculs pour afficher le pourcentage global d'occupation des salles.</li>
-     *   <li>Concatène les noms et prénoms des employés pour l'affichage dans les filtres et tableaux.</li>
-     *   <li>Affiche les filtres dans l'interface et rend le bouton de réinitialisation visible.</li>
-     * </ul>
-     * <p>Cette méthode est généralement appelée pour initialiser ou recharger les données dans l'application.</p>
+     * Ouvre un dialogue pour enregistrer un fichier PDF contenant les
+     * statistiques des salles filtrées.
+     * <p>
+     * Cette méthode permet à l'utilisateur de choisir un emplacement pour
+     * sauvegarder un fichier PDF
+     * avec les informations des salles actuellement visibles dans la table.
+     * </p>
      */
     public void chargerDonnees() {
         btnAfficherTableau.setVisible(false);
         tabSalle.setVisible(true);
         tabSalle.getItems().clear();
 
-        LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
+        LireFichier.chargerDonneesCSV("src/main/resources/csv",
+                listEmploye, listSalle, listActivite, listReservation);
 
-        remplirComboBox(filtreSalle, listReservation.stream().map(Reservation::getSalleR).collect(Collectors.toSet()));
-        remplirComboBox(filtreEmploye, listReservation.stream().map(Reservation::getEmployeR).collect(Collectors.toSet()));
-        remplirComboBox(filtreActivite, listReservation.stream().map(Reservation::getActiviteR).collect(Collectors.toSet()));
+        remplirComboBox(filtreSalle, listReservation.stream()
+                .map(Reservation::getSalleR).collect(Collectors.toSet()));
+        remplirComboBox(filtreEmploye, listReservation.stream()
+                .map(Reservation::getEmployeR).collect(Collectors.toSet()));
+        remplirComboBox(filtreActivite, listReservation.stream()
+                .map(Reservation::getActiviteR).collect(Collectors.toSet()));
 
         System.out.println("Données chargées avec succès.");
 
         nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        pourcentOccupation.setCellValueFactory(new PropertyValueFactory<>("pourcentageOccupation"));
+        pourcentOccupation.setCellValueFactory(new PropertyValueFactory<>
+                ("pourcentageOccupation"));
 
         calculerPourcentage(listReservation);
 
@@ -225,7 +233,15 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Méthode utilitaire pour remplir les ComboBox.
+     * Remplit une ComboBox avec des valeurs à partir d'un ensemble donné.
+     * <p>
+     * Cette méthode ajoute un élément "Tous" au début de la liste,
+     * puis ajoute les éléments de l'ensemble `valeurs` triés par ordre alphabétique.
+     * Ensuite, elle définit la première valeur de la ComboBox
+     * comme étant l'élément sélectionné par défaut.
+     * </p
+     * @param comboBox la ComboBox à remplir avec les valeurs.
+     * @param valeurs l'ensemble des valeurs à ajouter à la ComboBox.
      */
     private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
         ObservableList<String> items = FXCollections.observableArrayList("Tous");
@@ -234,6 +250,16 @@ public class ControleurPourcentage {
         comboBox.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Affiche les filtres dans l'interface utilisateur.
+     * <p>
+     * Cette méthode rend visibles tous les composants associés aux filtres
+     * (ComboBox et textes),
+     * ainsi que le bouton de réinitialisation des filtres.
+     * Dans un second temps, elle s'assure que chaque composant de filtre
+     * est affiché dans l'interface si celui-ci n'est pas "null".
+     * </p>
+     */
     @FXML
     private void afficherFiltre() {
         List<Node> filtres = Arrays.asList(
@@ -260,14 +286,34 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Ajoute un listener sur une ComboBox pour appliquer le filtre automatiquement.
+     * Ajoute un écouteur de sélection sur une ComboBox pour appliquer
+     * automatiquement un filtre.
+     * <p>
+     * Cette méthode attache un listener à la propriété de sélection de la
+     * ComboBox donnée.
+     * </p>
+     * @param comboBox la ComboBox sur laquelle l'écouteur doit être ajouté.
+     *                 Cette ComboBox est donc utilisée pour filtrer les données
+     *                 affichées en fonction de la sélection
+     *                 de l'utilisateur.
      */
     private void ajouterListenerFiltre(ComboBox<String> comboBox) {
-        comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            appliquerFiltre();
-        });
+        comboBox.getSelectionModel().selectedItemProperty()
+                .addListener((observable,
+                              oldValue,
+                              newValue) -> appliquerFiltre());
     }
 
+    /**
+     * Calcule et met à jour le pourcentage d'occupation des salles en fonction
+     * des réservations filtrées.
+     * <p>
+     * Cette méthode calcule la durée totale des réservations et la durée
+     * d'occupation pour chaque salle,
+     * puis met à jour l'affichage des pourcentages dans la table des salles.
+     * </p>
+     * @param listFiltree liste des réservations filtrées utilisées pour le calcul.
+     */
     private void calculerPourcentage(ObservableList<Reservation> listFiltree) {
         // Calculer la durée totale de toutes les réservations
         Duration dureeTotaleReservations = Duration.ZERO;
@@ -275,7 +321,8 @@ public class ControleurPourcentage {
             LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
             LocalTime heureFin = parseHeure(reservation.getHeureFin());
             if (heureDebut != null && heureFin != null) {
-                dureeTotaleReservations = dureeTotaleReservations.plus(Duration.between(heureDebut, heureFin));
+                dureeTotaleReservations = dureeTotaleReservations
+                        .plus(Duration.between(heureDebut, heureFin));
             }
         }
 
@@ -288,18 +335,22 @@ public class ControleurPourcentage {
             if (heureDebut != null && heureFin != null) {
                 Duration dureeReservation = Duration.between(heureDebut, heureFin);
                 dureeParSalle.put(reservation.getSalleR(),
-                        dureeParSalle.getOrDefault(reservation.getSalleR(), Duration.ZERO).plus(dureeReservation));
+                        dureeParSalle.getOrDefault(reservation.getSalleR(),
+                                Duration.ZERO).plus(dureeReservation));
             }
         }
 
         // Mettre à jour les salles avec le pourcentage d'occupation
         for (Salle salle : listSalle) {
-            Duration dureeSalle = dureeParSalle.getOrDefault(salle.getNom(), Duration.ZERO);
+            Duration dureeSalle = dureeParSalle
+                    .getOrDefault(salle.getNom(), Duration.ZERO);
             double pourcentageOccupation = 0;
             if (!dureeTotaleReservations.isZero()) {
-                pourcentageOccupation = (dureeSalle.toMinutes() * 100.0) / dureeTotaleReservations.toMinutes();
+                pourcentageOccupation = (dureeSalle.toMinutes() * 100.0)
+                        / dureeTotaleReservations.toMinutes();
             }
-            salle.setPourcentageOccupation(String.format("%.2f %%", pourcentageOccupation));
+            salle.setPourcentageOccupation(String.format
+                    ("%.2f %%", pourcentageOccupation));
         }
 
         // Mettre à jour la TableView avec les données des salles
@@ -308,14 +359,25 @@ public class ControleurPourcentage {
         tabSalle.refresh();
     }
 
+    /**
+     * Ouvre un dialogue pour enregistrer un fichier PDF contenant les
+     * statistiques des salles filtrées.
+     * <p>
+     * Cette méthode permet à l'utilisateur de choisir un emplacement pour
+     * sauvegarder un fichier PDF
+     * avec les informations des salles actuellement visibles dans la table.
+     * </p>
+     */
     @FXML
     private void handleGenererPdf() {
         FileChooser choixFichier = new FileChooser();
         choixFichier.setTitle("Enregistrer le fichier PDF");
 
-        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter
+                ("Fichiers PDF", "*.pdf"));
 
-        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
+        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene()
+                .getWindow());
 
         ObservableList<Salle> sallesFiltrees = tabSalle.getItems();
 

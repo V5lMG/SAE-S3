@@ -5,7 +5,6 @@
 
 package sae.statisalle.controleur;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -226,6 +225,11 @@ public class ControleurClassement {
         reinitialiserFiltre();
     }
 
+    /**
+     * Affiche ou masque les filtres de salle en fonction de l'état du bouton feuilleSalle.
+     * Parcourt les composants liés aux filtres et applique leur visibilité.
+     * Vérifie que chaque composant n'est pas null avant de modifier sa visibilité
+     */
     @FXML
     private void afficherFiltreSalle() {
         List<Node> filtres = Arrays.asList(
@@ -244,6 +248,14 @@ public class ControleurClassement {
         });
     }
 
+    /**
+     * Remplit une ComboBox avec un ensemble de valeurs triées, en ajoutant une option "Tous" par défaut.
+     * Les valeurs sont triées par ordre alphabétique avant d'être ajoutées à la ComboBox.
+     * Sélectionne automatiquement la première option après remplissage.
+     *
+     * @param comboBox la ComboBox à remplir
+     * @param valeurs  l'ensemble des valeurs à ajouter
+     */
     private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
         ObservableList<String> items = FXCollections.observableArrayList();
         items.add("Tous");
@@ -256,6 +268,11 @@ public class ControleurClassement {
         comboBox.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Remplit une collection de noms uniques d'employés pour la ComboBox des employés.
+     * Si la liste des employés est non vide, ajoute les noms et prénoms des employés.
+     * Sinon, utilise les noms des employés associés aux réservations.
+     */
     private void remplirComboBoxEmployes() {
         Set<String> nomsUniques = new HashSet<>();
         if (!listEmploye.isEmpty()) {
@@ -271,6 +288,15 @@ public class ControleurClassement {
         remplirComboBox(filtreEmploye, nomsUniques);
     }
 
+    /**
+     * Remplit une ComboBox avec les types uniques d'activités extraits d'une
+     * liste de réservations.
+     * Cette méthode parcourt une liste de réservations et extrait
+     * les types d'activités associés
+     * Les types uniques sont ajoutés dans un ensemble pour éviter
+     * les doublons. Enfin, la ComboBox spécifiée est remplie avec
+     * ces types uniques.
+     */
     private void remplirComboBoxActivites() {
         Set<String> typesUniques = new HashSet<>();
         for (Reservation activite : listReservation) {
@@ -280,6 +306,15 @@ public class ControleurClassement {
         remplirComboBox(filtreActivite, typesUniques);
     }
 
+    /**
+     * Remplit une ComboBox avec les types uniques de salle extraits d'une
+     * liste de réservations.
+     * Cette méthode parcourt une liste de réservations et extrait
+     * les types d'activités associés
+     * Les types uniques sont ajoutés dans un ensemble pour éviter
+     * les doublons. Enfin, la ComboBox spécifiée est remplie avec
+     * ces types uniques.
+     */
     private void remplirComboBoxSalles() {
         Set<String> nomsUniques = new HashSet<>();
         if (!listSalle.isEmpty()) {
@@ -294,6 +329,15 @@ public class ControleurClassement {
         remplirComboBox(filtreSalle, nomsUniques);
     }
 
+    /**
+     * Remplit une ComboBox avec les types uniques de date extraits d'une
+     * liste de réservations.
+     * Cette méthode parcourt une liste de réservations et extrait
+     * les types d'activités associés
+     * Les types uniques sont ajoutés dans un ensemble pour éviter
+     * les doublons. Enfin, la ComboBox spécifiée est remplie avec
+     * ces types uniques.
+     */
     private void remplirComboBoxDates() {
         Set<String> datesUniques = new HashSet<>();
         for (Reservation date : listReservation) {
@@ -303,6 +347,15 @@ public class ControleurClassement {
         remplirComboBox(filtreDateFin, datesUniques);
     }
 
+    /**
+     * Remplit une ComboBox avec les types uniques d'heure de début extraits
+     * d'une liste de réservations.
+     * Cette méthode parcourt une liste de réservations et extrait
+     * les types d'activités associés
+     * Les types uniques sont ajoutés dans un ensemble pour éviter
+     * les doublons. Enfin, la ComboBox spécifiée est remplie avec
+     * ces types uniques.
+     */
     private void remplirComboBoxHeuresD() {
         Set<String> heuresUniques = new HashSet<>();
         for (Reservation heuresD : listReservation) {
@@ -312,6 +365,15 @@ public class ControleurClassement {
         remplirComboBox(filtreHeureD, heuresUniques);
     }
 
+    /**
+     * Remplit une ComboBox avec les types uniques d'heure de fin extraits d'une
+     * liste de réservations.
+     * Cette méthode parcourt une liste de réservations et extrait
+     * les types d'activités associés
+     * Les types uniques sont ajoutés dans un ensemble pour éviter
+     * les doublons. Enfin, la ComboBox spécifiée est remplie avec
+     * ces types uniques.
+     */
     private void remplirComboBoxHeuresF() {
         Set<String> heuresUniques = new HashSet<>();
         for (Reservation heuresF : listReservation) {
@@ -402,6 +464,11 @@ public class ControleurClassement {
         filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
     }
 
+    /**
+     * Met à jour le filtre des dates de début avec des valeurs uniques triées.
+     * Les dates sont extraites des réservations, triées, et ajoutées à la ComboBox,
+     * avec l'option "Tous" en premier.
+     */
     private void mettreAJourFiltreDateDebut() {
         Set<String> datesDebutUniques = new HashSet<>();
 
@@ -417,6 +484,11 @@ public class ControleurClassement {
         filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
     }
 
+    /**
+     * Met à jour le filtre des dates de fin avec des valeurs uniques triées.
+     * Les dates sont extraites des réservations, triées, et ajoutées à la ComboBox,
+     * avec l'option "Tous" en premier.
+     */
     private void mettreAJourFiltreDateFin() {
         Set<String> datesFinUniques = new HashSet<>();
 
@@ -549,6 +621,13 @@ public class ControleurClassement {
         }
     }
 
+    /**
+     * Analyse une chaîne de caractères en tant que date au format "dd/MM/yyyy".
+     * Si le format est invalide, une erreur est affichée et la méthode retourne null.
+     *
+     * @param date La chaîne représentant la date à analyser.
+     * @return La date au format LocalDate ou null en cas d'erreur.
+     */
     private LocalDate parseDate(String date) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -559,6 +638,15 @@ public class ControleurClassement {
         }
     }
 
+    /**
+     * Analyse une chaîne représentant une durée au format "XXhXX"
+     * et la convertit en minutes.
+     * La durée est extraite et séparée en heures et minutes.
+     * La méthode retourne le total en minutes.
+     *
+     * @param duree La chaîne représentant la durée (ex. "2h30").
+     * @return La durée en minutes.
+     */
     private int parseDuree(String duree) {
         String[] parts = duree.split("h");
         int heures = Integer.parseInt(parts[0]);
@@ -566,6 +654,15 @@ public class ControleurClassement {
         return heures * 60 + minutes;  // Conversion en minutes
     }
 
+    /**
+     * Gère l'action de génération d'un fichier PDF contenant
+     * un classement des réservations.
+     * Cette méthode ouvre une boîte de dialogue pour permettre
+     * à l'utilisateur de choisir un emplacement
+     * et un nom de fichier pour enregistrer le PDF.
+     * En fonction de l'état des filtres, elle génère
+     * un PDF avec la liste des réservations complètes ou filtrées.
+     */
     @FXML
     private void handleGenererPdf(){
         FileChooser choixFichier = new FileChooser();
