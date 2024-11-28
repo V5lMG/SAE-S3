@@ -4,18 +4,40 @@
  */
 package sae.statisalle.modele.objet;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+
 /**
- * La classe Reservation initialise les objets de type Reservation.
- * L'objet Reservation est composé de :
+ * La classe Reservation représente une réservation effectuée pour une salle avec
+ * divers détails tels que l'employé ayant effectué la réservation, l'activité associée,
+ * la date, l'heure de début et de fin, ainsi que des informations supplémentaires
+ * sur l'intervenant et l'usage de la réservation.
+ *
+ * <p>
+ * Chaque objet Reservation est caractérisé par :
  * <ul>
- *     <li>Un identifiant de réservation</li>
- *     <li>Une date</li>
- *     <li>Un Creneau(Cf classe Creneau)</li>
+ *     <li>Un identifiant unique de la réservation</li>
+ *     <li>Une salle réservée</li>
+ *     <li>Un employé responsable de la réservation</li>
+ *     <li>Une activité liée à la réservation</li>
+ *     <li>Une date et une plage horaire (heure de début et heure de fin)</li>
+ *     <li>Une description de la réservation</li>
+ *     <li>Des informations sur l'intervenant (nom, prénom, numéro de téléphone)</li>
+ *     <li>L'usage prévu pour la réservation</li>
  * </ul>
  *
- * <br>
- * Elle gère également toutes les erreurs relatives à l'instantiation
- * des reservations en fonction des contenus des fichiers
+ * <p>
+ * Cette classe permet de créer, consulter et modifier les informations
+ * relatives à une réservation, ainsi que de gérer le formatage des heures
+ * de début et de fin si nécessaire.
+ * </p>
+ *
+ * <p>
+ * Elle assure également une validation minimale des heures afin de s'assurer
+ * qu'elles respectent un format standard (HH:mm).
+ * </p>
+ *
  * @author erwan.thierry
  */
 public class Reservation {
@@ -57,19 +79,26 @@ public class Reservation {
     String usage;
 
     /**
-     * Constructeur de la classe Reservation
-     * @param idReservation Identifiant de la réservation
-     * @param salleR Salle réservée
-     * @param employeR Employé ayant effectué la réservation
-     * @param activiteR Activité liée à la réservation
-     * @param dateR Date de la réservation
-     * @param heureDebut Heure de début de la réservation
-     * @param heureFin Heure de fin de la réservation
-     * @param description Description de la réservation
-     * @param nomIntervenant Nom de l'intervenant
-     * @param prenomIntervenant Prénom de l'intervenant
+     * Constructeur de la classe Reservation qui initialise une nouvelle
+     * réservation avec les détails spécifiés, tels que l'identifiant de la
+     * réservation, la salle, l'employé, l'activité, la date, l'heure de début
+     * et de fin, la description, les informations de l'intervenant (nom,
+     * prénom, numéro de téléphone), ainsi que l'usage de la réservation.
+     * Si l'heure de début ou de fin est inférieure à 5 caractères,
+     * elle est automatiquement formatée pour ajouter un zéro en début de chaîne.
+     *
+     * @param idReservation Identifiant unique de la réservation
+     * @param salleR Nom de la salle réservée
+     * @param employeR Nom de l'employé ayant effectué la réservation
+     * @param activiteR Activité associée à la réservation
+     * @param dateR Date de la réservation (format attendu : JJ/MM/AAAA)
+     * @param heureDebut Heure de début de la réservation (format attendu : HH:mm)
+     * @param heureFin Heure de fin de la réservation (format attendu : HH:mm)
+     * @param description Brève description de la réservation
+     * @param nomIntervenant Nom de l'intervenant associé à la réservation
+     * @param prenomIntervenant Prénom de l'intervenant associé à la réservation
      * @param numTelIntervenant Numéro de téléphone de l'intervenant
-     * @param usage Usage de la réservation
+     * @param usage Usage prévu pour cette réservation
      */
     public Reservation(String idReservation, String salleR, String employeR,
                        String activiteR, String dateR, String heureDebut,
@@ -149,6 +178,34 @@ public class Reservation {
 
     public String getUsage() {
         return usage;
+    }
+
+    public String getDureeReservation() {
+        String heureDebutL = getHeureDebut();
+        String heureFinL = getHeureFin();
+
+        LocalTime heureDebut = parseHeure(heureDebutL);
+        LocalTime heureFin = parseHeure(heureFinL);
+
+        if (heureDebut != null && heureFin != null) {
+            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
+            int heure = duree / 60;
+            int minutes = duree % 60;
+
+            return (heure < 10 ? "0" + heure : heure) + "h" + (minutes < 10 ? "0" + minutes : minutes);
+        } else {
+            return "Non Valide";
+        }
+    }
+
+    private LocalTime parseHeure(String heure) {
+        try {
+            heure = heure.replace('h', ':');
+            return LocalTime.parse(heure);
+        } catch (DateTimeParseException e) {
+            System.out.println("Erreur de format d'heure: " + heure);
+            return null;
+        }
     }
 
     /* ----------------------------------------------------- */

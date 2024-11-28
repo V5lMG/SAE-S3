@@ -8,17 +8,29 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * La classe Employe initialise les objets de type Employe.
- * L'objet Employe est composé du :
+ * La classe Employe représente un employé avec des informations personnelles
+ * telles que son identifiant, son nom, son prénom, et son numéro de téléphone.
+ *
+ * Chaque objet Employe est caractérisé par :
  * <ul>
- *     <li>Nom</li>
- *     <li>Prenom</li>
- *     <li>Numéros de téléphone</li>
- *     <li>email</li>
+ *     <li>Un identifiant unique pour l'employé</li>
+ *     <li>Un nom</li>
+ *     <li>Un prénom</li>
+ *     <li>Un numéro de téléphone</li>
  * </ul>
- * <br>
- * Elle gère également toutes les erreurs relatives à l'instantiation
- * des Employés en fonction des contenus des fichiers
+ *
+ * <p>
+ * Cette classe gère également une liste observable des réservations faites par l'employé,
+ * ce qui permet de récupérer les informations associées aux salles, aux types d'activités,
+ * et aux horaires de réservation. Les méthodes associées permettent de récupérer et de
+ * manipuler ces données, comme les salles associées, les types d'activités, et les plages horaires.
+ * </p>
+ *
+ * <p>
+ * Elle gère également les erreurs liées à l'instantiation des employés en fonction des
+ * données présentes dans les fichiers.
+ * </p>
+ *
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
  */

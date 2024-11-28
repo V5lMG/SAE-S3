@@ -9,8 +9,12 @@ import sae.statisalle.exception.ModuloNegatifException;
 import java.util.Random;
 
 /**
- * Classe contenant les méthodes de Diffie-Hellman nécessaire à la
- * génération d'une clé de chiffrement sécurisé.
+ * La classe DiffieHellman contient les méthodes nécessaires pour
+ * implémenter l'algorithme de Diffie-Hellman utilisé dans la génération
+ * de clés de chiffrement sécurisées. Elle inclut des méthodes pour
+ * l'exponentiation modulaire, la génération de nombres premiers et de
+ * générateurs pour les groupes multiplicatifs.
+ *
  * @author valentin.munier-genie
  * @author rodrigo xavier-taborda
  */

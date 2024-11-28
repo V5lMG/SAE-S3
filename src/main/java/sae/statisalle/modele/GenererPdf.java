@@ -18,10 +18,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import javafx.collections.ObservableList;
-import sae.statisalle.modele.objet.Activite;
-import sae.statisalle.modele.objet.Reservation;
-import sae.statisalle.modele.objet.Salle;
-import sae.statisalle.modele.objet.Employe;
+import sae.statisalle.modele.objet.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +65,6 @@ public class GenererPdf {
             document.add(ajouterLogo(cheminImageIUT, xLogoIut, y, 150, 75 ));
             document.add(ajouterLogo(cheminImageStatiSalle, 35, y, 150, 75 ));
 
-
             document.add(new Paragraph("Liste des Réservations")
                                             .setFontSize(20)
                                             .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)
@@ -81,19 +77,19 @@ public class GenererPdf {
 
             // Ajouter les en-têtes de colonnes
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("ID").setFont(policeGras)));
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Salle").setFont(policeGras)));
+                    new Paragraph("Salle").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Employé").setFont(policeGras)));
+                    new Paragraph("Employé").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Activité").setFont(policeGras)));
+                    new Paragraph("Activité").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Date").setFont(policeGras)));
+                    new Paragraph("Date").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Début").setFont(policeGras)));
+                    new Paragraph("Début").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Fin").setFont(policeGras)));
+                    new Paragraph("Fin").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
 
             // Ajouter les données de listReservation
             for (Reservation reservation : listReservation) {
@@ -164,23 +160,23 @@ public class GenererPdf {
 
             // Ajouter les en-têtes de colonnes
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("ID").setFont(policeGras)));
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Nom").setFont(policeGras)));
+                    new Paragraph("Nom").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Capacité").setFont(policeGras)));
+                    new Paragraph("Capacité").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Video Proj.").setFont(policeGras)));
+                    new Paragraph("Video Proj.").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("EcranXXL").setFont(policeGras)));
+                    new Paragraph("EcranXXL").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Machine").setFont(policeGras)));
+                    new Paragraph("Machine").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("nbMachine").setFont(policeGras)));
+                    new Paragraph("nbMachine").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Logiciel").setFont(policeGras)));
+                    new Paragraph("Logiciel").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Imprimante").setFont(policeGras)));
+                    new Paragraph("Imprimante").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
 
             // Ajouter les données de listReservation
             for (Salle salle : listSalle) {
@@ -245,13 +241,13 @@ public class GenererPdf {
 
             // Ajouter les en-têtes de colonnes
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("ID").setFont(policeGras)));
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Nom").setFont(policeGras)));
+                    new Paragraph("Nom").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Prenom").setFont(policeGras)));
+                    new Paragraph("Prenom").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Num Tel").setFont(policeGras)));
+                    new Paragraph("Num Tel").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
 
             // Ajouter les données de listReservation
             for (Employe employe : listEmploye) {
@@ -306,9 +302,9 @@ public class GenererPdf {
 
             // Ajouter les en-têtes de colonnes
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("ID").setFont(policeGras)));
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(
-                    new Paragraph("Type").setFont(policeGras)));
+                    new Paragraph("Type").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
 
             // Ajouter les données de listReservation
             for (Activite activite : listActivite) {
@@ -316,6 +312,83 @@ public class GenererPdf {
                         new Paragraph(activite.getIdActivite())));
                 table.addCell(new Cell().add(
                         new Paragraph(activite.getType())));
+            }
+            table.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+            document.add(table);
+
+            document.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void genererPdfClassement(ObservableList<ReservationDuree> listReservationDuree, File fichier) {
+
+        try {
+            PdfWriter pdfWriter = new PdfWriter(fichier.getAbsoluteFile());
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+            pdfDocument.setDefaultPageSize(PageSize.A4);
+            Document document = new Document(pdfDocument);
+
+            //Chemin du logo de l'application
+            String cheminImageStatiSalle = GenererPdf.class.getResource("/sae/statisalle/img/StatisalleLogoPdf.png").getPath();
+
+            //Chemin du logo de l'IUT
+            String cheminImageIUT = GenererPdf.class.getResource("/sae/statisalle/img/iutRodez.png").getPath();
+
+            float xLogoIut = pdfDocument.getDefaultPageSize().getWidth() - 150 - 20; // placement à droite
+            float y = pdfDocument.getDefaultPageSize().getHeight() - 75 - 20; //placement en haut
+
+            document.add(ajouterLogo(cheminImageIUT, xLogoIut, y, 150, 75 ));
+            document.add(ajouterLogo(cheminImageStatiSalle, 35, y, 150, 75 ));
+
+            document.add(new Paragraph("Liste des durées de réservtion")
+                    .setFontSize(20)
+                    .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)
+                    .setMarginTop(75));
+
+            float[] columnWidths = {60, 70, 90, 70, 70, 70, 70, 60};
+            Table table = new Table(columnWidths);
+
+            PdfFont policeGras = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+
+            // Ajouter les en-têtes de colonnes
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Salle").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Employé").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Activité").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Date").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Début").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Fin").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Durée").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+
+            // Ajouter les données de listReservation
+            for (ReservationDuree activite : listReservationDuree) {
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getIdReservation())));
+
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getSalle())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getEmploye())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getActivite())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getDate())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getHeureDebut())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getHeureFin())));
+                table.addCell(new Cell().add(
+                        new Paragraph(activite.getDuree())));
             }
             table.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
             document.add(table);

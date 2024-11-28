@@ -8,14 +8,32 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * La classe Activite initialise les objets de type Activite.
- * L'objet Activite est composé de :
+ * La classe Activite représente une activité avec un identifiant unique et
+ * un type, ainsi qu'une liste de réservations associées à cette activité.
+ *
+ * Chaque objet Activite est caractérisé par :
  * <ul>
- *     <li>Un type d'activité</li>
+ *     <li>Un identifiant unique pour l'activité</li>
+ *     <li>Un type d'activité (par exemple : réunion, conférence, etc.)</li>
  * </ul>
- * <br>
- * Elle gère également toutes les erreurs relatives à l'instantiation
- * des Activités en fonction des contenus des fichiers
+ *
+ * <p>
+ * Cette classe gère également les opérations liées aux activités, telles que
+ * la récupération des salles associées, les employés impliqués, les heures
+ * de début et de fin des réservations, ainsi que l'ajout ou la modification
+ * des informations relatives à l'activité.
+ * </p>
+ *
+ * <p>
+ * Elle s'appuie sur une liste observable de réservations associées à l'activité
+ * pour faciliter la gestion et la manipulation des données dans l'application.
+ * </p>
+ *
+ * <p>
+ * La classe permet également de vérifier l'intégrité des données issues des
+ * fichiers.
+ * </p>
+ *
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
  */

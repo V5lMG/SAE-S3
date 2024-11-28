@@ -5,11 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * La classe Vigenere gère les opérations de cryptage et décryptage
- * utilisant uniquement l'algorithme de Vigenère.
- * @author valentin.munier-genie
- * @author mathias cambon
- * @author rodrigo xavier-taborda
+ * La classe Vigenere gère les opérations de cryptage et de décryptage
+ * utilisant l'algorithme de Vigenère. Cette classe fournit des méthodes
+ * pour chiffrer et déchiffrer des chaînes de caractères en utilisant une
+ * clé sous forme de BigInteger.
+ *
+ * L'alphabet utilisé pour le chiffrement et le déchiffrement inclut des
+ * lettres, des chiffres, des caractères accentués, et des symboles courants.
+ *
+ * <p>
+ * Les méthodes de cette classe sont statiques, ce qui permet de les utiliser
+ * directement sans instancier d'objet de la classe.
+ * </p>
+ *
+ * @author Valentin Munier-Genie
+ * @author Mathias Cambon
+ * @author Rodrigo Xavier-Taborda
  */
 public class Vigenere {
 

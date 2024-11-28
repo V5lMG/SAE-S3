@@ -91,8 +91,16 @@
                <Button fx:id="btnRetour" layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onAction="#actionRetour" prefHeight="17.0" prefWidth="54.0" style="-fx-background-color: #CD4043;" text="Retour" textFill="WHITE" />
             </AnchorPane>
          </HBox>
-         <HBox prefHeight="100.0" prefWidth="200.0" />
-         <HBox prefHeight="100.0" prefWidth="200.0" />
+         <HBox prefHeight="100.0" prefWidth="998.0" />
+         <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+               <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                  <children>
+                     <Button fx:id="btnGenererPdf" layoutX="37.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleGenererPdf" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Générer en PDF" visible="true" />
+                  </children>
+               </AnchorPane>
+            </children>
+         </HBox>
       </HBox>
    </bottom>
    <left>

@@ -15,9 +15,12 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import sae.statisalle.modele.GenererPdf;
 import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,6 +45,8 @@ public class ControleurClassement {
     private Button btnRetour;
     @FXML
     private Button btnAfficherTableaux;
+    @FXML
+    private Button btnGenererPdf;
 
     @FXML
     private TabPane grandTableau;
@@ -51,23 +56,23 @@ public class ControleurClassement {
 
     // Table de salle
     @FXML
-    private TableView<Reservation> tabSalle;
+    private TableView<ReservationDuree> tabSalle;
     @FXML
-    private TableColumn<Reservation, String> idSalle;
+    private TableColumn<ReservationDuree, String> idSalle;
     @FXML
-    private TableColumn<Reservation, String> nomS;
+    private TableColumn<ReservationDuree, String> nomS;
     @FXML
-    private TableColumn<Reservation, String> employeS;
+    private TableColumn<ReservationDuree, String> employeS;
     @FXML
-    private TableColumn<Reservation, String> activiteS;
+    private TableColumn<ReservationDuree, String> activiteS;
     @FXML
-    private TableColumn<Reservation, String> dateR;
+    private TableColumn<ReservationDuree, String> dateR;
     @FXML
-    private TableColumn<Reservation, String> heureDebutR;
+    private TableColumn<ReservationDuree, String> heureDebutR;
     @FXML
-    private TableColumn<Reservation, String> heureFinR;
+    private TableColumn<ReservationDuree, String> heureFinR;
     @FXML
-    private TableColumn<Reservation, String> totalS;
+    private TableColumn<ReservationDuree, String> totalS;
 
     //Filtre
     @FXML
@@ -109,7 +114,11 @@ public class ControleurClassement {
     @FXML
     ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
     @FXML
-    ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
+    ObservableList<ReservationDuree> reservationsFiltrees = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<ReservationDuree> listReservationDuree = FXCollections.observableArrayList();
+
+    private boolean filtreSet = false;
 
     @FXML
     void actionAide(ActionEvent event) {
@@ -122,6 +131,51 @@ public class ControleurClassement {
     }
 
     /**
+     * Méthode qui sert à récupérer les attributs de l'objet Salle,en les liants
+     * à une réservation spécifique.
+     * @return sallesDetailles liste contenant les informations sur les salles
+     *         liées à une réservation.
+     */
+    public ObservableList<ReservationDuree> getReservationDuree() {
+
+        // Parcours de toutes les salles
+        for (Salle salle : listSalle) {
+            // Parcours des réservations de chaque salle
+            for (Reservation reservation : salle.getReservations()) {
+
+                String idReservation = reservation.getIdReservation();
+                String salleNom = salle.getNom();
+                String employeNom = reservation.getEmployeR();
+                String activite = reservation.getActiviteR();
+                String date = reservation.getDateR();
+                String heureDebut = reservation.getHeureDebut();
+                String heureFin = reservation.getHeureFin();
+
+                // Création de la réservation détaillée
+                ReservationDuree reservationD = new ReservationDuree(
+                    idReservation,
+                        salleNom,
+                        employeNom,
+                        activite,
+                        date,
+                        heureDebut,
+                        heureFin
+                );
+
+                // Ajout de la réservation détaillée à la liste
+                listReservationDuree.add(reservationD);
+            }
+            listReservationDuree.sort((r1, r2) -> {
+                // Convertit les durées en minutes pour comparer
+                int dureeR1 = parseDuree(r1.getDuree());
+                int dureeR2 = parseDuree(r2.getDuree());
+                return Integer.compare(dureeR2, dureeR1);  // Tri décroissant
+            });
+        }
+        return listReservationDuree;
+    }
+
+    /**
      * Chargement des données dans les tableaux, en appelant la méthode
      * chargerDonneesCSV() de LireFichier qui récupère le contenu des fichiers
      * dans des listes
@@ -130,6 +184,7 @@ public class ControleurClassement {
         btnAfficherTableaux.setVisible(false);
 
         grandTableau.setVisible(true);
+        btnGenererPdf.setVisible(true);
 
         tabSalle.getItems().clear();
 
@@ -138,24 +193,16 @@ public class ControleurClassement {
 
         // Table salle
         idSalle.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
-        nomS.setCellValueFactory(new PropertyValueFactory<>("salleR"));
-        employeS.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-        activiteS.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-        dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
+        nomS.setCellValueFactory(new PropertyValueFactory<>("salle"));
+        employeS.setCellValueFactory(new PropertyValueFactory<>("employe"));
+        activiteS.setCellValueFactory(new PropertyValueFactory<>("activite"));
+        dateR.setCellValueFactory(new PropertyValueFactory<>("date"));
         heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
         heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
-        totalS.setCellValueFactory(cellData -> {
-            Reservation ligne = cellData.getValue();
-            return new SimpleStringProperty(calculerDureeSalle(ligne));
-        });
-        listReservation.sort(Comparator.comparingInt((Reservation r) -> {
-                    LocalTime debut = parseHeure(r.getHeureDebut());
-                    LocalTime fin = parseHeure(r.getHeureFin());
-                    return (debut != null && fin != null) ? (int) Duration.between(debut, fin).toMinutes() : 0;
-                }).reversed());  // Trie les durées par ordre décroissant
-        tabSalle.setItems(listReservation);
+        totalS.setCellValueFactory(new PropertyValueFactory<>("duree"));
+        tabSalle.setItems(getReservationDuree());
 
-                afficherFiltreSalle();
+        afficherFiltreSalle();
 
         remplirComboBoxSalles();
         remplirComboBoxEmployes();
@@ -174,24 +221,6 @@ public class ControleurClassement {
         reinitialiserFiltre.setVisible(true);
 
         reinitialiserFiltre();
-    }
-
-    public String calculerDureeSalle(Reservation salle) {
-        String heureDebutL = salle.getHeureDebut();
-        String heureFinL = salle.getHeureFin();
-
-        LocalTime heureDebut = parseHeure(heureDebutL);
-        LocalTime heureFin = parseHeure(heureFinL);
-
-        if (heureDebut != null && heureFin != null) {
-            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
-            int heure = duree / 60;
-            int minutes = duree % 60;
-
-            return (heure < 10 ? "0" + heure : heure) + "h" + (minutes < 10 ? "0" + minutes : minutes);
-        } else {
-            return "Non Valide";
-        }
     }
 
     @FXML
@@ -340,9 +369,8 @@ public class ControleurClassement {
         filtreDateFin.getSelectionModel().select("Tous");
         filtreHeureD.getSelectionModel().select("Tous");
         filtreHeureF.getSelectionModel().select("Tous");
-
-        tabSalle.setItems(listReservation);
-
+        tabSalle.setItems(listReservationDuree);
+        filtreSet = false;
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
@@ -447,17 +475,14 @@ public class ControleurClassement {
 
         if (aucunFiltreApplique) {
             // Si aucun filtre n'est appliqué, réinitialiser les items de la table avec toutes les salles disponibles
-            tabSalle.setItems(listReservation); // Revenir aux données d'origine sans filtrage
+            tabSalle.setItems(listReservationDuree); // Revenir aux données d'origine sans filtrage
         } else {
-            // Appliquer le filtrage des salles
-            ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
-
-            for (Reservation reservation : listReservation) {
+            for (ReservationDuree reservation : listReservationDuree) {
 
                 boolean matchesFiltre =
-                        (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
-                                (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
-                                (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
+                        (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmploye().equalsIgnoreCase(employeFiltre)) &&
+                                (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActivite().equalsIgnoreCase(activiteFiltre)) &&
+                                (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalle().equalsIgnoreCase(salleFiltre));
 
                 boolean matchesDateDebut = true;
                 boolean matchesDateFin = true;
@@ -465,7 +490,7 @@ public class ControleurClassement {
                 if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
                     LocalDate dateDebut = parseDate(dateFiltreDebut);
                     if (dateDebut != null) {
-                        LocalDate dateReservation = parseDate(reservation.getDateR());
+                        LocalDate dateReservation = parseDate(reservation.getDate());
                         if (dateReservation != null) {
                             matchesDateDebut = !dateReservation.isBefore(dateDebut);
                         }
@@ -475,7 +500,7 @@ public class ControleurClassement {
                 if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
                     LocalDate dateFin = parseDate(dateFiltreFin);
                     if (dateFin != null) {
-                        LocalDate dateReservation = parseDate(reservation.getDateR());
+                        LocalDate dateReservation = parseDate(reservation.getDate());
                         if (dateReservation != null) {
                             matchesDateFin = !dateReservation.isAfter(dateFin);
                         }
@@ -509,6 +534,7 @@ public class ControleurClassement {
                     reservationsFiltrees.add(reservation);
                 }
             }
+            filtreSet = true;
             // Mettre à jour la table avec les salles filtrées
             tabSalle.setItems(reservationsFiltrees);
         }
@@ -532,6 +558,30 @@ public class ControleurClassement {
         } catch (DateTimeParseException e) {
             System.out.println("Erreur de format de date: " + date);
             return null;
+        }
+    }
+
+    private int parseDuree(String duree) {
+        String[] parts = duree.split("h");
+        int heures = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return heures * 60 + minutes;  // Conversion en minutes
+    }
+
+    @FXML
+    private void handleGenererPdf(){
+        FileChooser choixFichier = new FileChooser();
+        choixFichier.setTitle("Enregistrer le fichier PDF");
+
+        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+
+        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
+        if (fichier != null) {
+            if (!filtreSet) {
+                GenererPdf.genererPdfClassement(listReservationDuree, fichier);
+            } else {
+                GenererPdf.genererPdfClassement(reservationsFiltrees, fichier);
+            }
         }
     }
 }
