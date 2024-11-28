@@ -29,8 +29,9 @@ import java.util.*;
  * Controleur des statistiques - ControleurClassement
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
+ * @author cambon.mathias
+ * @author montes.robin
  */
-
 public class ControleurClassement {
 
     @FXML
@@ -47,105 +48,57 @@ public class ControleurClassement {
 
     @FXML
     private Tab feuilleSalle;
-    @FXML
-    private Tab feuilleActivite;
-    @FXML
-    private Tab feuilleEmploye;
 
     // Table de salle
     @FXML
-    private TableView<Salle> tabSalle;
+    private TableView<Reservation> tabSalle;
     @FXML
-    private TableColumn<Salle, String> idSalle;
+    private TableColumn<Reservation, String> idSalle;
     @FXML
-    private TableColumn<Salle, String> nomS;
+    private TableColumn<Reservation, String> nomS;
     @FXML
-    private TableColumn<Salle, String> employeS;
+    private TableColumn<Reservation, String> employeS;
     @FXML
-    private TableColumn<Salle, String> activiteS;
-
+    private TableColumn<Reservation, String> activiteS;
     @FXML
-    private TableColumn<Salle, String> dateR;
-
+    private TableColumn<Reservation, String> dateR;
     @FXML
-    private TableColumn<Salle, String> heureDebutR;
-
+    private TableColumn<Reservation, String> heureDebutR;
     @FXML
-    private TableColumn<Salle, String> heureFinR;
-
+    private TableColumn<Reservation, String> heureFinR;
     @FXML
-    private TableColumn<Salle, String> totalS;
+    private TableColumn<Reservation, String> totalS;
 
     //Filtre
     @FXML
     private ComboBox<String> filtreEmploye;
-
     @FXML
     private ComboBox<String> filtreDateDebut;
-
     @FXML
     private ComboBox<String> filtreDateFin;
-
     @FXML
     private ComboBox<String> filtreHeureD;
-
     @FXML
     private ComboBox<String> filtreHeureF;
-
     @FXML
     private ComboBox<String> filtreSalle;
-
     @FXML
     private ComboBox<String> filtreActivite;
 
     @FXML
     private Text textfiltreEmploye;
-
     @FXML
     private Text textfiltreSalle;
-
     @FXML
     private Text textfiltreActivite;
-
     @FXML
     private Text textfiltreDateDebut;
-
     @FXML
     private Text textfiltreDateFin;
-
     @FXML
     private Text textfiltreHeureD;
-
     @FXML
     private Text textfiltreHeureF;
-
-    // Table d'activité
-    @FXML
-    private TableView<Activite> tabActivite;
-    @FXML
-    private TableColumn<Activite, String> idActivite;
-    @FXML
-    private TableColumn<Activite, String> activiteA;
-    @FXML
-    private TableColumn<Activite, String> salleA;
-    @FXML
-    private TableColumn<Activite, String> employeA;
-    @FXML
-    private TableColumn<Activite, String> totalA;
-
-    // Table d'employe
-    @FXML
-    private TableView<Employe> tabEmploye;
-    @FXML
-    private TableColumn<Employe, String> idEmploye;
-    @FXML
-    private TableColumn<Employe, String> nomPrenomE;
-    @FXML
-    private TableColumn<Employe, String> salleE;
-    @FXML
-    private TableColumn<Employe, String> activiteE;
-    @FXML
-    private TableColumn<Employe, String> totalE;
 
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
@@ -156,16 +109,7 @@ public class ControleurClassement {
     @FXML
     ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
     @FXML
-    ObservableList<Employe> listEmployeClasser = FXCollections.observableArrayList();
-    @FXML
-    ObservableList<Activite> listActiviteClasser = FXCollections.observableArrayList();
-    @FXML
-    ObservableList<Salle> listSalleClasser = FXCollections.observableArrayList();
-
-    @FXML
-    void handleReinitialiserFiltre(ActionEvent event) {
-        reinitialiserFiltre();
-    }
+    ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
     @FXML
     void actionAide(ActionEvent event) {
@@ -178,90 +122,6 @@ public class ControleurClassement {
     }
 
     /**
-     * Méthode qui sert à récupérer les attributs de l'objet Salle,en les liants
-     * à une réservation spécifique.
-     * @return sallesDetailles liste contenant les informations sur les salles
-     *         liées à une réservation.
-     */
-    public ObservableList<Salle> getDetailsDesReservations() {
-        ObservableList<Salle> sallesDetaillees = FXCollections.observableArrayList();
-
-        for (Salle salle : listSalle) {
-            for (Reservation reservation : salle.getReservations()) {
-                Salle salleDetaillee = new Salle(
-                        salle.getIdentifiant(),
-                        salle.getNom(),
-                        salle.getCapacite(),
-                        salle.getVideoProj(),
-                        salle.getEcranXXL(),
-                        salle.getNbMachine(),
-                        salle.getTypeMachine(),
-                        salle.getLogiciel(),
-                        salle.getImprimante()
-                );
-
-                salleDetaillee.getReservations().add(reservation);
-
-                sallesDetaillees.add(salleDetaillee);
-            }
-        }
-
-        return sallesDetaillees;
-    }
-
-    /**
-     * Méthode qui sert à récupérer les attributs de l'objet Employe, en les liants
-     * à une réservation spécifique.
-     * @return employesDetaillees liste contenant les informations sur les employe
-     *         liées à une réservation.
-     */
-    public ObservableList<Employe> getDetailsDesEmployes() {
-        ObservableList<Employe> employesDetaillees = FXCollections.observableArrayList();
-
-        for (Employe employe : listEmploye) {
-            for (Reservation reservation : employe.getReservations()) {
-                Employe employeDetaille = new Employe(
-                        employe.getIdE(),
-                        employe.getNom(),
-                        employe.getPrenom(),
-                        employe.getNumTel()
-                );
-
-                employeDetaille.getReservations().add(reservation);
-
-                employesDetaillees.add(employeDetaille);
-            }
-        }
-
-        return employesDetaillees;
-    }
-
-    /**
-     * Méthode qui sert à récupérer les attributs de l'objet Activite, en les liants
-     * à une réservation spécifique.
-     * @return activitesDetaillees liste contenant les informations sur les activite
-     *         liées à une réservation.
-     */
-    public ObservableList<Activite> getDetailsDesActivites() {
-        ObservableList<Activite> activitesDetaillees = FXCollections.observableArrayList();
-
-        for (Activite activite : listActivite) {
-            for (Reservation reservation : activite.getReservations()) {
-                Activite activiteDetaillee = new Activite(
-                        activite.getType(),
-                        activite.getIdActivite()
-                );
-
-                activiteDetaillee.getReservations().add(reservation);
-
-                activitesDetaillees.add(activiteDetaillee);
-            }
-        }
-
-        return activitesDetaillees;
-    }
-
-    /**
      * Chargement des données dans les tableaux, en appelant la méthode
      * chargerDonneesCSV() de LireFichier qui récupère le contenu des fichiers
      * dans des listes
@@ -271,64 +131,31 @@ public class ControleurClassement {
 
         grandTableau.setVisible(true);
 
-        tabEmploye.getItems().clear();
         tabSalle.getItems().clear();
-        tabActivite.getItems().clear();
 
         // Appel de la méthode centralisée pour charger les fichiers
         LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
 
-        for (Employe employe : listEmploye) {
-            employe.setNom(employe.getNom() + " " + employe.getPrenom());
-        }
-
-        // Table employe
-        idEmploye.setCellValueFactory(new PropertyValueFactory<>("idE"));
-        nomPrenomE.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        salleE.setCellValueFactory(new PropertyValueFactory<>("s    allesAssociees"));
-        activiteE.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
-        totalE.setCellValueFactory(cellData -> {
-            Employe ligne = cellData.getValue();
-            return new SimpleStringProperty(calculerDureeEmploye(ligne));
-        });
-        tabEmploye.setItems(getDetailsDesEmployes());
-
         // Table salle
-        idSalle.setCellValueFactory(new PropertyValueFactory<>("identifiant"));
-        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        employeS.setCellValueFactory(new PropertyValueFactory<>("nomEmploye"));
-        activiteS.setCellValueFactory(new PropertyValueFactory<>("typesActivite"));
+        idSalle.setCellValueFactory(new PropertyValueFactory<>("idReservation"));
+        nomS.setCellValueFactory(new PropertyValueFactory<>("salleR"));
+        employeS.setCellValueFactory(new PropertyValueFactory<>("employeR"));
+        activiteS.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
         dateR.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebutR"));
-        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFinR"));
+        heureDebutR.setCellValueFactory(new PropertyValueFactory<>("heureDebut"));
+        heureFinR.setCellValueFactory(new PropertyValueFactory<>("heureFin"));
         totalS.setCellValueFactory(cellData -> {
-            Salle ligne = cellData.getValue();
+            Reservation ligne = cellData.getValue();
             return new SimpleStringProperty(calculerDureeSalle(ligne));
         });
-        tabSalle.setItems(getDetailsDesReservations());
+        listReservation.sort(Comparator.comparingInt((Reservation r) -> {
+                    LocalTime debut = parseHeure(r.getHeureDebut());
+                    LocalTime fin = parseHeure(r.getHeureFin());
+                    return (debut != null && fin != null) ? (int) Duration.between(debut, fin).toMinutes() : 0;
+                }).reversed());  // Trie les durées par ordre décroissant
+        tabSalle.setItems(listReservation);
 
-        // Table activite
-        idActivite.setCellValueFactory(new PropertyValueFactory<>("type"));
-        activiteA.setCellValueFactory(new PropertyValueFactory<>("idActivite"));
-        salleA.setCellValueFactory(new PropertyValueFactory<>("sallesAssociees"));
-        employeA.setCellValueFactory(new PropertyValueFactory<>("employeAssocies"));
-        totalA.setCellValueFactory(cellData -> {
-            Activite ligne = cellData.getValue();
-            return new SimpleStringProperty(calculerDureeActivite(ligne));
-        });
-        tabActivite.setItems(getDetailsDesActivites());
-
-        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleActivite) {
-            afficherFiltreActivite(); // Chaque tableau à son filtre
-        }
-
-        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleSalle) {
-            afficherFiltreSalle(); // Chaque tableau à son filtre
-        }
-
-        if (grandTableau.getSelectionModel().getSelectedItem() == feuilleEmploye) {
-            afficherFiltreEmploye(); // Chaque tableau à son filtre
-        }
+                afficherFiltreSalle();
 
         remplirComboBoxSalles();
         remplirComboBoxEmployes();
@@ -349,11 +176,9 @@ public class ControleurClassement {
         reinitialiserFiltre();
     }
 
-    // TODO Mettre les durée par odre décroissant et par ordre chronologique si durée égale
-    /* ---------------------------------------------------------------- */
-    public String calculerDureeSalle(Salle salle) {
-        String heureDebutL = salle.getHeureDebutR();
-        String heureFinL = salle.getHeureFinR();
+    public String calculerDureeSalle(Reservation salle) {
+        String heureDebutL = salle.getHeureDebut();
+        String heureFinL = salle.getHeureFin();
 
         LocalTime heureDebut = parseHeure(heureDebutL);
         LocalTime heureFin = parseHeure(heureFinL);
@@ -363,68 +188,23 @@ public class ControleurClassement {
             int heure = duree / 60;
             int minutes = duree % 60;
 
-            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
+            return (heure < 10 ? "0" + heure : heure) + "h" + (minutes < 10 ? "0" + minutes : minutes);
         } else {
-            return "N/A";
+            return "Non Valide";
         }
     }
 
-    public String calculerDureeActivite(Activite Activite) {
-        String heureDebutL = Activite.getHeureDebutR();
-        String heureFinL = Activite.getHeureFinR();
-
-        LocalTime heureDebut = parseHeure(heureDebutL);
-        LocalTime heureFin = parseHeure(heureFinL);
-
-        if (heureDebut != null && heureFin != null) {
-            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
-            int heure = duree / 60;
-            int minutes = duree % 60;
-
-            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
-        } else {
-            return "N/A";
-        }
-    }
-
-    public String calculerDureeEmploye(Employe Employe) {
-        String heureDebutL = Employe.getHeureDebutR();
-        String heureFinL = Employe.getHeureFinR();
-
-        LocalTime heureDebut = parseHeure(heureDebutL);
-        LocalTime heureFin = parseHeure(heureFinL);
-
-        if (heureDebut != null && heureFin != null) {
-            int duree = (int) Duration.between(heureDebut, heureFin).toMinutes();
-            int heure = duree / 60;
-            int minutes = duree % 60;
-
-            return heure + "h" + (minutes < 10 ? "0" + minutes : minutes);
-        } else {
-            return "N/A";
-        }
-    }
-    /* ---------------------------------------------------- */
-    /* Ligne rajouté par Erwan */
-
-    public void setListEmploye(ObservableList<Employe> listEmploye) {
-        this.listEmploye = listEmploye;
-    }
-
-    public void setListSalle(ObservableList<Salle> listSalle) {
-        this.listSalle = listSalle;
-    }
-
-    public void setListActivite(ObservableList<Activite> listActivite) {
-        this.listActivite = listActivite;
+    @FXML
+    private void handleReinitialiserFiltre() {
+        reinitialiserFiltre();
     }
 
     @FXML
     private void afficherFiltreSalle() {
         List<Node> filtres = Arrays.asList(
-                filtreEmploye, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                filtreEmploye, filtreActivite, filtreSalle, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
                 textfiltreEmploye, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre
+                textfiltreHeureF, textfiltreSalle
         );
 
         boolean visible = feuilleSalle.isSelected();
@@ -435,68 +215,6 @@ public class ControleurClassement {
                 composantFiltre.setVisible(visible);
             }
         });
-    }
-
-    @FXML
-    private void afficherFiltreActivite() {
-        List<Node> filtres = Arrays.asList(
-                filtreEmploye, filtreSalle, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
-                textfiltreEmploye, textfiltreSalle, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre
-        );
-
-        boolean visible = feuilleActivite.isSelected();
-
-        // Applique la visibilité à chaque composant si celui-ci n'est pas null
-        filtres.forEach(composantFiltre -> {
-            if (composantFiltre != null) {
-                composantFiltre.setVisible(visible);
-            }
-        });
-
-        // Récupérer la position X et Y
-        double positionX = filtreActivite.getLayoutX();
-        double positionY = filtreActivite.getLayoutY();
-
-        filtreSalle.setLayoutX(positionX);
-        filtreSalle.setLayoutY(positionY);
-
-        positionX = textfiltreActivite.getLayoutX();
-        positionY = textfiltreActivite.getLayoutY();
-
-        textfiltreSalle.setLayoutX(positionX);
-        textfiltreSalle.setLayoutY(positionY);
-    }
-
-    @FXML
-    private void afficherFiltreEmploye() {
-        List<Node> filtres = Arrays.asList(
-                filtreSalle, filtreActivite, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
-                textfiltreSalle, textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre
-        );
-
-        boolean visible = feuilleEmploye.isSelected();
-
-        // Applique la visibilité à chaque composant si celui-ci n'est pas null
-        filtres.forEach(composantFiltre -> {
-            if (composantFiltre != null) {
-                composantFiltre.setVisible(visible);
-            }
-        });
-
-        // Récupérer la position X et Y
-        double positionX = filtreEmploye.getLayoutX();
-        double positionY = filtreEmploye.getLayoutY();
-
-        filtreSalle.setLayoutX(positionX);
-        filtreSalle.setLayoutY(positionY);
-
-        positionX = textfiltreEmploye.getLayoutX();
-        positionY = textfiltreEmploye.getLayoutY();
-
-        textfiltreSalle.setLayoutX(positionX);
-        textfiltreSalle.setLayoutY(positionY);
     }
 
     private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
@@ -515,7 +233,7 @@ public class ControleurClassement {
         Set<String> nomsUniques = new HashSet<>();
         if (!listEmploye.isEmpty()) {
             for (Employe employe : listEmploye) {
-                nomsUniques.add(employe.getNom());
+                nomsUniques.add(employe.getNom() + " " + employe.getPrenom());
             }
         } else {
             for (Reservation employe : listReservation) {
@@ -615,7 +333,6 @@ public class ControleurClassement {
 
     @FXML
     private void reinitialiserFiltre() {
-
         filtreSalle.getSelectionModel().select("Tous");
         filtreEmploye.getSelectionModel().select("Tous");
         filtreActivite.getSelectionModel().select("Tous");
@@ -624,13 +341,10 @@ public class ControleurClassement {
         filtreHeureD.getSelectionModel().select("Tous");
         filtreHeureF.getSelectionModel().select("Tous");
 
-        if (tabSalle != null) tabSalle.setItems(getDetailsDesReservations());
-        if (tabEmploye != null) tabEmploye.setItems(getDetailsDesEmployes());
-        if (tabActivite != null) tabActivite.setItems(getDetailsDesActivites());
+        tabSalle.setItems(listReservation);
 
         System.out.println("Filtres réinitialisés avec succès.");
     }
-
 
     private void mettreAJourFiltreHeureDebut() {
         Set<String> heuresDebutUniques = new HashSet<>();
@@ -719,6 +433,8 @@ public class ControleurClassement {
         String heureDebutFiltre = filtreHeureD.getValue();
         String heureFinFiltre = filtreHeureF.getValue();
 
+        reservationsFiltrees.clear();
+
         // Vérifier si tous les filtres sont sur "Tous"
         boolean aucunFiltreApplique =
                 (employeFiltre == null || employeFiltre.equals("Tous")) &&
@@ -731,47 +447,72 @@ public class ControleurClassement {
 
         if (aucunFiltreApplique) {
             // Si aucun filtre n'est appliqué, réinitialiser les items de la table avec toutes les salles disponibles
-            tabSalle.setItems(listSalle); // Revenir aux données d'origine sans filtrage
+            tabSalle.setItems(listReservation); // Revenir aux données d'origine sans filtrage
         } else {
             // Appliquer le filtrage des salles
-            ObservableList<Salle> sallesFiltrees = FXCollections.observableArrayList();
+            ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
-            for (Salle salle : listSalle) {
-                // Filtrage basé sur les valeurs sélectionnées
+            for (Reservation reservation : listReservation) {
+
                 boolean matchesFiltre =
-                        (salleFiltre == null || salleFiltre.equals("Tous") || salle.getNom().equalsIgnoreCase(salleFiltre));
+                        (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre)) &&
+                                (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre)) &&
+                                (salleFiltre == null || salleFiltre.equals("Tous") || reservation.getSalleR().equalsIgnoreCase(salleFiltre));
 
-                // Filtrage des réservations
-                ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
-                for (Reservation reservation : salle.getReservations()) {
-                    boolean matches = true;
-                    // Appliquer les autres filtres (employé, activité, date, heure)
-                    matches &= (employeFiltre == null || employeFiltre.equals("Tous") || reservation.getEmployeR().equalsIgnoreCase(employeFiltre));
-                    matches &= (activiteFiltre == null || activiteFiltre.equals("Tous") || reservation.getActiviteR().equalsIgnoreCase(activiteFiltre));
-                    matches &= (dateFiltreDebut == null || dateFiltreDebut.equals("Tous") || reservation.getDateR().equals(dateFiltreDebut));
-                    matches &= (heureDebutFiltre == null || heureDebutFiltre.equals("Tous") || reservation.getHeureDebut().equals(heureDebutFiltre));
+                boolean matchesDateDebut = true;
+                boolean matchesDateFin = true;
 
-                    if (matches) {
-                        reservationsFiltrees.add(reservation);
+                if (dateFiltreDebut != null && !dateFiltreDebut.equals("Tous")) {
+                    LocalDate dateDebut = parseDate(dateFiltreDebut);
+                    if (dateDebut != null) {
+                        LocalDate dateReservation = parseDate(reservation.getDateR());
+                        if (dateReservation != null) {
+                            matchesDateDebut = !dateReservation.isBefore(dateDebut);
+                        }
                     }
                 }
 
-                // Ajouter la salle filtrée si elle a des réservations valides
-                if (!reservationsFiltrees.isEmpty()) {
-                    Salle salleFiltree = new Salle(salle.getIdentifiant(), salle.getNom(), salle.getCapacite(),
-                            salle.getVideoProj(), salle.getEcranXXL(), salle.getNbMachine(),
-                            salle.getTypeMachine(), salle.getLogiciel(), salle.getImprimante());
-                    salleFiltree.getReservations().setAll(reservationsFiltrees);
-                    sallesFiltrees.add(salleFiltree);
+                if (dateFiltreFin != null && !dateFiltreFin.equals("Tous")) {
+                    LocalDate dateFin = parseDate(dateFiltreFin);
+                    if (dateFin != null) {
+                        LocalDate dateReservation = parseDate(reservation.getDateR());
+                        if (dateReservation != null) {
+                            matchesDateFin = !dateReservation.isAfter(dateFin);
+                        }
+                    }
+                }
+
+                boolean matchesHeureDebut = true;
+                boolean matchesHeureFin = true;
+
+                if (heureDebutFiltre != null && !heureDebutFiltre.equals("Tous")) {
+                    LocalTime heureDebut = parseHeure(heureDebutFiltre);
+                    if (heureDebut != null) {
+                        LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
+                        if (heureDebutReservation != null) {
+                            matchesHeureDebut = !heureDebutReservation.isBefore(heureDebut);
+                        }
+                    }
+                }
+
+                if (heureFinFiltre != null && !heureFinFiltre.equals("Tous")) {
+                    LocalTime heureFin = parseHeure(heureFinFiltre);
+                    if (heureFin != null) {
+                        LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
+                        if (heureFinReservation != null) {
+                            matchesHeureFin = !heureFinReservation.isAfter(heureFin);
+                        }
+                    }
+                }
+
+                if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
+                    reservationsFiltrees.add(reservation);
                 }
             }
-            // TODO Cette ligne casse l'affichage des classements à l'initialisation, guette quand tu cliques sur le bouton "reset" pour avoir l'affichage qu'il faut
             // Mettre à jour la table avec les salles filtrées
-            tabSalle.setItems(sallesFiltrees);
+            tabSalle.setItems(reservationsFiltrees);
         }
     }
-
-
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
     private LocalTime parseHeure(String heure) {
