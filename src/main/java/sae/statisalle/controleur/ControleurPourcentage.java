@@ -1,6 +1,5 @@
 package sae.statisalle.controleur;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,58 +12,35 @@ import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controleur des statistiques - ControleurPourcentage
  * @author erwan.thierry
  * @author rodrigo.xaviertaborda
+ * @author valentin.munier-genie
  */
 public class ControleurPourcentage {
 
     @FXML
-    private Button btnAide;
-    @FXML
-    private Button btnRetour;
-    @FXML
-    private Button btnAfficherTableau;
-    @FXML
-    private Button reinitialiserFiltre;
+    private Button btnAide, btnRetour, btnAfficherTableau, reinitialiserFiltre;
 
     @FXML
-    private ComboBox<String> filtreEmploye;
-    @FXML
-    private ComboBox<String> filtreActivite;
-    @FXML
-    private ComboBox<String> filtreDateDebut;
-    @FXML
-    private ComboBox<String> filtreDateFin;
-    @FXML
-    private ComboBox<String> filtreHeureD;
-    @FXML
-    private ComboBox<String> filtreHeureF;
+    private ComboBox<String> filtreEmploye, filtreActivite, filtreDateDebut, filtreSalle, filtreDateFin, filtreHeureD, filtreHeureF;
 
     @FXML
     private TableView<Salle> tabSalle;
-    @FXML
-    private TableColumn<Salle, String> nomS;
-    @FXML
-    private TableColumn<Salle, String> pourcentOccupation;
 
     @FXML
-    private Text textfiltreActivite;
+    private TableColumn<Salle, String> nomS, pourcentOccupation;
+
     @FXML
-    private Text textfiltreDateDebut;
-    @FXML
-    private Text textfiltreDateFin;
-    @FXML
-    private Text textfiltreEmploye;
-    @FXML
-    private Text textfiltreHeureD;
-    @FXML
-    private Text textfiltreHeureF;
+    private Text textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreEmploye, textfiltreHeureD, textfiltreHeureF, textfiltreSalle;
 
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
@@ -74,6 +50,8 @@ public class ControleurPourcentage {
     ObservableList<Salle> listSalle = FXCollections.observableArrayList();
     @FXML
     ObservableList<Reservation> listReservation = FXCollections.observableArrayList();
+    @FXML
+    ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList();
 
     @FXML
     void actionAide(ActionEvent event) {
@@ -87,45 +65,104 @@ public class ControleurPourcentage {
 
     @FXML
     void handleReinitialiserFiltre(ActionEvent event) {
-        reinitialiserFiltre();
+        filtreSalle.getSelectionModel().select("Tous");
+        filtreEmploye.getSelectionModel().select("Tous");
+        filtreDateDebut.getSelectionModel().select("Tous");
+        filtreDateFin.getSelectionModel().select("Tous");
+        filtreActivite.getSelectionModel().select("Tous");
+        filtreHeureD.getSelectionModel().select("Tous");
+        filtreHeureF.getSelectionModel().select("Tous");
+
+        if (tabSalle != null) {
+            tabSalle.setItems(listSalle);
+        }
+
+        calculerPourcentageGlobal();
+
+        System.out.println("Filtres réinitialisés avec succès.");
     }
 
     /**
-     * Calcule la durée d'occupation totale par salle
-     * @return dureeParSalle la duree d'occupation de chacune des salles
+     * Méthode pour filtrer les réservations selon les critères sélectionnés.
      */
-    private Map<String, Integer> calculerDureeOccupationParSalle() {
-        Map<String, Integer> dureeParSalle = new HashMap<>();
+    @FXML
+    private void appliquerFiltre() {
+        String salle = filtreSalle.getSelectionModel().getSelectedItem();
+        String employe = filtreEmploye.getSelectionModel().getSelectedItem();
+        String activite = filtreActivite.getSelectionModel().getSelectedItem();
+        String dateDebut = filtreDateDebut.getSelectionModel().getSelectedItem();
+        String dateFin = filtreDateFin.getSelectionModel().getSelectedItem();
+        String heureDebut = filtreHeureD.getSelectionModel().getSelectedItem();
+        String heureFin = filtreHeureF.getSelectionModel().getSelectedItem();
 
+        reservationsFiltrees.clear();
+
+        // Filtrage des réservations en fonction des critères choisis
         for (Reservation reservation : listReservation) {
-            String salleNom = reservation.getSalleR();
-            String heureDebutL = reservation.getHeureDebut();
-            String heureFinL = reservation.getHeureFin();
+            boolean matchesFiltre =
+                    ("Tous".equals(salle) || reservation.getSalleR().equals(salle)) &&
+                            ("Tous".equals(employe) || reservation.getEmployeR().equals(employe)) &&
+                            ("Tous".equals(activite) || reservation.getActiviteR().equals(activite));
 
-            LocalTime heureDebut = parseHeure(heureDebutL);
-            LocalTime heureFin = parseHeure(heureFinL);
-            int dureeReservation = (int) Duration.between(heureDebut, heureFin).toMinutes();
+            boolean matchesDateDebut = true;
+            boolean matchesDateFin = true;
 
-            dureeParSalle.put(salleNom, dureeParSalle.getOrDefault(salleNom, 0) + dureeReservation);
+            if (dateDebut != null && !"Tous".equals(dateDebut)) {
+                LocalDate dateDebutFiltre = parseDate(dateDebut);
+                if (dateDebutFiltre != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateDebut = !dateReservation.isBefore(dateDebutFiltre);
+                    }
+                }
+            }
+
+            if (dateFin != null && !"Tous".equals(dateFin)) {
+                LocalDate dateFinFiltre = parseDate(dateFin);
+                if (dateFinFiltre != null) {
+                    LocalDate dateReservation = parseDate(reservation.getDateR());
+                    if (dateReservation != null) {
+                        matchesDateFin = !dateReservation.isAfter(dateFinFiltre);
+                    }
+                }
+            }
+
+            boolean matchesHeureDebut = true;
+            boolean matchesHeureFin = true;
+
+            if (heureDebut != null && !"Tous".equals(heureDebut)) {
+                LocalTime heureDebutFiltre = parseHeure(heureDebut);
+                if (heureDebutFiltre != null) {
+                    LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
+                    if (heureDebutReservation != null) {
+                        matchesHeureDebut = !heureDebutReservation.isBefore(heureDebutFiltre);
+                    }
+                }
+            }
+
+            if (heureFin != null && !"Tous".equals(heureFin)) {
+                LocalTime heureFinFiltre = parseHeure(heureFin);
+                if (heureFinFiltre != null) {
+                    LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
+                    if (heureFinReservation != null) {
+                        matchesHeureFin = !heureFinReservation.isAfter(heureFinFiltre);
+                    }
+                }
+            }
+
+            // Si la réservation correspond à tous les filtres, on l'ajoute à la liste filtrée
+            if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
+                reservationsFiltrees.add(reservation);
+            }
         }
-        return dureeParSalle;
-    }
 
-    /**
-     * Calcule la durée totale de toutes les réservations
-     * @return dureeTotale la duree totale des réservations
-     */
-    private int calculerDureeTotaleReservations() {
-        int dureeTotale = 0;
-        for (Reservation reservation : listReservation) {
-            String heureDebutL = reservation.getHeureDebut();
-            String heureFinL = reservation.getHeureFin();
-
-            LocalTime heureDebut = parseHeure(heureDebutL);
-            LocalTime heureFin = parseHeure(heureFinL);
-            dureeTotale += Duration.between(heureDebut, heureFin).toMinutes();
+        // Si le filtre est "Salle", on ne calcule que pour la salle sélectionnée
+        if (!"Tous".equals(salle)) {
+            calculerPourcentageGlobal();
+        } else {
+            // Si aucun filtre sur la salle, on applique les filtres et on recalcul les pourcentages globaux
+            calculerPourcentageFiltreEmploye(); // Par défaut, on calcule en fonction de l'employé, ou globalement.
         }
-        return dureeTotale;
     }
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
@@ -139,96 +176,135 @@ public class ControleurPourcentage {
         }
     }
 
-    /**
-     * Calcule le pourcentage d'occupation d'une salle
-     * @param salle objet salle afin de récupérer le pourcentage d'occupation
-     *              de chacune d'entre elles
-     * @return le pourcentage avec deux chiffres après la virgule
-     */
-    private String calculerPourcentageOccupation(Salle salle) {
-        Map<String, Integer> dureeOccupation = calculerDureeOccupationParSalle();
-        int dureeOccupee = dureeOccupation.getOrDefault(salle.getNom(), 0);
-
-        int dureeTotaleReservations = calculerDureeTotaleReservations();
-
-        if (dureeTotaleReservations == 0) {
-            return "0%";
+    // Méthode utilitaire pour la conversion des dates en LocalTime
+    private LocalDate parseDate(String date) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Erreur de format de date: " + date);
+            return null;
         }
-
-        double pourcentage = (double) dureeOccupee / dureeTotaleReservations * 100;
-
-        return String.format("%.2f%%", pourcentage);
     }
 
     /**
-     * Chargement des données dans le tableau, en appelant la méthode
-     * chargerDonneesCSV() de LireFichier qui récupère le contenu des fichiers
-     * dans des listes
+     * Chargement des données dans la liste des réservations.
      */
     public void chargerDonnees() {
         btnAfficherTableau.setVisible(false);
-
         tabSalle.setVisible(true);
-
         tabSalle.getItems().clear();
 
-        // Appel de la méthode centralisée pour charger les fichiers
         LireFichier.chargerDonneesCSV("src/main/resources/csv", listEmploye, listSalle, listActivite, listReservation);
 
+        remplirComboBox(filtreSalle, listReservation.stream().map(Reservation::getSalleR).collect(Collectors.toSet()));
+        remplirComboBox(filtreEmploye, listReservation.stream().map(Reservation::getEmployeR).collect(Collectors.toSet()));
+        remplirComboBox(filtreActivite, listReservation.stream().map(Reservation::getActiviteR).collect(Collectors.toSet()));
+        remplirComboBox(filtreDateDebut, listReservation.stream().map(Reservation::getDateR).collect(Collectors.toSet()));
+        remplirComboBox(filtreDateFin, listReservation.stream().map(Reservation::getDateR).collect(Collectors.toSet()));
+        remplirComboBox(filtreHeureD, listReservation.stream().map(Reservation::getHeureDebut).collect(Collectors.toSet()));
+        remplirComboBox(filtreHeureF, listReservation.stream().map(Reservation::getHeureFin).collect(Collectors.toSet()));
+
+        mettreAJourFiltreHeureFin();
+        mettreAJourFiltreHeureDebut();
+
+        mettreAJourFiltreDateDebut();
+        mettreAJourFiltreDateFin();
+
+        System.out.println("Données chargées avec succès.");
+
+        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        pourcentOccupation.setCellValueFactory(new PropertyValueFactory<>("pourcentageOccupation"));
+
+        calculerPourcentageGlobal();
+
+        // Concaténer le nom et le prénom des employers
         for (Employe employe : listEmploye) {
             employe.setNom(employe.getNom() + " " + employe.getPrenom());
         }
 
-        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        pourcentOccupation.setCellValueFactory(cellData -> {
-            Salle salle = cellData.getValue();
-            return new SimpleStringProperty(calculerPourcentageOccupation(salle));
-        });
-        tabSalle.setItems(listSalle);
-
-//        remplirComboBoxSalles();
-        remplirComboBoxEmployes();
-        remplirComboBoxDates();
-        remplirComboBoxActivites();
-        remplirComboBoxHeuresD();
-        remplirComboBoxHeuresF();
-
-//        mettreAJourFiltreHeureFin();
-//        mettreAJourFiltreHeureDebut();
-
-//        mettreAJourFiltreDateDebut();
-//        mettreAJourFiltreDateFin();
-
-        afficherFiltreEmploye();
-
+        afficherFiltre();
         reinitialiserFiltre.setVisible(true);
     }
 
+    private void mettreAJourFiltreHeureDebut() {
+        Set<String> heuresDebutUniques = new HashSet<>();
 
-    @FXML
-    private void reinitialiserFiltre() {
+        for (Reservation reservation : listReservation) {
+            heuresDebutUniques.add(reservation.getHeureDebut());
+        }
 
-        filtreEmploye.getSelectionModel().select("Tous");
-        filtreDateDebut.getSelectionModel().select("Tous");
-        filtreDateFin.getSelectionModel().select("Tous");
-        filtreActivite.getSelectionModel().select("Tous");
-        filtreHeureD.getSelectionModel().select("Tous");
-        filtreHeureF.getSelectionModel().select("Tous");
+        List<String> heuresDebutListe = new ArrayList<>(heuresDebutUniques);
+        Collections.sort(heuresDebutListe);
 
-        if (tabSalle != null) tabSalle.setItems(listSalle);
+        heuresDebutListe.addFirst("Tous");
 
-        System.out.println("Filtres réinitialisés avec succès.");
+        filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
+    }
+
+    private void mettreAJourFiltreHeureFin() {
+        Set<String> heuresFinUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            heuresFinUniques.add(reservation.getHeureFin());
+        }
+
+        List<String> heuresFinListe = new ArrayList<>(heuresFinUniques);
+        Collections.sort(heuresFinListe);
+
+        heuresFinListe.addFirst("Tous");
+
+        filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
+    }
+
+    private void mettreAJourFiltreDateDebut() {
+        Set<String> datesDebutUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            datesDebutUniques.add(reservation.getDateR());
+        }
+
+        List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
+        Collections.sort(datesDebutListe);
+
+        datesDebutListe.addFirst("Tous");
+
+        filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
+    }
+
+    private void mettreAJourFiltreDateFin() {
+        Set<String> datesFinUniques = new HashSet<>();
+
+        for (Reservation reservation : listReservation) {
+            datesFinUniques.add(reservation.getDateR());
+        }
+
+        List<String> datesFinListe = new ArrayList<>(datesFinUniques);
+        Collections.sort(datesFinListe);
+
+        datesFinListe.addFirst("Tous");
+
+        filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
+    }
+
+    /**
+     * Méthode utilitaire pour remplir les ComboBox.
+     */
+    private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
+        ObservableList<String> items = FXCollections.observableArrayList("Tous");
+        items.addAll(valeurs.stream().sorted().toList());
+        comboBox.setItems(items);
+        comboBox.getSelectionModel().selectFirst();
     }
 
     @FXML
-    private void afficherFiltreEmploye() {
+    private void afficherFiltre() {
         List<Node> filtres = Arrays.asList(
-                /*filtreSalle,*/ filtreActivite, filtreEmploye, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
-                /*textfiltreSalle,*/ textfiltreActivite, textfiltreEmploye, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
+                filtreSalle, filtreActivite, filtreEmploye, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
+                textfiltreSalle, textfiltreActivite, textfiltreEmploye, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
                 textfiltreHeureF, reinitialiserFiltre
         );
 
-        // Applique la visibilité à chaque composant si celui-ci n'est pas null
         filtres.forEach(composantFiltre -> {
             if (composantFiltre != null) {
                 composantFiltre.setVisible(true);
@@ -236,189 +312,137 @@ public class ControleurPourcentage {
         });
     }
 
-    private void remplirComboBox(ComboBox<String> comboBox, Set<String> valeurs) {
-        ObservableList<String> items = FXCollections.observableArrayList();
-        items.addFirst("Tous");
-
-        List<String> valeursTrier = new ArrayList<>(valeurs);
-        Collections.sort(valeursTrier); // Trie par ordre alphabétique
-
-        items.addAll(valeursTrier);
-        comboBox.setItems(items);
-        comboBox.getSelectionModel().selectFirst();
-    }
-
-    private void remplirComboBoxEmployes() {
-        Set<String> nomsUniques = new HashSet<>();
-        if (!listEmploye.isEmpty()) {
-            for (Employe employe : listEmploye) {
-                nomsUniques.add(employe.getNom());
-            }
-        } else {
-            for (Reservation employe : listReservation) {
-                nomsUniques.add(employe.getEmployeR());
-            }
-        }
-
-        remplirComboBox(filtreEmploye, nomsUniques);
-    }
-
-    private void remplirComboBoxActivites() {
-        Set<String> typesUniques = new HashSet<>();
-        for (Reservation activite : listReservation) {
-            typesUniques.add(activite.getActiviteR());
-        }
-
-        remplirComboBox(filtreActivite, typesUniques);
-    }
-
-//    private void remplirComboBoxSalles() {
-//        Set<String> nomsUniques = new HashSet<>();
-//        if (!listSalle.isEmpty()) {
-//            for (Salle salle : listSalle) {
-//                nomsUniques.add(salle.getNom());
-//            }
-//        } else {
-//            for (Reservation salle : listReservation) {
-//                nomsUniques.add(salle.getSalleR());
-//            }
-//        }
-//        remplirComboBox(filtreSalle, nomsUniques);
-//    }
-
-    private void remplirComboBoxDates() {
-        Set<String> datesUniques = new HashSet<>();
-        for (Reservation date : listReservation) {
-            datesUniques.add(date.getDateR());
-        }
-        remplirComboBox(filtreDateDebut, datesUniques);
-        remplirComboBox(filtreDateFin, datesUniques);
-    }
-
-    private void remplirComboBoxHeuresD() {
-        Set<String> heuresUniques = new HashSet<>();
-        for (Reservation heuresD : listReservation) {
-            heuresUniques.add(heuresD.getHeureDebut());
-        }
-
-        remplirComboBox(filtreHeureD, heuresUniques);
-    }
-
-    private void remplirComboBoxHeuresF() {
-        Set<String> heuresUniques = new HashSet<>();
-        for (Reservation heuresF : listReservation) {
-            heuresUniques.add(heuresF.getHeureFin());
-        }
-
-        remplirComboBox(filtreHeureF, heuresUniques);
-    }
-
-    private void appliquerFiltres() {
-        // Liste filtrée des salles ou des réservations
-        ObservableList<Salle> sallesFiltrees = FXCollections.observableArrayList(listSalle);
-        ObservableList<Reservation> reservationsFiltrees = FXCollections.observableArrayList(listReservation);
-
-        // Appliquer chaque filtre, s'il est actif
-        String filtreEmployeValue = filtreEmploye.getValue();
-        if (filtreEmployeValue != null && !filtreEmployeValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> !reservation.getEmployeR().equals(filtreEmployeValue));
-        }
-
-        String filtreActiviteValue = filtreActivite.getValue();
-        if (filtreActiviteValue != null && !filtreActiviteValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> !reservation.getActiviteR().equals(filtreActiviteValue));
-        }
-
-        String filtreDateDebutValue = filtreDateDebut.getValue();
-        if (filtreDateDebutValue != null && !filtreDateDebutValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> reservation.getDateR().compareTo(filtreDateDebutValue) < 0);
-        }
-
-        String filtreDateFinValue = filtreDateFin.getValue();
-        if (filtreDateFinValue != null && !filtreDateFinValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> reservation.getDateR().compareTo(filtreDateFinValue) > 0);
-        }
-
-        String filtreHeureDValue = filtreHeureD.getValue();
-        if (filtreHeureDValue != null && !filtreHeureDValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> {
-                LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
-                LocalTime filtreHeureDebut = parseHeure(filtreHeureDValue);
-                return heureDebut.isBefore(filtreHeureDebut);
-            });
-        }
-
-        String filtreHeureFValue = filtreHeureF.getValue();
-        if (filtreHeureFValue != null && !filtreHeureFValue.equals("Tous")) {
-            reservationsFiltrees.removeIf(reservation -> {
-                LocalTime heureFin = parseHeure(reservation.getHeureFin());
-                LocalTime filtreHeureFin = parseHeure(filtreHeureFValue);
-                return heureFin.isAfter(filtreHeureFin);
-            });
-        }
-
-        // Si des réservations sont filtrées, mettre à jour l'affichage avec elles
-        if (!filtreEmployeValue.equals("Tous") || !filtreActiviteValue.equals("Tous")
-                || !filtreDateDebutValue.equals("Tous") || !filtreDateFinValue.equals("Tous")
-                || !filtreHeureDValue.equals("Tous") || !filtreHeureFValue.equals("Tous")) {
-
-            // Mettre à jour le tableau pour afficher les réservations filtrées
-            afficherReservationsFiltrees(reservationsFiltrees);
-        } else {
-            // Sinon, afficher le tableau global (mode salles)
-            afficherTableauGlobal(sallesFiltrees);
-        }
-    }
-
-    private void afficherTableauGlobal(ObservableList<Salle> salles) {
-        tabSalle.getColumns().clear(); // Réinitialiser les colonnes du tableau
-        tabSalle.getColumns().addAll(nomS, pourcentOccupation);
-
-        nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        pourcentOccupation.setCellValueFactory(cellData -> {
-            Salle salle = cellData.getValue();
-            return new SimpleStringProperty(calculerPourcentageOccupation(salle));
-        });
-
-        tabSalle.setItems(salles);
-    }
-
-    private void afficherReservationsFiltrees(ObservableList<Reservation> reservations) {
-        //tabSalle.getColumns().clear(); // Réinitialiser les colonnes du tableau
-
-        TableColumn<Salle, String> employeCol = new TableColumn<>("Employé");
-        TableColumn<Salle, String> activiteCol = new TableColumn<>("Activité");
-
-        nomS.setPrefWidth(425);
-        employeCol.setPrefWidth(425);
-        activiteCol.setPrefWidth(425);
-        pourcentOccupation.setPrefWidth(425);
-
-        employeCol.setCellValueFactory(new PropertyValueFactory<>("employeR"));
-        activiteCol.setCellValueFactory(new PropertyValueFactory<>("activiteR"));
-
-
-
-
-
-
-
-
-
-        // je l'ai mis en commentaire pour pouvoir commit comme c'est une erreur
-        //tabSalle.setItems(reservations);
-    }
-
-
     @FXML
-    private void initialize(){
-        // Liaisons des ComboBox pour les filtres sur les salles
-        //filtreEmploye.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreActivite.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        // filtreSalle.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreDateDebut.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreDateFin.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreHeureD.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
-        //filtreHeureF.valueProperty().addListener((observable, oldValue, newValue) -> appliquerFiltres());
+    private void initialize() {
+        // Ajout de listeners pour appliquer automatiquement les filtres
+        ajouterListenerFiltre(filtreSalle);
+        ajouterListenerFiltre(filtreEmploye);
+        ajouterListenerFiltre(filtreActivite);
+        ajouterListenerFiltre(filtreDateDebut);
+        ajouterListenerFiltre(filtreDateFin);
+        ajouterListenerFiltre(filtreHeureD);
+        ajouterListenerFiltre(filtreHeureF);
+
+        System.out.println("Listeners pour filtres ajoutés.");
+    }
+
+    /**
+     * Ajoute un listener sur une ComboBox pour appliquer le filtre automatiquement.
+     */
+    private void ajouterListenerFiltre(ComboBox<String> comboBox) {
+        comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            appliquerFiltre();
+        });
+    }
+
+    private void calculerPourcentageGlobal() {
+        // Calculer la durée totale de toutes les réservations
+        Duration dureeTotaleReservations = Duration.ZERO;
+        for (Reservation reservation : listReservation) {
+            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
+            LocalTime heureFin = parseHeure(reservation.getHeureFin());
+            if (heureDebut != null && heureFin != null) {
+                dureeTotaleReservations = dureeTotaleReservations.plus(Duration.between(heureDebut, heureFin));
+            }
+        }
+
+        // Calculer la durée de réservation pour chaque salle
+        Map<String, Duration> dureeParSalle = new HashMap<>();
+        for (Reservation reservation : listReservation) {
+            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
+            LocalTime heureFin = parseHeure(reservation.getHeureFin());
+            if (heureDebut != null && heureFin != null) {
+                Duration dureeReservation = Duration.between(heureDebut, heureFin);
+                dureeParSalle.put(reservation.getSalleR(),
+                        dureeParSalle.getOrDefault(reservation.getSalleR(), Duration.ZERO).plus(dureeReservation));
+            }
+        }
+
+        // Mettre à jour les salles avec le pourcentage d'occupation global
+        for (Salle salle : listSalle) {
+            Duration dureeSalle = dureeParSalle.getOrDefault(salle.getNom(), Duration.ZERO);
+            double pourcentageOccupation = 0;
+            if (!dureeTotaleReservations.isZero()) {
+                pourcentageOccupation = (dureeSalle.toMinutes() * 100.0) / dureeTotaleReservations.toMinutes();
+            }
+            salle.setPourcentageOccupation(String.format("%.2f %%", pourcentageOccupation));
+        }
+
+        // Mettre à jour la TableView avec les données des salles globales
+        tabSalle.setItems(FXCollections.observableArrayList(listSalle));
+    }
+
+
+    // -------------Calcul pour les Employes------------------
+
+    /**
+     * Calcul du pourcentage d'occupation pour chaque salle réservée par l'employé sélectionné dans la ComboBox.
+     */
+    public void calculerPourcentageFiltreEmploye() {
+        // Récupérer l'employé sélectionné dans le ComboBox
+        String employeSelectionne = filtreEmploye.getValue();
+        if (employeSelectionne == null || employeSelectionne.isEmpty() || employeSelectionne.equals("Tous")) {
+            System.out.println("Aucun employé sélectionné, on affiche les pourcentages globaux.");
+            calculerPourcentageGlobal(); // Si aucun employé n'est sélectionné, afficher les pourcentages globaux
+            return;
+        }
+
+        // Filtrer les réservations de l'employé sélectionné
+        List<Reservation> reservationsEmploye = reservationsFiltrees.stream()
+                .filter(reservation -> employeSelectionne.equals(reservation.getEmployeR()))
+                .collect(Collectors.toList());
+
+        // Si l'employé n'a aucune réservation
+        if (reservationsEmploye.isEmpty()) {
+            System.err.println("L'employé sélectionné n'a aucune réservation !");
+            return;
+        }
+
+        // Calcul du temps total des réservations de l'employé
+        int tempsTotalEmployeMinutes = 0;
+        for (Reservation reservation : reservationsEmploye) {
+            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
+            LocalTime heureFin = parseHeure(reservation.getHeureFin());
+
+            if (heureDebut != null && heureFin != null) {
+                // Calculer la durée en minutes pour chaque réservation
+                Duration dureeReservation = Duration.between(heureDebut, heureFin);
+                tempsTotalEmployeMinutes += dureeReservation.toMinutes();
+            }
+        }
+
+        // Vérifier que le total de l'employé n'est pas zéro avant de calculer les pourcentages
+        if (tempsTotalEmployeMinutes == 0) {
+            System.err.println("L'employé n'a pas de temps total de réservation !");
+            return;
+        }
+
+        // Calcul du pourcentage d'occupation par salle
+        Map<String, Long> dureeParSalle = new HashMap<>();
+        for (Reservation reservation : reservationsEmploye) {
+            String salleNom = reservation.getSalleR();
+            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
+            LocalTime heureFin = parseHeure(reservation.getHeureFin());
+
+            if (heureDebut != null && heureFin != null) {
+                // Calculer la durée de la réservation et l'ajouter à la salle
+                Duration dureeReservation = Duration.between(heureDebut, heureFin);
+                dureeParSalle.put(salleNom, dureeParSalle.getOrDefault(salleNom, 0L) + dureeReservation.toMinutes());
+            }
+        }
+
+        // Mettre à jour les pourcentages d'occupation des salles
+        for (Salle salle : listSalle) {
+            Long dureeSalle = dureeParSalle.getOrDefault(salle.getNom(), 0L);
+            double pourcentageOccupation = 0;
+            if (tempsTotalEmployeMinutes != 0) {
+                pourcentageOccupation = (dureeSalle * 100.0) / tempsTotalEmployeMinutes;
+            }
+            salle.setPourcentageOccupation(String.format("%.2f %%", pourcentageOccupation));
+        }
+
+        // Mettre à jour la TableView avec les données des salles filtrées
+        tabSalle.setItems(FXCollections.observableArrayList(listSalle));
+        tabSalle.refresh();
     }
 }

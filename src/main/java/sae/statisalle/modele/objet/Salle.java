@@ -55,6 +55,8 @@ public class Salle {
     /* Indique la présence d'imprimante dans la salle */
     String imprimante;
 
+    String pourcentageOccupation;
+
     /* Liste des réservations */
     private ObservableList<Reservation> listReservation;
 
@@ -218,6 +220,10 @@ public class Salle {
                 .orElse("Aucune activité");
     }
 
+    public String getPourcentageOccupation() {
+        return pourcentageOccupation;
+    }
+
     /**
      * Modifie l'identifiant de la salle.
      *
@@ -297,5 +303,9 @@ public class Salle {
      */
     public void setImprimante(String imprimante) {
         this.imprimante = imprimante;
+    }
+
+    public void setPourcentageOccupation(String pourcentageOccupation) {
+        this.pourcentageOccupation = pourcentageOccupation;
     }
 }

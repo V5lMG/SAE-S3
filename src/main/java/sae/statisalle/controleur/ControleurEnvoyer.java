@@ -81,8 +81,8 @@ public class ControleurEnvoyer {
      */
     @FXML
     private void actionChoixFichier() {
-        Serveur serveur = Session.getServeur();
-        ipFx.setText(serveur.renvoyerIP().getHostAddress());
+        String ipServeur = Session.getIpServeur();
+        ipFx.setText(ipServeur);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir des fichiers");
