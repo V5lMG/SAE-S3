@@ -208,6 +208,66 @@ public class GenererPdf {
         }
     }
 
+    public static void genererPdfStatistique(ObservableList<Salle> listSalle,
+                                             File fichier) {
+
+        try {
+            PdfWriter pdfWriter = new PdfWriter(fichier.getAbsoluteFile());
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+            pdfDocument.setDefaultPageSize(PageSize.A4);
+            Document document = new Document(pdfDocument);
+
+            //Chemin du logo de l'application
+            String cheminImageStatiSalle = GenererPdf.class.getResource(
+                    "/sae/statisalle/img/StatisalleLogoPdf.png").getPath();
+
+            //Chemin du logo de l'IUT
+            String cheminImageIUT = GenererPdf.class.getResource(
+                    "/sae/statisalle/img/iutRodez.png").getPath();
+
+            float xLogoIut = pdfDocument.getDefaultPageSize().getWidth() - 150 - 20; // placement à droite
+            float y = pdfDocument.getDefaultPageSize().getHeight() - 75 - 20; //placement en haut
+
+            document.add(ajouterLogo(cheminImageIUT, xLogoIut, y, 150, 75 ));
+            document.add(ajouterLogo(cheminImageStatiSalle, 35, y, 150, 75 ));
+
+
+            document.add(new Paragraph("Statistiques des salles\n\n")
+                    .setFontSize(20)
+                    .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)
+                    .setMarginTop(75));
+
+            float[] largeurColonne = {200, 200, 200};
+            Table table = new Table(largeurColonne);
+
+            PdfFont policeGras = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+
+            // Ajouter les en-têtes de colonnes
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("ID").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Nom").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+            table.addHeaderCell(new Cell().add(
+                    new Paragraph("Poucentage d'occupation").setFont(policeGras).setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)));
+
+            // Ajouter les données de listReservation
+            for (Salle salle : listSalle) {
+                table.addCell(new Cell().add(
+                        new Paragraph(salle.getIdentifiant())));
+                table.addCell(new Cell().add(
+                        new Paragraph(salle.getNom())));
+                table.addCell(new Cell().add(
+                        new Paragraph(salle.getPourcentageOccupation())));
+            }
+            table.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+            document.add(table);
+
+            document.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void genererPdfEmploye(ObservableList<Employe> listEmploye, File fichier) {
 
         try {

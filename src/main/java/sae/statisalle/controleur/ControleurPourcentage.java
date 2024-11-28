@@ -1,3 +1,7 @@
+/*
+ * ControleurPourcentage.java                 17/10/2024
+ * IUT DE RODEZ                Pas de copyrights
+ */
 package sae.statisalle.controleur;
 
 import javafx.collections.FXCollections;
@@ -8,9 +12,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import sae.statisalle.modele.GenererPdf;
 import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,6 +45,9 @@ public class ControleurPourcentage {
 
     @FXML
     private TableColumn<Salle, String> nomS, pourcentOccupation;
+
+    @FXML
+    private Button btnGenererPdf;
 
     @FXML
     private Text textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreEmploye, textfiltreHeureD, textfiltreHeureF, textfiltreSalle;
@@ -83,7 +93,7 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Méthode pour filtrer les réservations selon les critères sélectionnés.
+     * Filtrage du contenu du tableau "reservation" selon les critères sélectionnés.
      */
     @FXML
     private void appliquerFiltre() {
@@ -97,12 +107,12 @@ public class ControleurPourcentage {
 
         reservationsFiltrees.clear();
 
-        // Filtrage des réservations en fonction des critères choisis
+        // filtrage des réservations en fonction des critères choisis
         for (Reservation reservation : listReservation) {
             boolean matchesFiltre =
                     ("Tous".equals(salle) || reservation.getSalleR().equals(salle)) &&
-                            ("Tous".equals(employe) || reservation.getEmployeR().equals(employe)) &&
-                            ("Tous".equals(activite) || reservation.getActiviteR().equals(activite));
+                    ("Tous".equals(employe) || reservation.getEmployeR().equals(employe)) &&
+                    ("Tous".equals(activite) || reservation.getActiviteR().equals(activite));
 
             boolean matchesDateDebut = true;
             boolean matchesDateFin = true;
@@ -156,10 +166,26 @@ public class ControleurPourcentage {
             }
         }
 
-        calculerPourcentageGlobal();
+        // Filtrage des salles basé sur les réservations filtrées
+        Set<String> sallesFiltrees = reservationsFiltrees.stream()
+                .map(Reservation::getSalleR)
+                .collect(Collectors.toSet());
+
+        List<Salle> salles = listSalle.stream()
+                .filter(salleObj -> sallesFiltrees.contains(salleObj.getNom()))
+                .collect(Collectors.toList());
+
+        // Mettre à jour la TableView des salles filtrées
+        tabSalle.setItems(FXCollections.observableArrayList(salles));
     }
 
-    // Méthode utilitaire pour la conversion des heures en LocalTime
+    /**
+     * Méthode utilitaire pour convertir une chaîne représentant une heure en un objet LocalTime.
+     * La chaîne d'entrée peut utiliser le caractère 'h' comme séparateur des heures et des minutes.
+     * Ce caractère sera remplacé par ':' avant la tentative de conversion.
+     * @param heure la chaîne représentant une heure à convertir
+     * @return un objet LocalTime représentant l'heure ou bien "null" si la chaîne est mal formatée
+     */
     private LocalTime parseHeure(String heure) {
         try {
             heure = heure.replace('h', ':');
@@ -170,7 +196,15 @@ public class ControleurPourcentage {
         }
     }
 
-    // Méthode utilitaire pour la conversion des dates en LocalTime
+    /**
+     * Méthode utilitaire pour convertir une chaîne représentant une date en un objet LocalDate.
+     * La chaîne d'entrée doit être au format "dd/MM/yyyy".
+     * Si la chaîne ne correspond pas à ce format,
+     * une exception DateTimeParseException est capturée,
+     * un message d'erreur est affiché et la méthode retourne "null".
+     * @param date la chaîne représentant une date à convertir
+     * @return un objet LocalDate représentant la date, ou "null" si la chaîne est mal formatée.
+     */
     private LocalDate parseDate(String date) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -182,8 +216,20 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Chargement des données dans la liste des réservations.
+     * Méthode pour charger et afficher les données nécessaires à l'application.
+     * Cette méthode effectue les opérations suivantes :
+     *  -Cache le bouton d'affichage du tableau et affiche le tableau des salles.
+     *  -Charge les données depuis un fichier CSV en utilisant la méthode LireFichier.
+     *  -Met à jour les ComboBox de filtres avec les données extraites des réservations, y compris les salles, employés, activités, dates et heures.
+     *  -Met à jour les filtres de date et d'heure pour la recherche dans l'interface.
+     *  -Affiche un message de succès dans la console lorsque les données sont correctement chargées.
+     *  -Configure les colonnes du tableau des salles, notamment les noms et pourcentages d'occupation.
+     *  -Effectue les calculs pour afficher le pourcentage global d'occupation des salles.
+     *  -Concatène les noms et prénoms des employés pour l'affichage dans les filtres et tableaux.
+     *  -Affiche les filtres dans l'interface et rend le bouton de réinitialisation visible.
+     * Cette méthode est généralement appelée pour initialiser ou recharger les données dans l'application.
      */
+
     public void chargerDonnees() {
         btnAfficherTableau.setVisible(false);
         tabSalle.setVisible(true);
@@ -352,7 +398,7 @@ public class ControleurPourcentage {
             }
         }
 
-        // Mettre à jour les salles avec le pourcentage d'occupation global
+        // Mettre à jour les salles avec le pourcentage d'occupation
         for (Salle salle : listSalle) {
             Duration dureeSalle = dureeParSalle.getOrDefault(salle.getNom(), Duration.ZERO);
             double pourcentageOccupation = 0;
@@ -362,7 +408,22 @@ public class ControleurPourcentage {
             salle.setPourcentageOccupation(String.format("%.2f %%", pourcentageOccupation));
         }
 
-        // Mettre à jour la TableView avec les données des salles globales
+        // Mettre à jour la TableView avec les données des salles
         tabSalle.setItems(FXCollections.observableArrayList(listSalle));
+    }
+
+    @FXML
+    private void handleGenererPdf() {
+        FileChooser choixFichier = new FileChooser();
+        choixFichier.setTitle("Enregistrer le fichier PDF");
+
+        choixFichier.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+
+        File fichier = choixFichier.showSaveDialog(btnGenererPdf.getScene().getWindow());
+
+        ObservableList<Salle> sallesFiltrees = tabSalle.getItems();
+
+        // Générer le PDF avec la liste filtrée
+        GenererPdf.genererPdfStatistique(sallesFiltrees, fichier);
     }
 }
