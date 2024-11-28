@@ -96,7 +96,7 @@
             <children>
                <AnchorPane prefHeight="200.0" prefWidth="200.0">
                   <children>
-                     <Button fx:id="btnGenererPdf" layoutX="37.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleGenererPdf" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Générer en PDF" visible="true" />
+                     <Button fx:id="btnGenererPdf" layoutX="37.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleGenererPdf" prefHeight="40.0" prefWidth="125.0" style="-fx-background-color: #60BCFB;" text="Générer en PDF" visible="false" />
                   </children>
                </AnchorPane>
             </children>
