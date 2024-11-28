@@ -156,13 +156,7 @@ public class ControleurPourcentage {
             }
         }
 
-        // Si le filtre est "Salle", on ne calcule que pour la salle sélectionnée
-        if (!"Tous".equals(salle)) {
-            calculerPourcentageGlobal();
-        } else {
-            // Si aucun filtre sur la salle, on applique les filtres et on recalcul les pourcentages globaux
-            calculerPourcentageFiltreEmploye(); // Par défaut, on calcule en fonction de l'employé, ou globalement.
-        }
+        calculerPourcentageGlobal();
     }
 
     // Méthode utilitaire pour la conversion des heures en LocalTime
@@ -370,79 +364,5 @@ public class ControleurPourcentage {
 
         // Mettre à jour la TableView avec les données des salles globales
         tabSalle.setItems(FXCollections.observableArrayList(listSalle));
-    }
-
-
-    // -------------Calcul pour les Employes------------------
-
-    /**
-     * Calcul du pourcentage d'occupation pour chaque salle réservée par l'employé sélectionné dans la ComboBox.
-     */
-    public void calculerPourcentageFiltreEmploye() {
-        // Récupérer l'employé sélectionné dans le ComboBox
-        String employeSelectionne = filtreEmploye.getValue();
-        if (employeSelectionne == null || employeSelectionne.isEmpty() || employeSelectionne.equals("Tous")) {
-            System.out.println("Aucun employé sélectionné, on affiche les pourcentages globaux.");
-            calculerPourcentageGlobal(); // Si aucun employé n'est sélectionné, afficher les pourcentages globaux
-            return;
-        }
-
-        // Filtrer les réservations de l'employé sélectionné
-        List<Reservation> reservationsEmploye = reservationsFiltrees.stream()
-                .filter(reservation -> employeSelectionne.equals(reservation.getEmployeR()))
-                .collect(Collectors.toList());
-
-        // Si l'employé n'a aucune réservation
-        if (reservationsEmploye.isEmpty()) {
-            System.err.println("L'employé sélectionné n'a aucune réservation !");
-            return;
-        }
-
-        // Calcul du temps total des réservations de l'employé
-        int tempsTotalEmployeMinutes = 0;
-        for (Reservation reservation : reservationsEmploye) {
-            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
-            LocalTime heureFin = parseHeure(reservation.getHeureFin());
-
-            if (heureDebut != null && heureFin != null) {
-                // Calculer la durée en minutes pour chaque réservation
-                Duration dureeReservation = Duration.between(heureDebut, heureFin);
-                tempsTotalEmployeMinutes += dureeReservation.toMinutes();
-            }
-        }
-
-        // Vérifier que le total de l'employé n'est pas zéro avant de calculer les pourcentages
-        if (tempsTotalEmployeMinutes == 0) {
-            System.err.println("L'employé n'a pas de temps total de réservation !");
-            return;
-        }
-
-        // Calcul du pourcentage d'occupation par salle
-        Map<String, Long> dureeParSalle = new HashMap<>();
-        for (Reservation reservation : reservationsEmploye) {
-            String salleNom = reservation.getSalleR();
-            LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
-            LocalTime heureFin = parseHeure(reservation.getHeureFin());
-
-            if (heureDebut != null && heureFin != null) {
-                // Calculer la durée de la réservation et l'ajouter à la salle
-                Duration dureeReservation = Duration.between(heureDebut, heureFin);
-                dureeParSalle.put(salleNom, dureeParSalle.getOrDefault(salleNom, 0L) + dureeReservation.toMinutes());
-            }
-        }
-
-        // Mettre à jour les pourcentages d'occupation des salles
-        for (Salle salle : listSalle) {
-            Long dureeSalle = dureeParSalle.getOrDefault(salle.getNom(), 0L);
-            double pourcentageOccupation = 0;
-            if (tempsTotalEmployeMinutes != 0) {
-                pourcentageOccupation = (dureeSalle * 100.0) / tempsTotalEmployeMinutes;
-            }
-            salle.setPourcentageOccupation(String.format("%.2f %%", pourcentageOccupation));
-        }
-
-        // Mettre à jour la TableView avec les données des salles filtrées
-        tabSalle.setItems(FXCollections.observableArrayList(listSalle));
-        tabSalle.refresh();
     }
 }
