@@ -19,9 +19,7 @@ import sae.statisalle.modele.objet.*;
 
 import java.io.File;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class ControleurPourcentage {
     private Button btnAide, btnRetour, btnAfficherTableau, reinitialiserFiltre;
 
     @FXML
-    private ComboBox<String> filtreEmploye, filtreActivite, filtreDateDebut, filtreSalle, filtreDateFin, filtreHeureD, filtreHeureF;
+    private ComboBox<String> filtreEmploye, filtreActivite, filtreSalle;
 
     @FXML
     private TableView<Salle> tabSalle;
@@ -50,7 +48,7 @@ public class ControleurPourcentage {
     private Button btnGenererPdf;
 
     @FXML
-    private Text textfiltreActivite, textfiltreDateDebut, textfiltreDateFin, textfiltreEmploye, textfiltreHeureD, textfiltreHeureF, textfiltreSalle;
+    private Text textfiltreActivite, textfiltreEmploye, textfiltreSalle;
 
     @FXML
     ObservableList<Employe> listEmploye = FXCollections.observableArrayList();
@@ -70,25 +68,60 @@ public class ControleurPourcentage {
 
     @FXML
     void actionRetour(ActionEvent event) {
+        // Cacher les ComboBox de filtres
+        filtreEmploye.setVisible(false);
+        filtreSalle.setVisible(false);
+        filtreActivite.setVisible(false);
+
+        // Réinitialiser les ComboBox
+        filtreEmploye.getSelectionModel().select("Tous");
+        filtreSalle.getSelectionModel().select("Tous");
+        filtreActivite.getSelectionModel().select("Tous");
+
+        // Cacher les textes de description des filtres
+        textfiltreEmploye.setVisible(false);
+        textfiltreSalle.setVisible(false);
+        textfiltreActivite.setVisible(false);
+
+        // Cacher les boutons supplémentaires
+        reinitialiserFiltre.setVisible(false);
+        btnGenererPdf.setVisible(false);
+
+        // Réinitialiser et cacher le tableau
+        tabSalle.getItems().clear();
+        tabSalle.setVisible(false);
+
+        // Réinitialiser les listes filtrées
+        reservationsFiltrees.clear();
+        listReservation.clear();
+        listSalle.clear();
+        listEmploye.clear();
+        listActivite.clear();
+
+        // Rendre le bouton d'affichage du tableau visible
+        btnAfficherTableau.setVisible(true);
+
+        // Effectuer l'action globale liée au retour
         MainControleur.activerActionAnalyse();
+
+        System.out.println("Retour effectué, état réinitialisé.");
     }
 
     @FXML
     void handleReinitialiserFiltre(ActionEvent event) {
+        resetFiltre();
+    }
+
+    public void resetFiltre() {
         filtreSalle.getSelectionModel().select("Tous");
         filtreEmploye.getSelectionModel().select("Tous");
-        filtreDateDebut.getSelectionModel().select("Tous");
-        filtreDateFin.getSelectionModel().select("Tous");
         filtreActivite.getSelectionModel().select("Tous");
-        filtreHeureD.getSelectionModel().select("Tous");
-        filtreHeureF.getSelectionModel().select("Tous");
+
+        calculerPourcentage(listReservation);
 
         if (tabSalle != null) {
-            tabSalle.setItems(listSalle);
+            tabSalle.setItems(FXCollections.observableArrayList(listSalle));
         }
-
-        calculerPourcentageGlobal();
-
         System.out.println("Filtres réinitialisés avec succès.");
     }
 
@@ -100,10 +133,6 @@ public class ControleurPourcentage {
         String salle = filtreSalle.getSelectionModel().getSelectedItem();
         String employe = filtreEmploye.getSelectionModel().getSelectedItem();
         String activite = filtreActivite.getSelectionModel().getSelectedItem();
-        String dateDebut = filtreDateDebut.getSelectionModel().getSelectedItem();
-        String dateFin = filtreDateFin.getSelectionModel().getSelectedItem();
-        String heureDebut = filtreHeureD.getSelectionModel().getSelectedItem();
-        String heureFin = filtreHeureF.getSelectionModel().getSelectedItem();
 
         reservationsFiltrees.clear();
 
@@ -114,57 +143,13 @@ public class ControleurPourcentage {
                     ("Tous".equals(employe) || reservation.getEmployeR().equals(employe)) &&
                     ("Tous".equals(activite) || reservation.getActiviteR().equals(activite));
 
-            boolean matchesDateDebut = true;
-            boolean matchesDateFin = true;
-
-            if (dateDebut != null && !"Tous".equals(dateDebut)) {
-                LocalDate dateDebutFiltre = parseDate(dateDebut);
-                if (dateDebutFiltre != null) {
-                    LocalDate dateReservation = parseDate(reservation.getDateR());
-                    if (dateReservation != null) {
-                        matchesDateDebut = !dateReservation.isBefore(dateDebutFiltre);
-                    }
-                }
-            }
-
-            if (dateFin != null && !"Tous".equals(dateFin)) {
-                LocalDate dateFinFiltre = parseDate(dateFin);
-                if (dateFinFiltre != null) {
-                    LocalDate dateReservation = parseDate(reservation.getDateR());
-                    if (dateReservation != null) {
-                        matchesDateFin = !dateReservation.isAfter(dateFinFiltre);
-                    }
-                }
-            }
-
-            boolean matchesHeureDebut = true;
-            boolean matchesHeureFin = true;
-
-            if (heureDebut != null && !"Tous".equals(heureDebut)) {
-                LocalTime heureDebutFiltre = parseHeure(heureDebut);
-                if (heureDebutFiltre != null) {
-                    LocalTime heureDebutReservation = parseHeure(reservation.getHeureDebut());
-                    if (heureDebutReservation != null) {
-                        matchesHeureDebut = !heureDebutReservation.isBefore(heureDebutFiltre);
-                    }
-                }
-            }
-
-            if (heureFin != null && !"Tous".equals(heureFin)) {
-                LocalTime heureFinFiltre = parseHeure(heureFin);
-                if (heureFinFiltre != null) {
-                    LocalTime heureFinReservation = parseHeure(reservation.getHeureFin());
-                    if (heureFinReservation != null) {
-                        matchesHeureFin = !heureFinReservation.isAfter(heureFinFiltre);
-                    }
-                }
-            }
-
             // Si la réservation correspond à tous les filtres, on l'ajoute à la liste filtrée
-            if (matchesFiltre && matchesDateDebut && matchesDateFin && matchesHeureDebut && matchesHeureFin) {
+            if (matchesFiltre) {
                 reservationsFiltrees.add(reservation);
             }
         }
+
+        calculerPourcentage(reservationsFiltrees);
 
         // Filtrage des salles basé sur les réservations filtrées
         Set<String> sallesFiltrees = reservationsFiltrees.stream()
@@ -197,39 +182,21 @@ public class ControleurPourcentage {
     }
 
     /**
-     * Méthode utilitaire pour convertir une chaîne représentant une date en un objet LocalDate.
-     * La chaîne d'entrée doit être au format "dd/MM/yyyy".
-     * Si la chaîne ne correspond pas à ce format,
-     * une exception DateTimeParseException est capturée,
-     * un message d'erreur est affiché et la méthode retourne "null".
-     * @param date la chaîne représentant une date à convertir
-     * @return un objet LocalDate représentant la date, ou "null" si la chaîne est mal formatée.
-     */
-    private LocalDate parseDate(String date) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return LocalDate.parse(date, formatter);
-        } catch (DateTimeParseException e) {
-            System.out.println("Erreur de format de date: " + date);
-            return null;
-        }
-    }
-
-    /**
      * Méthode pour charger et afficher les données nécessaires à l'application.
      * Cette méthode effectue les opérations suivantes :
-     *  -Cache le bouton d'affichage du tableau et affiche le tableau des salles.
-     *  -Charge les données depuis un fichier CSV en utilisant la méthode LireFichier.
-     *  -Met à jour les ComboBox de filtres avec les données extraites des réservations, y compris les salles, employés, activités, dates et heures.
-     *  -Met à jour les filtres de date et d'heure pour la recherche dans l'interface.
-     *  -Affiche un message de succès dans la console lorsque les données sont correctement chargées.
-     *  -Configure les colonnes du tableau des salles, notamment les noms et pourcentages d'occupation.
-     *  -Effectue les calculs pour afficher le pourcentage global d'occupation des salles.
-     *  -Concatène les noms et prénoms des employés pour l'affichage dans les filtres et tableaux.
-     *  -Affiche les filtres dans l'interface et rend le bouton de réinitialisation visible.
-     * Cette méthode est généralement appelée pour initialiser ou recharger les données dans l'application.
+     * <ul>
+     *   <li>Cache le bouton d'affichage du tableau et affiche le tableau des salles.</li>
+     *   <li>Charge les données depuis un fichier CSV en utilisant la méthode LireFichier</li>
+     *   <li>Met à jour les ComboBox de filtres avec les données extraites des réservations, y compris les salles, employés, activités, dates et heures.</li>
+     *   <li>Met à jour les filtres de date et d'heure pour la recherche dans l'interface.</li>
+     *   <li>Affiche un message de succès dans la console lorsque les données sont correctement chargées.</li>
+     *   <li>Configure les colonnes du tableau des salles, notamment les noms et pourcentages d'occupation.</li>
+     *   <li>Effectue les calculs pour afficher le pourcentage global d'occupation des salles.</li>
+     *   <li>Concatène les noms et prénoms des employés pour l'affichage dans les filtres et tableaux.</li>
+     *   <li>Affiche les filtres dans l'interface et rend le bouton de réinitialisation visible.</li>
+     * </ul>
+     * <p>Cette méthode est généralement appelée pour initialiser ou recharger les données dans l'application.</p>
      */
-
     public void chargerDonnees() {
         btnAfficherTableau.setVisible(false);
         tabSalle.setVisible(true);
@@ -240,23 +207,13 @@ public class ControleurPourcentage {
         remplirComboBox(filtreSalle, listReservation.stream().map(Reservation::getSalleR).collect(Collectors.toSet()));
         remplirComboBox(filtreEmploye, listReservation.stream().map(Reservation::getEmployeR).collect(Collectors.toSet()));
         remplirComboBox(filtreActivite, listReservation.stream().map(Reservation::getActiviteR).collect(Collectors.toSet()));
-        remplirComboBox(filtreDateDebut, listReservation.stream().map(Reservation::getDateR).collect(Collectors.toSet()));
-        remplirComboBox(filtreDateFin, listReservation.stream().map(Reservation::getDateR).collect(Collectors.toSet()));
-        remplirComboBox(filtreHeureD, listReservation.stream().map(Reservation::getHeureDebut).collect(Collectors.toSet()));
-        remplirComboBox(filtreHeureF, listReservation.stream().map(Reservation::getHeureFin).collect(Collectors.toSet()));
-
-        mettreAJourFiltreHeureFin();
-        mettreAJourFiltreHeureDebut();
-
-        mettreAJourFiltreDateDebut();
-        mettreAJourFiltreDateFin();
 
         System.out.println("Données chargées avec succès.");
 
         nomS.setCellValueFactory(new PropertyValueFactory<>("nom"));
         pourcentOccupation.setCellValueFactory(new PropertyValueFactory<>("pourcentageOccupation"));
 
-        calculerPourcentageGlobal();
+        calculerPourcentage(listReservation);
 
         // Concaténer le nom et le prénom des employers
         for (Employe employe : listEmploye) {
@@ -265,66 +222,6 @@ public class ControleurPourcentage {
 
         afficherFiltre();
         reinitialiserFiltre.setVisible(true);
-    }
-
-    private void mettreAJourFiltreHeureDebut() {
-        Set<String> heuresDebutUniques = new HashSet<>();
-
-        for (Reservation reservation : listReservation) {
-            heuresDebutUniques.add(reservation.getHeureDebut());
-        }
-
-        List<String> heuresDebutListe = new ArrayList<>(heuresDebutUniques);
-        Collections.sort(heuresDebutListe);
-
-        heuresDebutListe.addFirst("Tous");
-
-        filtreHeureD.setItems(FXCollections.observableArrayList(heuresDebutListe));
-    }
-
-    private void mettreAJourFiltreHeureFin() {
-        Set<String> heuresFinUniques = new HashSet<>();
-
-        for (Reservation reservation : listReservation) {
-            heuresFinUniques.add(reservation.getHeureFin());
-        }
-
-        List<String> heuresFinListe = new ArrayList<>(heuresFinUniques);
-        Collections.sort(heuresFinListe);
-
-        heuresFinListe.addFirst("Tous");
-
-        filtreHeureF.setItems(FXCollections.observableArrayList(heuresFinListe));
-    }
-
-    private void mettreAJourFiltreDateDebut() {
-        Set<String> datesDebutUniques = new HashSet<>();
-
-        for (Reservation reservation : listReservation) {
-            datesDebutUniques.add(reservation.getDateR());
-        }
-
-        List<String> datesDebutListe = new ArrayList<>(datesDebutUniques);
-        Collections.sort(datesDebutListe);
-
-        datesDebutListe.addFirst("Tous");
-
-        filtreDateDebut.setItems(FXCollections.observableArrayList(datesDebutListe));
-    }
-
-    private void mettreAJourFiltreDateFin() {
-        Set<String> datesFinUniques = new HashSet<>();
-
-        for (Reservation reservation : listReservation) {
-            datesFinUniques.add(reservation.getDateR());
-        }
-
-        List<String> datesFinListe = new ArrayList<>(datesFinUniques);
-        Collections.sort(datesFinListe);
-
-        datesFinListe.addFirst("Tous");
-
-        filtreDateFin.setItems(FXCollections.observableArrayList(datesFinListe));
     }
 
     /**
@@ -340,9 +237,9 @@ public class ControleurPourcentage {
     @FXML
     private void afficherFiltre() {
         List<Node> filtres = Arrays.asList(
-                filtreSalle, filtreActivite, filtreEmploye, filtreDateDebut, filtreDateFin, filtreHeureD, filtreHeureF,
-                textfiltreSalle, textfiltreActivite, textfiltreEmploye, textfiltreDateDebut, textfiltreDateFin, textfiltreHeureD,
-                textfiltreHeureF, reinitialiserFiltre
+                filtreSalle, filtreActivite, filtreEmploye,
+                textfiltreSalle, textfiltreActivite, textfiltreEmploye,
+                reinitialiserFiltre
         );
 
         filtres.forEach(composantFiltre -> {
@@ -358,10 +255,6 @@ public class ControleurPourcentage {
         ajouterListenerFiltre(filtreSalle);
         ajouterListenerFiltre(filtreEmploye);
         ajouterListenerFiltre(filtreActivite);
-        ajouterListenerFiltre(filtreDateDebut);
-        ajouterListenerFiltre(filtreDateFin);
-        ajouterListenerFiltre(filtreHeureD);
-        ajouterListenerFiltre(filtreHeureF);
 
         System.out.println("Listeners pour filtres ajoutés.");
     }
@@ -375,10 +268,10 @@ public class ControleurPourcentage {
         });
     }
 
-    private void calculerPourcentageGlobal() {
+    private void calculerPourcentage(ObservableList<Reservation> listFiltree) {
         // Calculer la durée totale de toutes les réservations
         Duration dureeTotaleReservations = Duration.ZERO;
-        for (Reservation reservation : listReservation) {
+        for (Reservation reservation : listFiltree) {
             LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
             LocalTime heureFin = parseHeure(reservation.getHeureFin());
             if (heureDebut != null && heureFin != null) {
@@ -388,7 +281,8 @@ public class ControleurPourcentage {
 
         // Calculer la durée de réservation pour chaque salle
         Map<String, Duration> dureeParSalle = new HashMap<>();
-        for (Reservation reservation : listReservation) {
+
+        for (Reservation reservation : listFiltree) {
             LocalTime heureDebut = parseHeure(reservation.getHeureDebut());
             LocalTime heureFin = parseHeure(reservation.getHeureFin());
             if (heureDebut != null && heureFin != null) {
@@ -409,7 +303,9 @@ public class ControleurPourcentage {
         }
 
         // Mettre à jour la TableView avec les données des salles
+        tabSalle.getItems().clear();
         tabSalle.setItems(FXCollections.observableArrayList(listSalle));
+        tabSalle.refresh();
     }
 
     @FXML

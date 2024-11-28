@@ -21,7 +21,6 @@ import sae.statisalle.modele.LireFichier;
 import sae.statisalle.modele.objet.*;
 
 import java.io.File;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -131,10 +130,9 @@ public class ControleurClassement {
     }
 
     /**
-     * Méthode qui sert à récupérer les attributs de l'objet Salle,en les liants
-     * à une réservation spécifique.
-     * @return sallesDetailles liste contenant les informations sur les salles
-     *         liées à une réservation.
+     * Méthode qui sert à récupérer les attributs de l'objet Reservation
+     * @return reservationDuree liste contenant les informations sur les
+     *         réservations et leur durée
      */
     public ObservableList<ReservationDuree> getReservationDuree() {
 
@@ -165,11 +163,11 @@ public class ControleurClassement {
                 // Ajout de la réservation détaillée à la liste
                 listReservationDuree.add(reservationD);
             }
+            // Tri décroissant du temps de la réservation
             listReservationDuree.sort((r1, r2) -> {
-                // Convertit les durées en minutes pour comparer
                 int dureeR1 = parseDuree(r1.getDuree());
                 int dureeR2 = parseDuree(r2.getDuree());
-                return Integer.compare(dureeR2, dureeR1);  // Tri décroissant
+                return Integer.compare(dureeR2, dureeR1);
             });
         }
         return listReservationDuree;

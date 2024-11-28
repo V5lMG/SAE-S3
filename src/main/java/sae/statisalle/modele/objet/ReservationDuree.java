@@ -1,9 +1,16 @@
+/*
+ * ReservationDuree.java               24/11/2024
+ * IUT DE RODEZ               Pas de copyrights
+ */
 package sae.statisalle.modele.objet;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Classe objet qui calcule la durée d'une réservation
+ */
 public class ReservationDuree {
     private String idReservation;
     private String salle;
