@@ -15,28 +15,28 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/21"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.ControleurClassement">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.statisalle.controleur.ControleurClassement">
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <AnchorPane prefHeight="554.0" prefWidth="1411.0">
             <Button fx:id="btnAfficherTableaux" layoutX="671.0" layoutY="248.0" onAction="#chargerDonnees" prefHeight="40.0" prefWidth="146.0" style="-fx-background-color: #60BCFB;" text="Charger les classements" visible="true" />
-            <ComboBox fx:id="filtreEmploye" editable="true" layoutX="88.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <Text fx:id="textfiltreEmploye" layoutX="88.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employé :" visible="false" />
-            <Text fx:id="textfiltreActivite" layoutX="274.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Activité :" visible="false" />
-            <ComboBox fx:id="filtreActivite" editable="true" layoutX="274.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <ComboBox fx:id="filtreDateDebut" editable="true" layoutX="461.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <ComboBox fx:id="filtreDateFin" editable="true" layoutX="659.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <ComboBox fx:id="filtreHeureD" layoutX="840.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <ComboBox fx:id="filtreHeureF" layoutX="1026.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <ComboBox fx:id="filtreSalle" editable="true" layoutX="200.0" layoutY="14.0" prefWidth="150.0" promptText="Tous" visible="false" />
-            <Text fx:id="textfiltreSalle" layoutX="200.0" layoutY="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle :" visible="false" />
-            <Text fx:id="textfiltreDateDebut" layoutX="461.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date début :" visible="false" wrappingWidth="84.291015625" />
-            <Text fx:id="textfiltreDateFin" layoutX="659.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date fin :" visible="false" wrappingWidth="69.490234375" />
-            <Text fx:id="textfiltreHeureD" layoutX="840.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Début du créneau :" visible="false" wrappingWidth="119.875" />
-            <Text fx:id="textfiltreHeureF" layoutX="1026.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fin du créneau :" visible="false" wrappingWidth="123.830078125" />
-            <Button fx:id="reinitialiserFiltre" layoutX="1271.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleReinitialiserFiltre" style="-fx-background-color: #60BCFB;" text="Réinitialiser filtre" visible="false" />
-            <TabPane fx:id="grandTableau" layoutX="88.0" layoutY="117.0" prefHeight="419.0" prefWidth="1312.0" tabClosingPolicy="UNAVAILABLE" visible="false">
-               <Tab fx:id="feuilleSalle" onSelectionChanged="#afficherFiltreSalle" text="Salle">
+            <ComboBox fx:id="filtreEmploye" editable="true" layoutX="218.0" layoutY="69.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <Text fx:id="textfiltreEmploye" layoutX="219.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Employé :" visible="false" />
+            <Text fx:id="textfiltreActivite" layoutX="396.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Activité :" visible="false" />
+            <ComboBox fx:id="filtreActivite" editable="true" layoutX="395.0" layoutY="69.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreDateDebut" editable="true" layoutX="567.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreDateFin" editable="true" layoutX="737.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreHeureD" layoutX="911.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreHeureF" layoutX="1087.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <ComboBox fx:id="filtreSalle" editable="true" layoutX="41.0" layoutY="70.0" prefWidth="150.0" promptText="Tous" visible="false" />
+            <Text fx:id="textfiltreDateDebut" layoutX="568.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date début :" visible="false" wrappingWidth="84.291015625" />
+            <Text fx:id="textfiltreDateFin" layoutX="738.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date fin :" visible="false" wrappingWidth="69.490234375" />
+            <Text fx:id="textfiltreHeureD" layoutX="911.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Début du créneau :" visible="false" wrappingWidth="119.875" />
+            <Text fx:id="textfiltreSalle" layoutX="41.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salle : " visible="false" />
+            <Text fx:id="textfiltreHeureF" layoutX="1087.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fin du créneau :" visible="false" wrappingWidth="123.830078125" />
+            <Button fx:id="reinitialiserFiltre" layoutX="1255.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleReinitialiserFiltre" style="-fx-background-color: #60BCFB;" text="Réinitialiser filtre" visible="false" />
+            <TabPane fx:id="grandTableau" layoutX="32.0" layoutY="117.0" prefHeight="419.0" prefWidth="1312.0" tabClosingPolicy="UNAVAILABLE" visible="false">
+               <Tab fx:id="feuilleSalle" onSelectionChanged="#afficherFiltreSalle" text="Durée de réservation">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <TableView fx:id="tabSalle" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
@@ -48,38 +48,6 @@
                            <TableColumn fx:id="heureDebutR" prefWidth="91.0" text="Heure Début" />
                            <TableColumn fx:id="heureFinR" prefWidth="91.0" text="Heure Fin" />
                            <TableColumn fx:id="totalS" prefWidth="307.4000244140625" text="Durée de réservation" />
-                        </columns>
-                        <columnResizePolicy>
-                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                     </TableView>
-                  </AnchorPane>
-               </Tab>
-               <Tab fx:id="feuilleActivite" onSelectionChanged="#afficherFiltreActivite" text="Activité">
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <TableView fx:id="tabActivite" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <columns>
-                           <TableColumn fx:id="idActivite" prefWidth="550.0" text="Identifiant" />
-                           <TableColumn fx:id="activiteA" prefWidth="550.0" text="Activité" />
-                           <TableColumn fx:id="salleA" prefWidth="550.0" text="Salle" />
-                           <TableColumn fx:id="employeA" prefWidth="550.0" text="Employé" />
-                           <TableColumn fx:id="totalA" prefWidth="550.0" text="Durée de l'activité" />
-                        </columns>
-                        <columnResizePolicy>
-                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                     </TableView>
-                  </AnchorPane>
-               </Tab>
-               <Tab fx:id="feuilleEmploye" onSelectionChanged="#afficherFiltreEmploye" text="Employé">
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="592.0">
-                     <TableView fx:id="tabEmploye" prefHeight="208.0" prefWidth="593.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <columns>
-                           <TableColumn fx:id="idEmploye" prefWidth="275.0" text="Identifiant" />
-                           <TableColumn fx:id="nomPrenomE" prefWidth="275.0" text="Nom et prénom" />
-                           <TableColumn fx:id="salleE" prefWidth="275.0" text="Salle" />
-                           <TableColumn fx:id="activiteE" prefWidth="275.0" text="Activité" />
-                           <TableColumn fx:id="totalE" prefWidth="275.0" text="Durée de réservation" />
                         </columns>
                         <columnResizePolicy>
                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -131,6 +99,6 @@
       <VBox prefHeight="500.0" prefWidth="22.0" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <VBox prefHeight="200.0" prefWidth="148.0" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="500.0" prefWidth="2.0" BorderPane.alignment="CENTER" />
    </right>
 </BorderPane>

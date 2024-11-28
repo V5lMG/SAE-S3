@@ -193,7 +193,7 @@ public class Salle {
                 .orElse("Aucune activité");
     }
 
-    //Obtenir les types d'activités associées à la salle
+    // Obtenir les types d'activités associées à la salle
     public String getDateR() {
         return listReservation.stream()
                 .map(Reservation::getDateR)
